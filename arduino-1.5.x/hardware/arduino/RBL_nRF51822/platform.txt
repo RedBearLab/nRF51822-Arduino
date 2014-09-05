@@ -1,0 +1,84 @@
+
+# RBL_nRF51822 compile variables
+# ------------------------- 
+
+name=RedBeardLab Boards
+compiler.path={runtime.ide.path}/hardware/tools/gcc-arm-none-eabi-4.8.3-2014q1/bin/
+compiler.c.cmd=arm-none-eabi-gcc
+compiler.c.flags=-c -g -Os -w -ffunction-sections -fdata-sections -nostdlib --param max-inline-insns-single=500 -Dprintf=iprintf -DBLE_STACK_SUPPORT_REQD -DDEBUG_NRF_USER -DNRF51 
+compiler.c.elf.cmd=arm-none-eabi-g++
+compiler.c.elf.flags=-Os -Wl,--gc-sections  
+compiler.S.flags=-c -g -assembler-with-cpp
+compiler.cpp.cmd=arm-none-eabi-g++
+compiler.cpp.flags=-c -g -Os -w -ffunction-sections -fdata-sections -nostdlib --param max-inline-insns-single=500 -fno-rtti -fno-exceptions -Dprintf=iprintf -DBLE_STACK_SUPPORT_REQD -DDEBUG_NRF_USER -DNRF51 -DBOARD_PCA10001
+compiler.ar.cmd=arm-none-eabi-ar
+compiler.ar.flags=rcs
+compiler.objcopy.cmd=arm-none-eabi-objcopy
+compiler.objcopy.eep.flags=-O ihex -j .eeprom --set-section-flags=.eeprom=alloc,load --no-change-warnings --change-section-lma .eeprom=0
+compiler.elf2hex.flags=-O ihex  -I binary 
+compiler.elf2hex.flagx=-O ihex
+compiler.elf2hex.cmd=arm-none-eabi-objcopy
+compiler.elf2bin.flags=-O binary
+compiler.elf2bin.cmd=arm-none-eabi-objcopy
+compiler.ldflags=
+compiler.size.cmd=arm-none-eabi-size
+compiler.define=-DARDUINO=
+
+compiler.S.flags=-x assembler-with-cpp -g3 -O0
+
+# this can be overriden in boards.txt
+build.extra_flags= 
+
+# RBL_nRF51822 compile patterns
+# ------------------------
+
+## Compile S files
+recipe.S.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.S.flags} {runtime.ide.path}\hardware\arduino\RBL_nRF51822\cores\arduino\gcc_startup_nrf51.S -o "{object_file}"
+
+
+## Compile c files
+recipe.c.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.c.flags} -mcpu={build.mcu} -DF_CPU={build.f_cpu} -D{software}={runtime.ide.version} {build.extra_flags} {includes} {build.variant_system_include} "{source_file}" -o "{object_file}"
+
+## Compile c++ files
+recipe.cpp.o.pattern="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} -mcpu={build.mcu} -DF_CPU={build.f_cpu} -D{software}={runtime.ide.version} {build.extra_flags} {includes} {build.variant_system_include} "{source_file}" -o "{object_file}"
+
+## Create archives
+recipe.ar.pattern="{compiler.path}{compiler.ar.cmd}" {compiler.ar.flags} "{build.path}/{archive_file}" "{object_file}"
+
+## Combine gc-sections, archives, and objects
+recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {compiler.c.elf.flags} -mcpu={build.mcu} {build.extra_flags} "-T{build.variant.path}/{build.ldscript}" "-Wl,-Map,{build.path}/{build.project_name}.map" -o "{build.path}/{build.project_name}.elf" "-L{build.path}" -lm -lgcc -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--warn-unresolved-symbols -Wl,--start-group "{build.path}/syscalls.c.o" {object_files} "{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/nrf_sdk.a" "{build.path}/{archive_file}" -Wl,--end-group
+
+## Create bin
+recipe.objcopy.eep.pattern="{compiler.path}{compiler.elf2bin.cmd}" {compiler.elf2bin.flags} "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}.bin"
+
+## Create hex
+#recipe.objcopy.hex.pattern="{compiler.path}{compiler.elf2hex.cmd}" {compiler.elf2hex.flagx} "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}.hex" 
+recipe.objcopy.hex.pattern="{compiler.path}{compiler.elf2hex.cmd}" {compiler.elf2hex.flags} "{build.path}/{build.project_name}.bin" "{build.path}/{build.project_name}.hex" 
+
+## Compute size
+recipe.size.pattern="{compiler.path}{compiler.size.cmd}" -A "{build.path}/{build.project_name}.elf"
+recipe.size.regex=\.text\s+([0-9]+).*
+
+# RBL_nRF51822 Uploader tools
+# ----------------------
+
+#tools.RBLoader.cmd=uploader
+#tools.RBLoader.cmd.windows=uploader.bat
+#tools.RBLoader.upload.params.verbose=
+#tools.RBLoader.upload.params.quiet=
+#tools.RBLoader.path={runtime.ide.path}/hardware/arduino/RBL_nRF51822
+#tools.RBLoader.upload.pattern="{path}/{cmd}" "{build.path}/{build.project_name}.hex" {serial.port} 57600
+
+
+tools.avrdude.cmd.path={runtime.ide.path}/hardware/tools/avr/bin/avrdude
+tools.avrdude.config.path={runtime.ide.path}/hardware/tools/avr/etc/avrdude.conf
+tools.avrdude.cmd.path.linux={runtime.ide.path}/hardware/tools/avrdude
+tools.avrdude.config.path.linux={runtime.ide.path}/hardware/tools/avrdude.conf
+
+tools.avrdude.upload.params.verbose=-v -v -v -v
+tools.avrdude.upload.params.quiet=-q -q
+tools.avrdude.upload.pattern="{cmd.path}" "-C{config.path}" {upload.verbose} -p{build.mcu} -c{upload.protocol} -P{serial.port} -b{upload.speed} -D "-Uflash:w:{build.path}/{build.project_name}.hex:i"
+
+
+
+

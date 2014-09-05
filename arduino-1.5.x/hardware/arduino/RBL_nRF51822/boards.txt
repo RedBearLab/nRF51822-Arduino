@@ -1,0 +1,22 @@
+
+RedBearLab.name=RBL nRF51822
+
+RedBearLab.upload.tool=avrdude
+RedBearLab.upload.protocol=avr109
+RedBearLab.upload.maximum_size=196608
+RedBearLab.upload.maximum_data_size=2560
+RedBearLab.upload.speed=115200
+RedBearLab.upload.disable_flushing=true
+RedBearLab.upload.use_1200bps_touch=true
+RedBearLab.upload.wait_for_upload_port=false
+
+RedBearLab.build.mcu=cortex-m0
+RedBearLab.build.f_cpu=16000000
+RedBearLab.build.usb_product="Arduino RBL"
+RedBearLab.build.core=arduino
+RedBearLab.build.variant=RBL_nRF51822
+RedBearLab.build.extra_flags=-mthumb
+RedBearLab.build.ldscript=linker_scripts/gcc/RBL_nRF51822.ld
+RedBearLab.build.variant_system_include= "-I{build.system.path}/CMSIS/CMSIS/Include" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include/app_common" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include/ble" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include/ble/ble_services" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include/ble/rpc" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include/gcc" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include/s110" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include/sd_common" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include/sdk" 
+
+
