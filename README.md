@@ -16,7 +16,7 @@ Install nRF51822 Arduino Add-on
 
 1. Get Arduino IDE version 1.5.7 from Arduino website and install it to your PC
 
-http://arduino.cc/en/Main/Software
+    http://arduino.cc/en/Main/Software
 
 2. Get or clone this repository and put the files to appropriate folder.
 
