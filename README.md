@@ -21,9 +21,9 @@ Install nRF51822 Arduino Add-on
 2. Get or clone this repository and put the files to appropriate folder.
 
   - in your Arduino IDE folder, inside hardware/arduino, you should see
-    avr
-    RBL_nRF51822
-    sam
+    - avr
+    - RBL_nRF51822
+    - sam
 
   - replace the file in hardware/tools/avr/etc/avrdude.conf
 
