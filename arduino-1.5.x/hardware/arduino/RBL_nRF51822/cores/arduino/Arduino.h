@@ -75,6 +75,7 @@ extern "C"{
 #define D23 23
 #define D24 24
 
+#define CS   D7
 #define SCK  D16
 #define MISO D17
 #define MOSI D18
