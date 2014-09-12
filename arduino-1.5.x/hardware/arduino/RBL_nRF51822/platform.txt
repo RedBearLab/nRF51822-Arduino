@@ -2,7 +2,7 @@
 # RBL_nRF51822 compile variables
 # ------------------------- 
 
-name=RedBeardLab Boards
+name=RedBearLab Boards
 compiler.path={runtime.ide.path}/hardware/tools/gcc-arm-none-eabi-4.8.3-2014q1/bin/
 compiler.c.cmd=arm-none-eabi-gcc
 compiler.c.flags=-c -g -Os -w -ffunction-sections -fdata-sections -nostdlib --param max-inline-insns-single=500 -Dprintf=iprintf -DBLE_STACK_SUPPORT_REQD -DDEBUG_NRF_USER -DNRF51 
