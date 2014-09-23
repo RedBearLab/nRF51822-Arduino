@@ -37,8 +37,10 @@ uint32_t Pin_nRF51822_to_Arduino(uint32_t pin)
 {
 	uint32_t return_pin=0x000000FF;
 	
+#ifdef RBL_NRF51822	
 	switch(pin)
 	{	
+
 		//20140821
 		case 0 : return_pin = 11;break;//D0/RX
 		case 1 : return_pin = 9;break;//D1/TX
@@ -69,14 +71,37 @@ uint32_t Pin_nRF51822_to_Arduino(uint32_t pin)
 		case 22 : return_pin = 4;break;//A3
 		case 23 : return_pin = 5;break;//A4
 		case 24 : return_pin = 6;break;//A5	
-		//for BLE_Nano
-		case 25 : return_pin = 0;break;
-		case 26 : return_pin = 7;break;
-
-		//J4
+		
 		default : break;		
 	}
 	
+#endif
+
+#ifdef BLE_NANO
+	switch(pin)
+	{	
+		case 0 : return_pin = 9;break;		//D0/TXD/MOSI
+		case 1 : return_pin = 11;break;		//D1/RXD/MISO
+		case 2 : return_pin = 8;break;		//D2/RTS/SCK/SCL
+		case 3 : return_pin = 10;break;		//D3/CTS/CS/SDA
+		case 5 : return_pin = 7;break;		//D5
+		case 6 : return_pin = 15;break;		//D6
+		case 7 : return_pin = 29;break;		//D7
+		case 8 : return_pin = 28;break;		//D8
+
+		case 13 : return_pin = 19;break;	//D13/LED
+		
+		case 14 : return_pin = 1;break;	//A0
+		case 15 : return_pin = 2;break;	//A1
+		case 16 : return_pin = 3;break;	//A2
+		case 17 : return_pin = 4;break;	//A3
+		case 18 : return_pin = 5;break;	//A4
+		case 19 : return_pin = 6;break;	//A5
+
+		default : break;		
+	}
+#endif
+
 	return (return_pin);
 }
 

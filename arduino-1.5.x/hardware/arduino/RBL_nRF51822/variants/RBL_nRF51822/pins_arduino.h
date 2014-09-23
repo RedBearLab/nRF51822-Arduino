@@ -2,6 +2,8 @@
 #ifndef PINS_ARDUINO_H_
 #define PINS_ARDUINO_H_
 
+#define RBL_NRF51822
+
 //PIN Define
 #define D0 0
 #define D1 1
