@@ -25,12 +25,16 @@
 */
 
 #include "interrupt.h"
+#include "nrf_soc.h"
+#include "nrf_sdm.h"
 
 dynamic_handler_t pin_interrupterCB[4];
 
 static uint8_t GPIOTE_Channel_for_Inter[4] = { 255,255,255,255};
 static uint32_t pin_for_inter[4] =  {0xff, 0xff, 0xff, 0xff};
 static uint8_t inter_mode[4] = {0x00,0x00,0x00,0x00};
+
+static uint8_t softdevice_enabled;
 
 static void GPIOTE_handler( void );
 
@@ -62,7 +66,7 @@ function :
 **********************************************************************/
 void attachInterrupt(uint8_t pin, dynamic_handler_t event_handler, uint32_t mode)
 {
-	uint32_t nrf_pin;
+	uint32_t nrf_pin, err_code = NRF_SUCCESS;
 	uint8_t channel;
 	
 	channel = GPIOTE_Channel_Find();
@@ -72,7 +76,6 @@ void attachInterrupt(uint8_t pin, dynamic_handler_t event_handler, uint32_t mode
 	}
 	
 	nrf_pin = Pin_nRF51822_to_Arduino(pin);
-    //simple_uart_putstring("here1 \r\n");
 	if( nrf_pin < 31 &&  (mode ==RISING || mode == FALLING) && channel<4 )
 	{	
 		GPIOTE_Channel_Set(channel);
@@ -221,7 +224,21 @@ void attachInterrupt(uint8_t pin, dynamic_handler_t event_handler, uint32_t mode
 								| GPIOTE_INTENSET_IN3_Set << GPIOTE_INTENSET_IN3_Pos;
 		*/	
 		LinkInterrupt(GPIOTE_IRQn, GPIOTE_handler);
-		NVIC_EnableIRQ(GPIOTE_IRQn);
+		
+		err_code = sd_softdevice_is_enabled(&softdevice_enabled);
+		APP_ERROR_CHECK(err_code);
+		if(softdevice_enabled == 0)
+		{	
+			NVIC_SetPriority(GPIOTE_IRQn, APP_IRQ_PRIORITY_LOW);
+			NVIC_EnableIRQ(GPIOTE_IRQn);
+		}
+		else
+		{
+			err_code = sd_nvic_SetPriority(GPIOTE_IRQn, APP_IRQ_PRIORITY_LOW);
+			APP_ERROR_CHECK(err_code);
+			err_code = sd_nvic_EnableIRQ(GPIOTE_IRQn);
+			APP_ERROR_CHECK(err_code);
+		}
 	}
 }
 /**********************************************************************
@@ -230,7 +247,7 @@ function :
 **********************************************************************/
 void detachInterrupt(uint32_t pin )
 {	
-	uint32_t nrf_pin;
+	uint32_t nrf_pin, err_code = NRF_SUCCESS;
 	uint8_t channel;
 	//Get the GPIOTE Channel
 	nrf_pin = Pin_nRF51822_to_Arduino(pin);
@@ -257,14 +274,23 @@ void detachInterrupt(uint32_t pin )
 	//check right or wrong
 	if(nrf_pin < 31 && channel<4)
 	{
-		//simple_uart_putstring("here1 \r\n");
 		GPIOTE_Channel_Clean(channel);
 		inter_mode[channel] == 0x00;
 		pin_for_inter[channel] = 0xff;
 	
 		if( pin_for_inter[0] == 0xFF && pin_for_inter[1] == 0xFF && pin_for_inter[2] == 0xFF && pin_for_inter[3] == 0xFF )
-		{	//simple_uart_putstring("here6 \r\n");
-			NVIC_DisableIRQ(GPIOTE_IRQn);
+		{	
+			err_code = sd_softdevice_is_enabled(&softdevice_enabled);
+			APP_ERROR_CHECK(err_code);
+			if(softdevice_enabled == 0)
+			{
+				NVIC_DisableIRQ(GPIOTE_IRQn);
+			}
+			else
+			{
+				err_code = sd_nvic_DisableIRQ(GPIOTE_IRQn);
+				APP_ERROR_CHECK(err_code);
+			}
 			UnlinkInterrupt(GPIOTE_IRQn);
 		}
 	}
@@ -280,7 +306,7 @@ static void GPIOTE_handler( void )
 	uint32_t index_s , index_x;
 	
 	delay_ex_interrupter(30000); 
-	//simple_uart_printHEX( NRF_GPIO->IN );
+
 	for(index_x=0; index_x<4; index_x++)
 	{
 		if(pin_for_inter[index_x] != 0xFF)
