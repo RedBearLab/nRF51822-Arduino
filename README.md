@@ -11,6 +11,9 @@ Requirement
 1. nRF51822 deveopment board, here we will use RBL nRF51822 as an example.
 2. Arduino IDE version 1.5.7 (currently tested version).
 
+Note: If you have changed the USB interface firmware (MK20 chip) for some reasons, follow the instructions inside the **MK20** folder.
+
+
 Install nRF51822 Arduino Add-on
 ===============================
 
