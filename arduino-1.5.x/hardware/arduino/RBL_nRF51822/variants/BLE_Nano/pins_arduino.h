@@ -9,10 +9,10 @@
 #define D2 2 
 #define D3 3 
 
+#define D4 4
 #define D5 5
 #define D6 6
 #define D7 7
-#define D8 8
 #define D13 13
 
 #define A0 14 
@@ -22,13 +22,13 @@
 #define A4 18 
 #define A5 19 
 
-#define CS   D3
-#define SCK  D2
-#define MISO D1
-#define MOSI D0
+#define CS   D2
+#define SCK  D3
+#define MISO D0
+#define MOSI D1
 
-#define SDA  D3
-#define SCL  D2
+#define SDA  D2
+#define SCL  D3
 
 #define DEFAULT_RX_PIN 11  //do not need to pin_transform, default is P0_11
 #define DERAULT_TX_PIN 9   //do not need to pin_transform, default is P0_09
