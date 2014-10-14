@@ -76,7 +76,7 @@ void SPIClass::setCPHA( bool trailing)
 
 /**********************************************************************
 name :
-function : 
+function : MSBFIRST, LSBFIRST
 **********************************************************************/
 void SPIClass::setBitORDER( BitOrder  bit)
 {
@@ -167,7 +167,7 @@ void SPIClass::setSPIMode( uint8_t mode )
 name :
 function : 
 **********************************************************************/
-void SPIClass::begin(uint32_t sck, uint32_t mosi, uint32_t miso, uint8_t mode, uint8_t speed)
+void SPIClass::begin(uint32_t sck, uint32_t mosi, uint32_t miso)
 {
     uint32_t sck_p, mosi_p, miso_p;
 	
@@ -202,8 +202,8 @@ void SPIClass::begin(uint32_t sck, uint32_t mosi, uint32_t miso, uint8_t mode, u
 		spi->PSELMOSI = MOSI_Pin;
 		spi->PSELMISO = MISO_Pin;		
 		
-		setFrequency(speed);
-		setSPIMode(mode);
+		setFrequency(SPI_2M);
+		setSPIMode(SPI_MODE0);
 		setBitORDER(MSBFIRST);
 		
 		spi->EVENTS_READY = 0;
@@ -217,7 +217,7 @@ function :
 **********************************************************************/
 void SPIClass::begin()
 {
-	begin(SCK, MOSI, MISO, SPI_MODE0, SPI_4M);
+	begin(SCK, MOSI, MISO);
 }
 
 /**********************************************************************
@@ -226,6 +226,8 @@ function :
 **********************************************************************/
 uint8_t SPIClass::transfer(uint8_t data)
 {
+	while( spi->EVENTS_READY != 0U );
+	
 	spi->TXD = (uint32_t)data;
 	
 	while(spi->EVENTS_READY == 0);
@@ -361,7 +363,7 @@ uint32_t SPISlave::spi_slave_evt_handler_register(spi_slave_event_handler_t even
 name :
 function : 
 **********************************************************************/
-void SPISlave::begin(uint32_t cs, uint32_t sck, uint32_t mosi, uint32_t miso, uint8_t mode, spi_slave_event_handler_t event)
+void SPISlave::begin(uint32_t cs, uint32_t sck, uint32_t mosi, uint32_t miso, spi_slave_event_handler_t event)
 {	
 	uint32_t cs_p, sck_p, mosi_p, miso_p;
 
@@ -414,7 +416,7 @@ void SPISlave::begin(uint32_t cs, uint32_t sck, uint32_t mosi, uint32_t miso, ui
 		NRF_SPIS1->MAXRX    = 0;
 		NRF_SPIS1->MAXTX    = 0;
 
-		setSPIMode(mode);
+		setSPIMode(SPI_MODE0);
 		setBitORDER(LSBFIRST);
 		
         NRF_SPIS1->DEF    = 0xAAu;
@@ -449,7 +451,7 @@ function :
 **********************************************************************/
 void SPISlave::begin(spi_slave_event_handler_t event)
 {
-	begin(CS, SCK, MOSI, MISO, SPI_MODE0, event);	
+	begin(CS, SCK, MOSI, MISO, event);	
 }
 
 /**********************************************************************

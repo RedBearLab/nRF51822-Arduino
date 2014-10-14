@@ -86,7 +86,7 @@ class SPIClass
 		SPIClass(NRF_SPI_Type *_spi);
 	
 		void begin();
-		void begin(uint32_t sck, uint32_t mosi, uint32_t miso, uint8_t mode, uint8_t speed);
+		void begin(uint32_t sck, uint32_t mosi, uint32_t miso);
 		uint8_t transfer(uint8_t data);
 		void endTransfer();
 			
@@ -112,7 +112,7 @@ class SPISlave
 	public : 
 		SPISlave();
 		void begin(spi_slave_event_handler_t event);
-		void begin(uint32_t cs, uint32_t sck, uint32_t mosi, uint32_t miso, uint8_t mode, spi_slave_event_handler_t event);
+		void begin(uint32_t cs, uint32_t sck, uint32_t mosi, uint32_t miso, spi_slave_event_handler_t event);
 		void state_change(spi_state_t new_state);
 		uint32_t spi_slave_evt_handler_register(spi_slave_event_handler_t event_handler);
 		uint8_t spi_slave_buffers_set(uint8_t *p_tx_buf, uint8_t *p_rx_buf, uint8_t tx_len, uint8_t rx_len);
