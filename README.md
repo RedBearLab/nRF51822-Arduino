@@ -86,9 +86,6 @@ Limitations
 
     As Arduio does not have flow control in serial port implementation, the Serial port (Pin 0 and 1) is limited to 9600bps since the BLE stack require flow control in order to support higher speed. If you are not going to use BLE, you can use higher speed. 
  
-2. Servo
-
-    Servo library is missing currently, if you can contribute the code, please ask for pull request and we will merge your code.
 
 
 
