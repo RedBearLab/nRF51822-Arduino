@@ -53,7 +53,7 @@ declare :
 #define usToTicks(_us)    (( clockCyclesPerMicrosecond()* _us) / 8)     		  // converts microseconds to tick (assumes prescale of 8)  // 12 Aug 2009
 #define ticksToUs(_ticks) (( (unsigned)_ticks * 8)/ clockCyclesPerMicrosecond() ) // converts from ticks back to microseconds
 
-#define TRIM_DURATION       2                               // compensation ticks to trim adjust for digitalWrite delays // 12 August 2009
+#define TRIM_DURATION       3                               // compensation ticks to trim adjust for digitalWrite delays // 12 August 2009
 
 static servo_t servos[MAX_SERVOS];                          // static array of servo structures
 static volatile int8_t Channel[_Nbr_16timers ];             // counter for the servo being pulsed for each timer (or -1 if refresh interval)

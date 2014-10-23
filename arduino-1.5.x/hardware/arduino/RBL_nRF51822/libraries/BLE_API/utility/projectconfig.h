@@ -113,12 +113,12 @@
     #define CFG_GAP_APPEARANCE                         BLE_APPEARANCE_GENERIC_TAG
     #define CFG_GAP_LOCAL_NAME                         "nRF5x"
 
-    #define CFG_GAP_CONNECTION_MIN_INTERVAL_MS         50                      /**< Minimum acceptable connection interval */
-    #define CFG_GAP_CONNECTION_MAX_INTERVAL_MS         100                     /**< Maximum acceptable connection interval */
+    #define CFG_GAP_CONNECTION_MIN_INTERVAL_MS         100                      /**< Minimum acceptable connection interval */
+    #define CFG_GAP_CONNECTION_MAX_INTERVAL_MS         500                     /**< Maximum acceptable connection interval */
     #define CFG_GAP_CONNECTION_SUPERVISION_TIMEOUT_MS  4000                     /**< Connection supervisory timeout */
     #define CFG_GAP_CONNECTION_SLAVE_LATENCY           0                        /**< Slave Latency in number of connection events. */
 
-    #define CFG_GAP_ADV_INTERVAL_MS                    25                       /**< The advertising interval in miliseconds, should be multiply of 0.625 */
+    #define CFG_GAP_ADV_INTERVAL_MS                    250                       /**< The advertising interval in miliseconds, should be multiply of 0.625 */
     #define CFG_GAP_ADV_TIMEOUT_S                      180                      /**< The advertising timeout in units of seconds. */
 /*=========================================================================*/
 
