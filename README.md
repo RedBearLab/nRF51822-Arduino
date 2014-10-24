@@ -17,7 +17,7 @@ Note: If you have changed the USB interface firmware (MK20 chip) for some reason
 Install nRF51822 Arduino Add-on
 ===============================
 
-1. Get Arduino IDE version 1.5.7 from Arduino website and install it to your PC
+1. Get Arduino IDE version 1.5.8 from Arduino website and install it to your PC
 
     http://arduino.cc/en/Main/Software
 
