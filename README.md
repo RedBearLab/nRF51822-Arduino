@@ -42,7 +42,7 @@ https://mbed.org/media/downloads/drivers/mbedWinSerial_16466.exe
 Flash with RBL Bootloader
 =========================
 
-The "bootloader" folder, there is a firmware for the RBL nRF51822 board, it is to allow you to load firmware using Arduino IDE.
+In the "bootloader" folder, there is a firmware for the RBL nRF51822 board, it allows you to load firmware using Arduino IDE.
 
 To load the bootloader, connect the board to your PC using a micro USB cable, it will prompt a drive, drag the bootloader firmware to the drive.
 
@@ -84,9 +84,8 @@ Limitations
 
 1. Serial Port
 
-    As Arduio does not have flow control in serial port implementation, the Serial port (Pin 0 and 1) is limited to 9600bps since the BLE stack require flow control in order to support higher speed. If you are not going to use BLE, you can use higher speed. 
+    As Arduino does not have flow control in serial port implementation, the Serial port (Pin 0 and 1) is limited to 9600bps since the BLE stack require flow control in order to support higher speed. If you are not going to use BLE, you can use higher speed. 
  
+2. Central Role
 
-
-
-
+    The add-on uses SoftDevice S110, it does not support BLE Central role.
