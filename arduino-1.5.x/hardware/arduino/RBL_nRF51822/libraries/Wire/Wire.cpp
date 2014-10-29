@@ -134,7 +134,7 @@ bool TwoWire::twi_master_init(void)
 	{
 		err_code = sd_ppi_channel_assign(7, &twi->EVENTS_BB, &twi->TASKS_SUSPEND);
 		APP_ERROR_CHECK(err_code);
-		err_code = sd_ppi_channel_enable_set(1 << 7);
+		err_code = sd_ppi_channel_enable_clr(1 << 7);
 		APP_ERROR_CHECK(err_code);
 	}
 	
@@ -157,7 +157,7 @@ uint8_t TwoWire::twi_master_write(uint8_t *data, uint8_t data_length, uint8_t is
 	twi->TXD = *data++;
 	twi->TASKS_STARTTX = 1;
 	while(1)
-	{   //NRF_GPIO->OUTCLR = ( 1 << 12 );
+	{   
 		while( (twi->EVENTS_TXDSENT == 0) && (--timeout) );//&& (twi->EVENTS_ERROR == 0) );
 		
 		if( 0 == timeout )//|| twi->EVENTS_ERROR != 0)
@@ -172,8 +172,6 @@ uint8_t TwoWire::twi_master_write(uint8_t *data, uint8_t data_length, uint8_t is
 			twi_master_init();
 			return 0;
 		}
-		//timeout = MAX_TIMEOUT_LOOPS;
-		//NRF_GPIO->OUTSET = ( 1 << 12 );
 		twi->EVENTS_TXDSENT = 0;
 		if( --data_length == 0)
 		{	
@@ -210,8 +208,6 @@ uint8_t TwoWire::twi_master_read(uint8_t *data, uint8_t data_length, uint8_t iss
 	}
 	else if( 1== data_length )//&& issue_stop_condition == 1)
 	{
-		//err_code = sd_softdevice_is_enabled(&softdevice_enabled);
-		//APP_ERROR_CHECK(err_code);
 		if (softdevice_enabled == 0)
 		{	
 			NRF_PPI->CH[7].EEP = (uint32_t)&twi->EVENTS_BB;
@@ -228,8 +224,6 @@ uint8_t TwoWire::twi_master_read(uint8_t *data, uint8_t data_length, uint8_t iss
 	}
 	else
 	{	
-		//err_code = sd_softdevice_is_enabled(&softdevice_enabled);
-		//APP_ERROR_CHECK(err_code);
 		if (softdevice_enabled == 0)
 		{	
 			NRF_PPI->CH[7].EEP = (uint32_t)&twi->EVENTS_BB;
@@ -274,8 +268,6 @@ uint8_t TwoWire::twi_master_read(uint8_t *data, uint8_t data_length, uint8_t iss
 	
 		if( --data_length == 1 )
 		{	
-			//err_code = sd_softdevice_is_enabled(&softdevice_enabled);
-			//APP_ERROR_CHECK(err_code);
 			if (softdevice_enabled == 0)
 			{	
 				//NRF_PPI->CH[7].EEP = (uint32_t)&twi->EVENTS_BB;
@@ -303,8 +295,6 @@ uint8_t TwoWire::twi_master_read(uint8_t *data, uint8_t data_length, uint8_t iss
 
 	twi->EVENTS_STOPPED = 0;
 	
-	//err_code = sd_softdevice_is_enabled(&softdevice_enabled);
-	//APP_ERROR_CHECK(err_code);
 	if (softdevice_enabled == 0)
 	{		
 		NRF_PPI->CHEN &= ~(1 << 7);
