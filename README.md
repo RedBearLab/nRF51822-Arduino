@@ -11,7 +11,7 @@ Requirement
 1. nRF51822 deveopment board, here we will use RBL nRF51822 as an example.
 2. Arduino IDE version 1.5.8 (currently tested version).
 3. Mac OSX 10.9.x (Mavericks) (currently tested version).    <- Read Note 2
-   Windows 7 and 8.x
+4. Windows 7 and 8.x (currently tested version).
 
 Note 1:
 If you have changed the USB interface firmware (MK20 chip) for some reasons, follow the instructions inside the **MK20** folder to restore it in order to use this add-on for Arduino IDE.
