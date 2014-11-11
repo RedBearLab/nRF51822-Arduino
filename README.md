@@ -11,10 +11,15 @@ Requirement
 1. nRF51822 deveopment board, here we will use RBL nRF51822 as an example.
 2. Arduino IDE version 1.5.8 (currently tested version).
 3. Mac OSX 10.9.x (Mavericks) (currently tested version).    <- Read Note 2
+   Windows 7 and 8.x
 
-Note 1: If you have changed the USB interface firmware (MK20 chip) for some reasons, follow the instructions inside the **MK20** folder to restore it in order to use this add-on for Arduino IDE.
+Note 1:
+If you have changed the USB interface firmware (MK20 chip) for some reasons, follow the instructions inside the **MK20** folder to restore it in order to use this add-on for Arduino IDE.
 
-Note 2: For Mac OSX 10.10 (Yosemite), Apple changed the security checking so it will think our MK20 USB dongle firmware is not securer, and it will mount it as read only, thus, you can drag firmware to it. This will be fixed as soon as possible.
+Note 2:
+For Mac OSX 10.10 (Yosemite), Apple changed the security checking so it will think our MK20 USB dongle firmware is not securer, and it will mount it as read only, thus, you cannot drag the bootloader firmware to it. This will be fixed as soon as possible.
+
+You can still use this add-on if you can use another PC to load the bootloader firmware.
 
 
 Install nRF51822 Arduino Add-on
