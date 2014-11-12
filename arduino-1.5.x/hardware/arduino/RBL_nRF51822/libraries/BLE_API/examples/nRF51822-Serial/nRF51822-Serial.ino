@@ -107,7 +107,6 @@ void onDataWritten(uint16_t charHandle)
 void setup(void)
 {
     uint32_t err_code = NRF_SUCCESS;
-    
     uart_callback_t uart_cb;
     
     delay(500);
@@ -130,6 +129,10 @@ void setup(void)
     ble.setAdvertisingInterval(160); 
 
     ble.addService(uartService);
+    
+    //Set Dev_Name
+    err_code = RBL_SetDevName("nRF51822_Serial");
+    APP_ERROR_CHECK(err_code);
     
     ble.startAdvertising();
     
