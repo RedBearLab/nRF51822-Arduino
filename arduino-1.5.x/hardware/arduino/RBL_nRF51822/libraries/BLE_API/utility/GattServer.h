@@ -17,7 +17,7 @@
 #ifndef __GATT_SERVER_H__
 #define __GATT_SERVER_H__
 
-#include "arduino.h"
+#include "Arduino.h"
 #include "blecommon.h"
 #include "GattService.h"
 #include "GattServerEvents.h"

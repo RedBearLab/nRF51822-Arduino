@@ -17,7 +17,7 @@
 #ifndef __BLE_DEVICE__
 #define __BLE_DEVICE__
 
-#include "arduino.h"
+#include "Arduino.h"
 #include "blecommon.h"
 #include "Gap.h"
 #include "GattServer.h"

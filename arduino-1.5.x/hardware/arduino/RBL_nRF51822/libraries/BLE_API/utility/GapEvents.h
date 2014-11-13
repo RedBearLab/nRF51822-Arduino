@@ -18,7 +18,7 @@
 #define __GAP_EVENTS_H__
 
 #include "blecommon.h"
-#include "arduino.h"
+#include "Arduino.h"
 
 /**************************************************************************/
 /*!

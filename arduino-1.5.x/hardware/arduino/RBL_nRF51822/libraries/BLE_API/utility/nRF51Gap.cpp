@@ -15,7 +15,7 @@
  */
 
 #include "nRF51Gap.h"
-#include "arduino.h"
+#include "Arduino.h"
 
 #include "common.h"
 #include "ble_advdata.h"

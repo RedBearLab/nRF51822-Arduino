@@ -22,7 +22,7 @@
 #define BLE_STACK_SUPPORT_REQD
 #define BOARD_PCA10001
 
-#include "arduino.h"
+#include "Arduino.h"
 #include "blecommon.h"
 #include "BLEDevice.h"
 #include "nRF51Gap.h"

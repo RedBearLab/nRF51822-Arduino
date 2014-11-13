@@ -16,7 +16,7 @@
  
 #include "blecommon.h"
 #include "nRF51GattServer.h"
-#include "arduino.h"
+#include "Arduino.h"
 #include "common.h"
 #include "ble_error.h"
 

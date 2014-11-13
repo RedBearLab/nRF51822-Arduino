@@ -17,7 +17,7 @@
 #ifndef __NRF51822_GATT_SERVER_H__
 #define __NRF51822_GATT_SERVER_H__
 
-#include "arduino.h"
+#include "Arduino.h"
 #include "blecommon.h"
 #include "ble.h" /* nordic ble */
 #include "GattService.h"

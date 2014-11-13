@@ -1,5 +1,5 @@
 #include "nrf_err_check.h"
-#include "arduino.h"
+#include "Arduino.h"
 
 #define NRF_ERR_CHECK  1
 

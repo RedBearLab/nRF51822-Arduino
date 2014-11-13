@@ -17,7 +17,7 @@
 #ifndef __NRF51822_GAP_H__
 #define __NRF51822_GAP_H__
 
-#include "arduino.h"
+#include "Arduino.h"
 #include "blecommon.h"
 #include "ble.h"
 #include "GapAdvertisingParams.h"

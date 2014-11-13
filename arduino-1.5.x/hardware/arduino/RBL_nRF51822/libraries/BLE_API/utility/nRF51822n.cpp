@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "arduino.h"
+#include "Arduino.h"
 #include "nRF51822n.h"
 #include "nrf_soc.h"
 
