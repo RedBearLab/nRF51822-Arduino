@@ -34,6 +34,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include "nrf51.h"
+#include "wuart.h"
 #if defined (  __GNUC__  ) /* GCC CS3 */
   #include <sys/types.h>
   #include <sys/stat.h>
@@ -106,11 +107,25 @@ extern int _write( int file, char *ptr, int len )
 {
     // declared in variant.cpp
     // UART0_TX will not TX or lockup flushing TX if UART0 has not been started
-    extern void UART0_TX(uint8_t dat);
+    //extern void UART0_TX(uint8_t dat);
 
     int i;
     for (i = 0; i < len; i++, ptr++)
-        UART0_TX(*ptr);
+	{
+        //UART0_TX(*ptr);
+		if( UART0_State == UART0_AfterFirstTX )
+		{
+			while( !NRF_UART0->EVENTS_TXDRDY);
+		}
+		
+		NRF_UART0->EVENTS_TXDRDY = 0;
+		NRF_UART0->TXD = *ptr;
+		
+		if (UART0_State == UART0_BeforeFirstTX)
+		{
+			UART0_State = UART0_AfterFirstTX;
+		}
+	}
     return i;
 }
 
