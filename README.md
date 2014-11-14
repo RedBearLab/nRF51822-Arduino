@@ -11,7 +11,7 @@ Requirement
 1. nRF51822 deveopment board, here we will use RBL nRF51822 as an example.
 2. Arduino IDE version 1.5.8 (currently tested version).
 3. PC with one of the following OS:
-    - Mac OSX 10.9.x (Mavericks) (currently tested version).    <- Read Note 2
+    - Mac OSX 10.9 (Mavericks) / 10.10 (Yosemite) (currently tested version).    <- Read Note 2
     - Windows 7 and 8.x (currently tested version).
     - Linux (currently tested on Ubuntu 14.04).
 
@@ -21,7 +21,11 @@ If you have changed the USB interface firmware (MK20 chip) for some reasons, fol
 Note 2:
 For Mac OSX 10.10 (Yosemite), Apple changed the security checking so it will think our MK20 USB dongle firmware is not securer, and it will mount it as read only, thus, you cannot drag the bootloader firmware to it. This will be fixed as soon as possible.
 
-You can still use this add-on if you can use another PC to load the bootloader firmware.
+A workaround using Terminal:
+sudo mount -u -w -o sync /Volumes/MBED ; cp -X bootloader.hex /Volumes/MBED/
+
+Thanks to @okano for this and you can use his droplet to do drag and drop without using the Terminal:
+https://developer.mbed.org/users/okano/notebook/mbed-on-yosemite/?c=14179
 
 
 Install nRF51822 Arduino Add-on
@@ -58,7 +62,11 @@ In the "bootloader" folder, there is a firmware for the RBL nRF51822 board, it a
 
 To load the bootloader, connect the board to your PC using a micro USB cable, it will prompt a drive, drag the bootloader firmware to the drive.
 
-Note that this can be done only on Windows 7/8 and OSX 10.9 (Mavericks), it will have a fix as soon as possible on OSX 10.10 (Yosemite) via firmware update.
+Note that for OSX 10.10 (Yosemite), you need to do this by using Terminal (will be fixed as soon as possible):
+sudo mount -u -w -o sync /Volumes/MBED ; cp -X bootloader.hex /Volumes/MBED/
+
+Or refer to this:
+https://developer.mbed.org/users/okano/notebook/mbed-on-yosemite/?c=14179
 
 
 How It Works
