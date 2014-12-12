@@ -14,7 +14,7 @@ class UARTClass : public HardwareSerial
 		uart_callback_t    UART_CallBack;
 	public:
 		UARTClass( Buffer * pRx_buffer );
-		
+
 		void begin(const uint32_t BaudRate );
 		void begin(const uint32_t BaudRate, uint32_t rx_pin, uint32_t tx_pin);
 		void end(void);

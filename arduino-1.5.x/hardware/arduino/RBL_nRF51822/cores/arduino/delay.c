@@ -11,7 +11,7 @@ static app_timer_id_t                        m_rtc_start_timer_id;
 
 // widen rtc1 to 40-bit (1099511627775 ticks = 33554431999969us = 388 days)
 // (dont overflow uint64_t when multipying by 1000000)
-extern uint64_t rtc1_owerflow_count;
+extern uint64_t rtc1_overflow_count;
 //volatile uint64_t rtc1 = 0;
 //static uint32_t trc1_cc_value=0, count=0;
 /**********************************************************************
@@ -179,7 +179,7 @@ uint64_t millis64( void )
 	//divide by 32768
 	uint32_t time_;
 	app_timer_cnt_get( &time_ );
-	return (rtc1_owerflow_count + time_) * 1000 >> 15;  
+	return (rtc1_overflow_count + time_) * 1000 >> 15;  
 }
 /**********************************************************************
 name :
@@ -190,7 +190,7 @@ uint64_t micros64( void )
 	//accurate to 30.517us, divide by 32768
 	uint32_t time_;
 	app_timer_cnt_get( &time_ );
-	return (rtc1_owerflow_count + time_) * 1000000 >> 15;  
+	return (rtc1_overflow_count + time_) * 1000000 >> 15;  
 }
 /**********************************************************************
 name :

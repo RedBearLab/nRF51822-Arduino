@@ -151,12 +151,15 @@ void UART0_Stop()
 	{
 		while( !NRF_UART0->EVENTS_TXDRDY);
 	}
-	
+	//must clear PSELTXD and PSELRXD
 	NRF_UART0->PSELTXD = 0xFFFFFFFF;	
 	NRF_UART0->PSELRXD = 0xFFFFFFFF;
 	NRF_UART0->TASKS_STOPTX = 1;
 	NRF_UART0->TASKS_STOPRX = 1;
-
+	//Disable UART and clear event
+	NRF_UART0->ENABLE       = (UART_ENABLE_ENABLE_Disabled << UART_ENABLE_ENABLE_Pos);
+	NRF_UART0->INTENCLR = 0xffffffffUL;
+	
 	UART0_State = UART0_NotStart;
 }
 /**********************************************************************

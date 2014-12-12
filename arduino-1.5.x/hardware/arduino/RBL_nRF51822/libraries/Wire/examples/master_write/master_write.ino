@@ -26,6 +26,15 @@
     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
+/*    nRF51822                    UNO
+*Example:
+*     master_write                slave_receiver
+*Pin:
+*     SCL                         SCL
+*     SDA                         SDA
+*address:
+*     0x04                        0x04
+*/
 
 #include <Wire.h>
 
@@ -44,7 +53,7 @@ void loop()
     // put your main code here, to run repeatedly: 
     Serial.println("master send begin: ");
     
-    Wire.beginTransmission(0xA0);
+    Wire.beginTransmission(0x04);
     Wire.write("x is");
     Wire.write(x);
     Wire.endTransmission();

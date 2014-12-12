@@ -28,34 +28,28 @@
 #include <Servo.h>
 #include <BLE_API.h>
 
-#define BLE_UUID_TXRX_SERVICE            0x0000 /**< The UUID of the Nordic UART Service. */
-#define BLE_UUID_TX_CHARACTERISTIC       0x0002 /**< The UUID of the TX Characteristic. */
-#define BLE_UUIDS_RX_CHARACTERISTIC      0x0003 /**< The UUID of the RX Characteristic. */
+#define TXRX_BUF_LEN                      20
 
-#define TXRX_BUF_LEN                     20
+#define DIGITAL_OUT_PIN   		  2
+#define DIGITAL_IN_PIN     		  A4
+#define PWM_PIN           		  3
+#define SERVO_PIN        		  5
+#define ANALOG_IN_PIN      		  A5
 
-#define DIGITAL_OUT_PIN   				 2
-#define DIGITAL_IN_PIN     				 A4
-#define PWM_PIN           				 3
-#define SERVO_PIN        			     5
-#define ANALOG_IN_PIN      				 A5
-
-#define STATUS_CHECK_TIME                APP_TIMER_TICKS(200, 0)
+#define STATUS_CHECK_TIME                 APP_TIMER_TICKS(200, 0)
 
 Servo myservo;
-
 BLEDevice  ble;
-
-static app_timer_id_t                    m_status_check_id; 
+static app_timer_id_t                     m_status_check_id; 
 static boolean analog_enabled = false;
-static byte old_state = LOW;
+static byte old_state         = LOW;
 // The Nordic UART Service
-static const uint8_t uart_base_uuid[] = {0x71, 0x3D, 0, 0, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
-static const uint8_t uart_tx_uuid[]   = {0x71, 0x3D, 0, 3, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
-static const uint8_t uart_rx_uuid[]   = {0x71, 0x3D, 0, 2, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
-static const uint8_t uart_base_uuid_rev[] = {0x1E, 0x94, 0x8D, 0xF1, 0x48, 0x31, 0x94, 0xBA, 0x75, 0x4C, 0x3E, 0x50, 0, 0, 0x3D, 0x71};
-uint8_t txPayload[TXRX_BUF_LEN] = {0,};
-uint8_t rxPayload[TXRX_BUF_LEN] = {0,};
+static const uint8_t uart_base_uuid[]     =   {0x71, 0x3D, 0, 0, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
+static const uint8_t uart_tx_uuid[]       =   {0x71, 0x3D, 0, 3, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
+static const uint8_t uart_rx_uuid[]       =   {0x71, 0x3D, 0, 2, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
+static const uint8_t uart_base_uuid_rev[] =   {0x1E, 0x94, 0x8D, 0xF1, 0x48, 0x31, 0x94, 0xBA, 0x75, 0x4C, 0x3E, 0x50, 0, 0, 0x3D, 0x71};
+uint8_t txPayload[TXRX_BUF_LEN]           =   {0,};
+uint8_t rxPayload[TXRX_BUF_LEN]           =   {0,};
 
 GattCharacteristic  txCharacteristic (uart_tx_uuid, txPayload, 1, TXRX_BUF_LEN,
                                       GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE | GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE_WITHOUT_RESPONSE);
@@ -64,27 +58,9 @@ GattCharacteristic  rxCharacteristic (uart_rx_uuid, rxPayload, 1, TXRX_BUF_LEN,
                                       GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY);
                                       
 GattCharacteristic *uartChars[] = {&txCharacteristic, &rxCharacteristic};
+
 GattService         uartService(uart_base_uuid, uartChars, sizeof(uartChars) / sizeof(GattCharacteristic *));
 
-/*
-void uartCallBack(void)
-{
-    static uint8_t buf[TXRX_BUF_LEN];
-    static uint8_t rx_buf_num;
-    
-    while( Serial.available() )
-    {
-        buf[rx_buf_num++] = Serial.read();
-        if(rx_buf_num >= TXRX_BUF_LEN || buf[rx_buf_num-1] == '\0' ||  buf[rx_buf_num-1] == '\n')
-        {
-            ble.updateCharacteristicValue(rxCharacteristic.getHandle(), buf, rx_buf_num);
-            rx_buf_num = 0;
-            break;
-        }
-        
-    }
-}
-*/
 void disconnectionCallback(void)
 {
     Serial.println("Disconnected! \r\n");
@@ -98,7 +74,7 @@ void onDataWritten(uint16_t charHandle)
     uint16_t bytesRead;
 	
     if (charHandle == txCharacteristic.getHandle()) 
-	{
+    {
         Serial.println("onDataWritten()");
         
         ble.readCharacteristicValue(txCharacteristic.getHandle(), buf, &bytesRead);
@@ -109,10 +85,7 @@ void onDataWritten(uint16_t charHandle)
             Serial.write(buf[i]);
         }
         Serial.println("");
-        memset(txPayload, 0, TXRX_BUF_LEN);
-        memcpy(txPayload, buf, TXRX_BUF_LEN);		
-        //Serial.println("ECHO: %s\n\r", (char *)txPayload);
-        //ble.updateCharacteristicValue(rxCharacteristic.getHandle(), txPayload, bytesRead);
+        //Process the data
         if (buf[0] == 0x01)  // Command is to control digital out pin
         {
             if (buf[1] == 0x01)
@@ -123,9 +96,9 @@ void onDataWritten(uint16_t charHandle)
         else if (buf[0] == 0xA0) // Command is to enable analog in reading
         {
             if (buf[1] == 0x01)
-              analog_enabled = true;
+                analog_enabled = true;
             else
-              analog_enabled = false;
+                analog_enabled = false;
         }
         else if (buf[0] == 0x02) // Command is to control PWM pin
         {
@@ -145,9 +118,11 @@ void onDataWritten(uint16_t charHandle)
         } 
     }
 }
+
 void m_status_check_handle(void * p_context)
 {   
     uint8_t buf[3];
+    
     if (analog_enabled)  // if analog reading enabled
     {
         // Read and send out
@@ -157,25 +132,23 @@ void m_status_check_handle(void * p_context)
         buf[2] = (value);
         ble.updateCharacteristicValue(rxCharacteristic.getHandle(), buf, 3);
     }
-    
     // If digital in changes, report the state
     if (digitalRead(DIGITAL_IN_PIN) != old_state)
     {
         old_state = digitalRead(DIGITAL_IN_PIN);
-        
         if (digitalRead(DIGITAL_IN_PIN) == HIGH)
         {
-          buf[0] = (0x0A);
-          buf[1] = (0x01);
-          buf[2] = (0x00);    
-          ble.updateCharacteristicValue(rxCharacteristic.getHandle(), buf, 3);
+            buf[0] = (0x0A);
+            buf[1] = (0x01);
+            buf[2] = (0x00);    
+            ble.updateCharacteristicValue(rxCharacteristic.getHandle(), buf, 3);
         }
         else
         {
-          buf[0] = (0x0A);
-          buf[1] = (0x00);
-          buf[2] = (0x00);
-          ble.updateCharacteristicValue(rxCharacteristic.getHandle(), buf, 3);
+            buf[0] = (0x0A);
+            buf[1] = (0x00);
+            buf[2] = (0x00);
+            ble.updateCharacteristicValue(rxCharacteristic.getHandle(), buf, 3);
         }
     }
 }
@@ -183,13 +156,11 @@ void m_status_check_handle(void * p_context)
 void setup(void)
 {  
     uint32_t err_code = NRF_SUCCESS;
-    uart_callback_t uart_cb;
     
     delay(1000);
     Serial.begin(9600);
     Serial.println("Initialising the nRF51822\n\r");
-    //uart_cb = &uartCallBack;
-    //Serial.irq_attach(uart_cb);
+
     ble.init();
     ble.onDisconnection(disconnectionCallback);
     ble.onDataWritten(onDataWritten);
@@ -201,23 +172,27 @@ void setup(void)
                                     (const uint8_t *)"Biscuit", sizeof("Biscuit") - 1);
     ble.accumulateAdvertisingPayload(GapAdvertisingData::COMPLETE_LIST_128BIT_SERVICE_IDS,
                                     (const uint8_t *)uart_base_uuid_rev, sizeof(uart_base_uuid));
-	// 100ms; in multiples of 0.625ms. 
+    // 100ms; in multiples of 0.625ms. 
     ble.setAdvertisingInterval(160);
 
     ble.addService(uartService);
+    
+    //Set Dev_Name
+    err_code = RBL_SetDevName("SimpleControls");
+    APP_ERROR_CHECK(err_code);   
     
     ble.startAdvertising();
     
     pinMode(DIGITAL_OUT_PIN, OUTPUT);
     pinMode(DIGITAL_IN_PIN, INPUT_PULLUP);
     pinMode(PWM_PIN, OUTPUT);
-    //pinMode(13, OUTPUT);
+
     // Default to internally pull high, change it if you need
     digitalWrite(DIGITAL_IN_PIN, HIGH);
     
     myservo.attach(SERVO_PIN);
     myservo.write(0);
-
+  
     err_code = app_timer_create(&m_status_check_id,APP_TIMER_MODE_REPEATED, m_status_check_handle);
     APP_ERROR_CHECK(err_code);
     
@@ -225,7 +200,6 @@ void setup(void)
     APP_ERROR_CHECK(err_code);    
     
     Serial.println("Advertising Start!");
-
 }
 
 void loop(void)

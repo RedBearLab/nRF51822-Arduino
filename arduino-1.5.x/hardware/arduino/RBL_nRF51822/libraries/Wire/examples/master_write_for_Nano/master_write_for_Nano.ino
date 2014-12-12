@@ -32,7 +32,7 @@
 *     D6                          SCL
 *     D5                          SDA
 *address:
-*     0x08                        0x04
+*     0x04                        0x04
 */
 #include <Wire.h>
 
@@ -52,7 +52,7 @@ void loop()
     // put your main code here, to run repeatedly: 
     Serial.println("master send begin: ");
     //For example: slave_receiver example fo UNO on Arduino1.0.5, the address is #4, So transmission address is 0x08;
-    Wire.beginTransmission(0x08); 
+    Wire.beginTransmission(0x04); 
     Wire.write("x is");
     Wire.write(x);
     Wire.endTransmission();

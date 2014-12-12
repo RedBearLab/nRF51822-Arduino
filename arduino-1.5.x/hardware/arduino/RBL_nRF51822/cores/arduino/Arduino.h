@@ -45,11 +45,11 @@ extern "C"{
 #include "app_timer.h"
 #include "app_error.h"
 
-#define countof(x) (sizeof(x)/sizeof(x[0]))
+#define countof(x) 					 (sizeof(x)/sizeof(x[0]))
 
-#define VARIANT_MCK         16000000UL
+#define VARIANT_MCK         		 16000000UL	
 
-#define clockCyclesPerMicrosecond() ( VARIANT_MCK / 1000000L )
+#define clockCyclesPerMicrosecond()  ( VARIANT_MCK / 1000000L )
 #define clockCyclesToMicroseconds(a) ( (a) / clockCyclesPerMicrosecond() )
 #define microsecondsToClockCycles(a) ( (a) * clockCyclesPerMicrosecond() )
 

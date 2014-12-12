@@ -26,6 +26,17 @@
     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
+/*    RBL nRF51822                UNO
+*Example:
+*     mast_write              slave_sender
+*Pin:
+*     SCL                         SCL
+*     SDA                         SDA
+*address:
+*     0x02                        0x02
+*read_len:
+      0x06
+*/
 
 #include <Wire.h>
 
@@ -35,13 +46,12 @@ void setup()
     Serial.begin(115200);
     Wire.begin(SCL1,SDA1,TWI_FREQUENCY_250K);
     Serial.println("master read...");
-
 }
 
 void loop() 
 {
     // put your main code here, to run repeatedly: 
-    Wire.requestFrom(0x04,6);
+    Wire.requestFrom(0x02,6);
     
     while( Wire.available() > 0 )
     {

@@ -31,26 +31,27 @@
 
 #include <BLE_API.h>
 
-#define BLE_UUID_TXRX_SERVICE            0x0000 /**< The UUID of the Nordic UART Service. */
-#define BLE_UUID_TX_CHARACTERISTIC       0x0002 /**< The UUID of the TX Characteristic. */
-#define BLE_UUIDS_RX_CHARACTERISTIC      0x0003 /**< The UUID of the RX Characteristic. */
-
 #define TXRX_BUF_LEN                     20
 
 BLEDevice  ble;
 
 // The Nordic UART Service
-static const uint8_t uart_base_uuid[] = {0x71, 0x3D, 0, 0, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
-static const uint8_t uart_tx_uuid[]   = {0x71, 0x3D, 0, 3, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
-static const uint8_t uart_rx_uuid[]   = {0x71, 0x3D, 0, 2, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
-static const uint8_t uart_base_uuid_rev[] = {0x1E, 0x94, 0x8D, 0xF1, 0x48, 0x31, 0x94, 0xBA, 0x75, 0x4C, 0x3E, 0x50, 0, 0, 0x3D, 0x71};
-uint8_t txPayload[TXRX_BUF_LEN] = {0,};
-uint8_t rxPayload[TXRX_BUF_LEN] = {0,};
+static const uint8_t uart_base_uuid[]     =   {0x71, 0x3D, 0, 0, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
+static const uint8_t uart_tx_uuid[]       =   {0x71, 0x3D, 0, 3, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
+static const uint8_t uart_rx_uuid[]       =   {0x71, 0x3D, 0, 2, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
+static const uint8_t uart_base_uuid_rev[] =   {0x1E, 0x94, 0x8D, 0xF1, 0x48, 0x31, 0x94, 0xBA, 0x75, 0x4C, 0x3E, 0x50, 0, 0, 0x3D, 0x71};
+uint8_t txPayload[TXRX_BUF_LEN]           =   {0,};
+uint8_t rxPayload[TXRX_BUF_LEN]           =   {0,};
+
+//creat tx characteristic
 GattCharacteristic  txCharacteristic (uart_tx_uuid, txPayload, 1, TXRX_BUF_LEN,
                                       GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE | GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE_WITHOUT_RESPONSE);
+//creat rx characteristic                                   
 GattCharacteristic  rxCharacteristic (uart_rx_uuid, rxPayload, 1, TXRX_BUF_LEN,
                                       GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY);
+                                      
 GattCharacteristic *uartChars[] = {&txCharacteristic, &rxCharacteristic};
+
 GattService         uartService(uart_base_uuid, uartChars, sizeof(uartChars) / sizeof(GattCharacteristic *));
 
 void uartCallBack(void)
@@ -66,8 +67,7 @@ void uartCallBack(void)
             ble.updateCharacteristicValue(rxCharacteristic.getHandle(), buf, rx_buf_num);
             rx_buf_num = 0;
             break;
-        }
-        
+        }  
     }
 }
 
@@ -84,7 +84,7 @@ void onDataWritten(uint16_t charHandle)
     uint16_t bytesRead;
 	
     if (charHandle == txCharacteristic.getHandle()) 
-	{
+    {
         //you must keep this line or use a delay function to instead of it.
         //because you need to wait for transmission complete
         Serial.println("onDataWritten()");
@@ -97,22 +97,18 @@ void onDataWritten(uint16_t charHandle)
             Serial.write(buf[i]);
         }
         Serial.println("");
-        memset(txPayload, 0, TXRX_BUF_LEN);
-        memcpy(txPayload, buf, TXRX_BUF_LEN);		
-        //Serial.println("ECHO: %s\n\r", (char *)txPayload);
-        //ble.updateCharacteristicValue(rxCharacteristic.getHandle(), txPayload, bytesRead);
     }
 }
 
 void setup(void)
 {
-    uart_callback_t uart_cb;
+    uint32_t err_code = NRF_SUCCESS;
     
     delay(500);
     Serial.begin(9600);
     Serial.println("Initialising the nRF51822\n\r");
-    uart_cb = &uartCallBack;
-    Serial.irq_attach(uart_cb);
+
+    Serial.irq_attach(uartCallBack);
     
     ble.init();
     ble.onDisconnection(disconnectionCallback);
@@ -125,18 +121,21 @@ void setup(void)
                                     (const uint8_t *)"Biscuit", sizeof("Biscuit") - 1);
     ble.accumulateAdvertisingPayload(GapAdvertisingData::COMPLETE_LIST_128BIT_SERVICE_IDS,
                                     (const uint8_t *)uart_base_uuid_rev, sizeof(uart_base_uuid));
-	// 100ms; in multiples of 0.625ms
+    // 100ms; in multiples of 0.625ms
     ble.setAdvertisingInterval(160); 
 
     ble.addService(uartService);
     
+    //Set Dev_Name
+    err_code = RBL_SetDevName("SimpleChat");
+    APP_ERROR_CHECK(err_code);
+    
     ble.startAdvertising();
     
     Serial.println("Advertising Start!");
-
 }
 
 void loop(void)
-{
+{   //Low Power, 
     ble.waitForEvent();
 }

@@ -33,7 +33,7 @@
 
 /**********************************************************************
 name :
-function : 
+function : return: 1--SUCCESS, 0--FAIL
 **********************************************************************/
 bool TwoWire::twi_master_clear_bus(void)
 {
@@ -97,7 +97,7 @@ bool TwoWire::twi_master_clear_bus(void)
 
 /**********************************************************************
 name :
-function : 
+function : return: 1--SUCCESS, 0--FAIL
 **********************************************************************/
 bool TwoWire::twi_master_init(void)
 {	
@@ -144,7 +144,7 @@ bool TwoWire::twi_master_init(void)
 }
 /**********************************************************************
 name :
-function : 
+function : return: 1--SUCCESS, 0--FAIL
 **********************************************************************/
 uint8_t TwoWire::twi_master_write(uint8_t *data, uint8_t data_length, uint8_t issue_stop_condition)
 {
@@ -193,7 +193,7 @@ uint8_t TwoWire::twi_master_write(uint8_t *data, uint8_t data_length, uint8_t is
 }
 /**********************************************************************
 name :
-function : 
+function : return: 1--SUCCESS, 0--FAIL
 **********************************************************************/
 uint8_t TwoWire::twi_master_read(uint8_t *data, uint8_t data_length, uint8_t issue_stop_condition)
 {	
@@ -378,15 +378,15 @@ void TwoWire::beginTransmission( int address )
 }
 /**********************************************************************
 name :
-function : 
+function : return: 1--SUCCESS, 0--FAIL
 **********************************************************************/
 uint8_t TwoWire::endTransmission( uint8_t stop)
 {
-	uint8_t twi_flag;
+	uint8_t twi_flag=0;
 	
 	if(TX_BufferLength > 0 && twi_master_clear_bus() )
 	{
-		twi->ADDRESS = ( Transfer_Addr >> 1);
+		twi->ADDRESS = Transfer_Addr;
 		twi_flag = twi_master_write(TX_Buffer, TX_BufferLength, stop);
 	}
 	
@@ -397,7 +397,7 @@ uint8_t TwoWire::endTransmission( uint8_t stop)
 }
 /**********************************************************************
 name :
-function : 
+function : return: 1--SUCCESS, 0--FAIL
 **********************************************************************/
 uint8_t TwoWire::endTransmission(void)
 {
@@ -409,7 +409,7 @@ uint8_t TwoWire::endTransmission(void)
 }
 /**********************************************************************
 name :
-function : 
+function : return: 1--SUCCESS, 0--FAIL
 **********************************************************************/
 size_t TwoWire::write(uint8_t data)
 {
@@ -429,7 +429,7 @@ size_t TwoWire::write(uint8_t data)
 }
 /**********************************************************************
 name :
-function : 
+function : return: 0--FAIL, else--the length of data that to be written
 **********************************************************************/
 size_t TwoWire::write(const uint8_t *data, size_t quantity )
 {
@@ -453,18 +453,19 @@ size_t TwoWire::write(const uint8_t *data, size_t quantity )
 }
 /**********************************************************************
 name :
-function : 
+function : return:0--FAIL, 1--SUCCESS
 **********************************************************************/
 uint8_t TwoWire::requestFrom(uint8_t addr, uint8_t quantity, uint8_t stop)
 {
 	uint8_t read_num = 0;
+	
 	if(quantity > BUFF_MAX_LENGTH)
 	{   
 		quantity = BUFF_MAX_LENGTH;
 	}
 	if(quantity > 0 && twi_master_clear_bus() )
 	{   
-		twi->ADDRESS = ( addr >> 1 );
+		twi->ADDRESS = addr;
 		read_num = twi_master_read(RX_Buffer, quantity, stop);
 	}
 	RX_BufferIndex = 0;

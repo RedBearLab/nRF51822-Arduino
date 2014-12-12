@@ -6,11 +6,11 @@
 /**********************************************************************
 declared
 **********************************************************************/
-static uint32_t tone_pin;
 static uint8_t tone_channel=255;
-static uint32_t inter_count;
 static uint8_t pin_state = 0;
 static uint8_t finish_flag = 0;
+static uint32_t inter_count;
+static uint32_t tone_pin;
 
 static void TIMER2_handler( void );
 /**********************************************************************

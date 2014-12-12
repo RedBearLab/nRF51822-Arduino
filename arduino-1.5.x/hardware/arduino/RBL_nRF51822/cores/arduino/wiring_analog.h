@@ -7,7 +7,6 @@
 extern "C" {
 #endif
 
-//typedef void (*myfunc)(uint32_t);
 
 #define ADC_RESOLUTION        10
 #define PWM_RESOLUTION        16
@@ -15,7 +14,6 @@ extern "C" {
 #define WRITE_CURRENT_RESOLUTION    8
 #define READ_CURRENT_RESOLUTION		10
 
-//extern void uartregist(myfunc handle);
 
 extern void analogWrite( uint32_t ulPin, uint32_t ulValue );
 extern uint32_t analogRead( uint32_t ulPin );

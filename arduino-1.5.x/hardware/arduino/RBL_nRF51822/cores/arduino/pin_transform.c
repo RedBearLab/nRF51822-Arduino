@@ -40,7 +40,6 @@ uint32_t Pin_nRF51822_to_Arduino(uint32_t pin)
 #ifdef RBL_NRF51822	
 	switch(pin)
 	{	
-
 		//20140821
 		case 0 : return_pin = 11;break;//D0/RX
 		case 1 : return_pin = 9;break;//D1/TX

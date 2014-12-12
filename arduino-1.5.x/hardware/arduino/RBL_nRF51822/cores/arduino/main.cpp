@@ -12,7 +12,6 @@
 int main( void )
 {
 	lfclk_config();
-	//RTC1_Init();
 	rtc_timer_init();
     setup();
 

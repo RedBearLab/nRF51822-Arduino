@@ -16,8 +16,8 @@ RedBearLab.build.usb_product="Arduino RBL"
 RedBearLab.build.core=arduino
 RedBearLab.build.variant=RBL_nRF51822
 RedBearLab.build.extra_flags=-mthumb
-RedBearLab.build.ldscript=linker_scripts/gcc/RBL_nRF51822.ld
-RedBearLab.build.variant_system_include= "-I{build.system.path}/CMSIS/CMSIS/Include" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include/app_common" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include/ble" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include/ble/ble_services" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include/ble/rpc" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include/gcc" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include/s110" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include/sd_common" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include/sdk" 
+RedBearLab.build.ldscript=linker_scripts\gcc\RBL_nRF51822.ld
+RedBearLab.build.variant_system_include= "-I{build.system.path}\CMSIS\CMSIS\Include" "-I{runtime.ide.path}\hardware\arduino\RBL_nRF51822\nrf51822_SDK\Include" "-I{runtime.ide.path}\hardware\arduino\RBL_nRF51822\nrf51822_SDK\Include\app_common" "-I{runtime.ide.path}\hardware\arduino\RBL_nRF51822\nrf51822_SDK\Include\ble" "-I{runtime.ide.path}\hardware\arduino\RBL_nRF51822\nrf51822_SDK\Include\ble\ble_services" "-I{runtime.ide.path}\hardware\arduino\RBL_nRF51822\nrf51822_SDK\Include\ble\rpc" "-I{runtime.ide.path}\hardware\arduino\RBL_nRF51822\nrf51822_SDK\Include\gcc" "-I{runtime.ide.path}\hardware\arduino\RBL_nRF51822\nrf51822_SDK\Include\s110" "-I{runtime.ide.path}\hardware\arduino\RBL_nRF51822\nrf51822_SDK\Include\sd_common" "-I{runtime.ide.path}\hardware\arduino\RBL_nRF51822\nrf51822_SDK\Include\sdk" 
 
 ##############################################################
 
@@ -38,6 +38,6 @@ NANO.build.usb_product="Arduino RBL"
 NANO.build.core=arduino
 NANO.build.variant=BLE_Nano
 NANO.build.extra_flags=-mthumb
-NANO.build.ldscript=linker_scripts/gcc/RBL_nRF51822.ld
-NANO.build.variant_system_include= "-I{build.system.path}/CMSIS/CMSIS/Include" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include/app_common" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include/ble" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include/ble/ble_services" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include/ble/rpc" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include/gcc" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include/s110" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include/sd_common" "-I{runtime.ide.path}/hardware/arduino/RBL_nRF51822/nrf51822_SDK/Include/sdk" 
-
+NANO.build.ldscript=linker_scripts\gcc\RBL_nRF51822.ld
+NANO.build.variant_system_include= "-I{build.system.path}\CMSIS\CMSIS\Include" "-I{runtime.ide.path}\hardware\arduino\RBL_nRF51822\nrf51822_SDK\Include" "-I{runtime.ide.path}\hardware\arduino\RBL_nRF51822\nrf51822_SDK\Include\app_common" "-I{runtime.ide.path}\hardware\arduino\RBL_nRF51822\nrf51822_SDK\Include\ble" "-I{runtime.ide.path}\hardware\arduino\RBL_nRF51822\nrf51822_SDK\Include\ble\ble_services" "-I{runtime.ide.path}\hardware\arduino\RBL_nRF51822\nrf51822_SDK\Include\ble\rpc" "-I{runtime.ide.path}\hardware\arduino\RBL_nRF51822\nrf51822_SDK\Include\gcc" "-I{runtime.ide.path}\hardware\arduino\RBL_nRF51822\nrf51822_SDK\Include\s110" "-I{runtime.ide.path}\hardware\arduino\RBL_nRF51822\nrf51822_SDK\Include\sd_common" "-I{runtime.ide.path}\hardware\arduino\RBL_nRF51822\nrf51822_SDK\Include\sdk"
+##############################################################

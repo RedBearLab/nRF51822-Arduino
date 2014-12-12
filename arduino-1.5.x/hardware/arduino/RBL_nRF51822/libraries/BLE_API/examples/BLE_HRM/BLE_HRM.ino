@@ -16,26 +16,30 @@
 #include <BLE_API.h>
 #include "simple_uart.h"
 
+#define HRM_TIME                             APP_TIMER_TICKS(1000, 0)
+
 BLEDevice  ble;
-uint32_t   cnt;
 
 const static char  DEVICE_NAME[] = "Nordic_HRM";
 
-static uint8_t hrmCounter = 100;
-static uint8_t bpm[2] = {0x00, hrmCounter};
-GattCharacteristic hrmRate(GattCharacteristic::UUID_HEART_RATE_MEASUREMENT_CHAR, bpm, sizeof(bpm), sizeof(bpm),
-                           GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY);
-static const uint8_t location = 0x03; /* Finger */
-GattCharacteristic hrmLocation(GattCharacteristic::UUID_BODY_SENSOR_LOCATION_CHAR,
-                               (uint8_t *)&location, sizeof(location), sizeof(location),
+static uint8_t hrmCounter     = 100;
+static uint8_t bpm[2]         = {0x00, hrmCounter};
+static const uint8_t location = 0x03;       
+static uint32_t   cnt;
+
+static app_timer_id_t                        m_hrs_timer_id;
+
+GattCharacteristic hrmRate(GattCharacteristic::UUID_HEART_RATE_MEASUREMENT_CHAR, bpm, sizeof(bpm), sizeof(bpm), GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY);
+
+GattCharacteristic hrmLocation(GattCharacteristic::UUID_BODY_SENSOR_LOCATION_CHAR,(uint8_t *)&location, sizeof(location), sizeof(location),
                                GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_READ);
+                               
 GattCharacteristic *hrmChars[] = {&hrmRate, &hrmLocation, };
+
 GattService        hrmService(GattService::UUID_HEART_RATE_SERVICE, hrmChars, sizeof(hrmChars) / sizeof(GattCharacteristic *));
 
 static const uint16_t uuid16_list[] = {GattService::UUID_HEART_RATE_SERVICE};
 
-#define HRM_TIME                             APP_TIMER_TICKS(1000, 0)
-static app_timer_id_t                        m_hrs_timer_id; 
 
 void disconnectionCallback(void)
 {
@@ -44,19 +48,17 @@ void disconnectionCallback(void)
     ble.startAdvertising();
 }
 
-/**
- * Triggered periodically by the 'ticker' interrupt; updates hrmCounter.
- */
 void periodicCallback( void * p_context )
 {
-    if (ble.getGapState().connected) {
+    if (ble.getGapState().connected) 
+    {
         /* Update the HRM measurement */
         /* First byte = 8-bit values, no extra info, Second byte = uint8_t HRM value */
         /* See --> https://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.heart_rate_measurement.xml */
         hrmCounter++;
-        if (hrmCounter == 175) {
+        if (hrmCounter == 175) 
             hrmCounter = 100;
-        }
+            
         bpm[1] = hrmCounter;
         ble.updateCharacteristicValue(hrmRate.getHandle(), bpm, sizeof(bpm));
     }

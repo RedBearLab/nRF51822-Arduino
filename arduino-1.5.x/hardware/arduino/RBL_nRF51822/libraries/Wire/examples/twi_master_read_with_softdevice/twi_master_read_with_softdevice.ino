@@ -27,35 +27,31 @@
 */
 /*    nRF51822                    UNO
 *Example:
-*     mast_write              slave_sender
+*     mast_write with softdevice  slave_sender
 *Pin:
 *     SCL                         SCL
 *     SDA                         SDA
 *address:
-*     0x04                        0x02
+*     0x02                        0x02
 *read_len:
       0x06
 */
 #include <BLE_API.h>
 #include <Wire.h>
 
-#define BLE_UUID_TXRX_SERVICE            0x0000 /**< The UUID of the Nordic UART Service. */
-#define BLE_UUID_TX_CHARACTERISTIC       0x0002 /**< The UUID of the TX Characteristic. */
-#define BLE_UUIDS_RX_CHARACTERISTIC      0x0003 /**< The UUID of the RX Characteristic. */
-
-#define TXRX_BUF_LEN                     20
-#define TWI_TIME                         APP_TIMER_TICKS(1000, 0)
+#define TXRX_BUF_LEN                      20
+#define TWI_TIME                          APP_TIMER_TICKS(1000, 0)
 
 BLEDevice  ble;
 
-static app_timer_id_t                    m_twi_id;
+static app_timer_id_t                     m_twi_id;
 // The Nordic UART Service
-static const uint8_t uart_base_uuid[] = {0x71, 0x3D, 0, 0, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
-static const uint8_t uart_tx_uuid[]   = {0x71, 0x3D, 0, 3, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
-static const uint8_t uart_rx_uuid[]   = {0x71, 0x3D, 0, 2, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
+static const uint8_t uart_base_uuid[]     = {0x71, 0x3D, 0, 0, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
+static const uint8_t uart_tx_uuid[]       = {0x71, 0x3D, 0, 3, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
+static const uint8_t uart_rx_uuid[]       = {0x71, 0x3D, 0, 2, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
 static const uint8_t uart_base_uuid_rev[] = {0x1E, 0x94, 0x8D, 0xF1, 0x48, 0x31, 0x94, 0xBA, 0x75, 0x4C, 0x3E, 0x50, 0, 0, 0x3D, 0x71};
-uint8_t txPayload[TXRX_BUF_LEN] = {0,};
-uint8_t rxPayload[TXRX_BUF_LEN] = {0,};
+uint8_t txPayload[TXRX_BUF_LEN]           = {0,};
+uint8_t rxPayload[TXRX_BUF_LEN]           = {0,};
 GattCharacteristic  txCharacteristic (uart_tx_uuid, txPayload, 1, TXRX_BUF_LEN,
                                       GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE | GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE_WITHOUT_RESPONSE);
 GattCharacteristic  rxCharacteristic (uart_rx_uuid, rxPayload, 1, TXRX_BUF_LEN,
@@ -110,7 +106,7 @@ void onDataWritten(uint16_t charHandle)
 
 void m_twi_handle(void * p_context)
 {
-    Wire.requestFrom(0x04,6);
+    Wire.requestFrom(0x02,6);
     while( Wire.available() > 0 )
     {
         uint8_t c = Wire.read();
@@ -147,6 +143,7 @@ void setup(void)
     ble.addService(uartService);
     
     ble.startAdvertising();
+    
     //after initialize softdevice 
     Wire.begin(TWI_SCL, TWI_SDA, TWI_FREQUENCY_FREQUENCY_K100);
     

@@ -8,48 +8,26 @@
 extern "C" {
 #endif
 
-//myfunc uarthandler;
-
-static uint16_t PPI_Channels_Occupied[4][2] = {255, 255, 255, 255, 255, 255, 255, 255}; //Save PPI channel number
-
-static uint8_t GPIOTE_Channels_Occupied[4] = {255,255,255,255}; 			  //GPIOTE channel Status, 1--have occupied, 255--not occupied
-static uint8_t GPIOTE_Channel_for_Analog[3] = {255, 255, 255};				  //Save the Channel number,	
+static uint16_t PPI_Channels_Occupied[4][2] = {255, 255, 255, 255, 255, 255, 255, 255}; 	//Save PPI channel number, each GPIOTE channel takes up two PPI channels
+static uint8_t GPIOTE_Channels_Occupied[4]  = {255,255,255,255}; 			  				//GPIOTE channel Status, 1--have occupied, 255--not occupied
+static uint8_t GPIOTE_Channel_for_Analog[3] = {255, 255, 255};				  				//Save the Channel number used by PWM,	
 																						   
-static uint8_t Timer1_Occupied_Pin[3] = {255, 255, 255}; 				      //the pin which used for analogWrite
-
+static uint8_t Timer1_Occupied_Pin[3] = {255, 255, 255}; 				      				//the pin which used for analogWrite
 //uint8_t Timer2_Occupied_Pin[3] = {255, 255, 255}; 
 
-static uint32_t PWM_Channels_Value[3] = {((2^PWM_RESOLUTION) - 1), ((2^PWM_RESOLUTION) - 1), ((2^PWM_RESOLUTION) - 1)};
-static uint8_t PWM_Channels_Start[3] = {0, 0, 0};
+static uint32_t PWM_Channels_Value[3] = {((2^PWM_RESOLUTION) - 1), ((2^PWM_RESOLUTION) - 1), ((2^PWM_RESOLUTION) - 1)};		//the PWM value to update
+static uint8_t  PWM_Channels_Start[3] = {0, 0, 0};																			//1:start, 0:stop
 
 //initialize default
-static uint32_t analogReference_ext_type = EXT_REFSEL_NONE;
-static uint32_t analogReference_type = REFSEL_VDD_1_3_PS;
+static uint32_t analogReference_ext_type 	= EXT_REFSEL_NONE;
+static uint32_t analogReference_type 	 	= REFSEL_VDD_1_3_PS;
 static uint32_t analogReference_inpsel_type = INPSEL_AIN_1_3_PS;
 //
-static uint8_t analogReadResolution_bit = READ_CURRENT_RESOLUTION;
-static uint8_t analogWriteResolution_bit = WRITE_CURRENT_RESOLUTION;
+static uint8_t analogReadResolution_bit 	= READ_CURRENT_RESOLUTION;
+static uint8_t analogWriteResolution_bit	= WRITE_CURRENT_RESOLUTION;
 
 static uint8_t  softdevice_enabled;
 
-/**********************************************************************
-name :
-function : 
-**********************************************************************/
-/*
-void uartregist(myfunc handle)
-{
-	uarthandler = handle;
-}
-
-void uartprint(uint32_t dat)
-{
-	if(uarthandler != NULL)
-	{
-		uarthandler(dat);
-	}
-}
-*/
 /**********************************************************************
 name :
 function : 
@@ -77,28 +55,7 @@ void analogReference( uint32_t type )
 		analogReference_ext_type = type;
 		analogReference_type = REFSEL_EXT;		
 	}
-	/*
-	if( type == VBG || type == EXT || type == VDD_1_2_PS || type == VDD_1_3_PS )
-	{
-		analogReference_type = type;
-		simple_uart_printHEX(analogReference_type);
-	}
-	*/
 }
-/**********************************************************************
-name :
-function : 
-**********************************************************************/
-/*
-void analogExtReference( uint32_t type )
-{	
-	if(type == AREF0 || type == AREF1 || type == NONE)
-	{
-		analogReference_ext_type = type;
-		simple_uart_printHEX(analogReference_ext_type);
-	}
-}
-*/
 /**********************************************************************
 name :
 function : 
@@ -123,7 +80,7 @@ void analogWriteResolution( uint8_t resolution )
 }
 /**********************************************************************
 name :
-function : 
+function : find free GPIOTE channel
 **********************************************************************/
 uint8_t GPIOTE_Channel_Find()
 {	
@@ -213,7 +170,7 @@ uint32_t analogRead(uint32_t pin)
 }
 /**********************************************************************
 name :
-function : *PWM更新，
+function : PWM update
 **********************************************************************/
 static void update_PWM_value(uint32_t ulPin, uint32_t ulValue, uint32_t PWM_channel)
 {
@@ -232,7 +189,6 @@ static void update_PWM_value(uint32_t ulPin, uint32_t ulValue, uint32_t PWM_chan
 name :
 function : find free PPI channel
 **********************************************************************/
-
 int find_free_PPI_channel(int exclude_channel)
 {
 	uint32_t err_code = NRF_SUCCESS, chen;
@@ -265,8 +221,8 @@ int find_free_PPI_channel(int exclude_channel)
 	return 255;
 }
 /**********************************************************************
-name :  called by wiring_digital.c
-function : *设置PPI,连接TIMER的EVENT和GPIOE的TASK
+name :  
+function : called by wiring_digital.c
 **********************************************************************/
 void PPI_ON_TIMER_GPIO(uint32_t gpiote_channel, NRF_TIMER_Type* Timer, uint32_t CC_channel)
 {	
@@ -369,7 +325,7 @@ void PPI_ON_TIMER_GPIO(uint32_t gpiote_channel, NRF_TIMER_Type* Timer, uint32_t 
 }
 /**********************************************************************
 name :
-function : 断开PPI连接
+function : disconnect PPI
 **********************************************************************/
 void PPI_Off_FROM_GPIO(uint32_t pin)
 {
@@ -448,7 +404,7 @@ void PPI_Off_FROM_GPIO(uint32_t pin)
 		GPIOTE_Channel_for_Analog[2] = 255;
 	}
 	
-	
+	//if all PWM stop, disable TIMER1
 	if( Timer1_Occupied_Pin[0] == 255 && Timer1_Occupied_Pin[1] == 255 && Timer1_Occupied_Pin[2] == 255 )
 	{
 		NRF_TIMER1->TASKS_STOP = 1;
@@ -490,7 +446,7 @@ static void TIMER1_handler( void )
 		nrf_gpiote_task_config(GPIOTE_Channel_for_Analog[2], Timer1_Occupied_Pin[2], NRF_GPIOTE_POLARITY_TOGGLE, NRF_GPIOTE_INITIAL_VALUE_LOW);
 		PWM_Channels_Start[2] = 0;
 	}
-	//when IRQHandle, make sure all GPIO is LOW
+	//when IRQHandle, make sure all GPIO is LOW. If HIGH,reconfigure it.
 	for(index=0; index<3; index++)
 	{
 		if(Timer1_Occupied_Pin[index] != 255)

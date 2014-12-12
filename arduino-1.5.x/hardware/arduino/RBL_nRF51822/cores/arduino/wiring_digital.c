@@ -13,6 +13,7 @@ function :
 void pinMode( uint32_t ulPin, uint32_t ulMode )
 {	
 	uint32_t pin;
+	
 	pin = Pin_nRF51822_to_Arduino(ulPin);
 	if(pin < 31)
 	{
@@ -133,7 +134,7 @@ void digitalWrite( uint32_t ulPin, uint32_t ulVal )
 	uint32_t pin;
 	pin = Pin_nRF51822_to_Arduino(ulPin);
 	if(pin < 31)
-	{	
+	{	//if pin is used for analog, release it.
 		PPI_Off_FROM_GPIO(pin);
 		if (ulVal)
 			NRF_GPIO->OUTSET = (1 << pin);

@@ -28,19 +28,15 @@
 #include "pin_inf.h"
 #include <BLE_API.h>
 
-#define PIN_CAPABILITY_NONE      0x00
-#define PIN_CAPABILITY_DIGITAL   0x01
-#define PIN_CAPABILITY_ANALOG    0x02
-#define PIN_CAPABILITY_PWM       0x04
-#define PIN_CAPABILITY_SERVO     0x08
+#define PIN_CAPABILITY_NONE              0x00
+#define PIN_CAPABILITY_DIGITAL           0x01
+#define PIN_CAPABILITY_ANALOG            0x02
+#define PIN_CAPABILITY_PWM               0x04
+#define PIN_CAPABILITY_SERVO             0x08
 
-#define ANALOG                  0x02 // analog pin in analogInput mode
-#define PWM                     0x03 // digital pin in PWM output mode
-#define SERVO                   0x04 // digital pin in Servo output mode
-
-#define BLE_UUID_TXRX_SERVICE            0x0000 /**< The UUID of the Nordic UART Service. */
-#define BLE_UUID_TX_CHARACTERISTIC       0x0002 /**< The UUID of the TX Characteristic. */
-#define BLE_UUIDS_RX_CHARACTERISTIC      0x0003 /**< The UUID of the RX Characteristic. */
+#define ANALOG                           0x02 // analog pin in analogInput mode
+#define PWM                              0x03 // digital pin in PWM output mode
+#define SERVO                            0x04 // digital pin in Servo output mode
 
 #define TXRX_BUF_LEN                     20
 
@@ -48,7 +44,6 @@
 #define STATUS_REBACK_TIME               APP_TIMER_TICKS(100, 0)
 
 BLEDevice  ble;
-
 //for BLEController
 byte pin_mode[TOTAL_PINS];
 byte pin_state[TOTAL_PINS];
@@ -57,26 +52,31 @@ byte pin_servo[TOTAL_PINS];
 
 Servo servos[MAX_SERVOS];
 
-byte queryDone = false;
-static byte buf_len = 0;
-
-static uint8_t reback_pin=2;
-
-static app_timer_id_t                        m_status_check_id; 
-static app_timer_id_t                        m_status_reback_id; 
+static byte queryDone            = false;
+static byte buf_len              = 0;
+static uint8_t reback_pin        = 2;
 static uint8_t status_check_flag = 1;
+
+static app_timer_id_t                       m_status_check_id; 
+static app_timer_id_t                       m_status_reback_id; 
+
 // The Nordic UART Service
-static const uint8_t uart_base_uuid[] = {0x71, 0x3D, 0, 0, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
-static const uint8_t uart_tx_uuid[]   = {0x71, 0x3D, 0, 3, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
-static const uint8_t uart_rx_uuid[]   = {0x71, 0x3D, 0, 2, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
-static const uint8_t uart_base_uuid_rev[] = {0x1E, 0x94, 0x8D, 0xF1, 0x48, 0x31, 0x94, 0xBA, 0x75, 0x4C, 0x3E, 0x50, 0, 0, 0x3D, 0x71};
+static const uint8_t uart_base_uuid[]       = {0x71, 0x3D, 0, 0, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
+static const uint8_t uart_tx_uuid[]         = {0x71, 0x3D, 0, 3, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
+static const uint8_t uart_rx_uuid[]         = {0x71, 0x3D, 0, 2, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
+static const uint8_t uart_base_uuid_rev[]   = {0x1E, 0x94, 0x8D, 0xF1, 0x48, 0x31, 0x94, 0xBA, 0x75, 0x4C, 0x3E, 0x50, 0, 0, 0x3D, 0x71};
+
 uint8_t txPayload[TXRX_BUF_LEN] = {0,};
 uint8_t rxPayload[TXRX_BUF_LEN] = {0,};
+
 GattCharacteristic  txCharacteristic (uart_tx_uuid, txPayload, 1, TXRX_BUF_LEN,
                                       GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE | GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE_WITHOUT_RESPONSE);
+                                      
 GattCharacteristic  rxCharacteristic (uart_rx_uuid, rxPayload, 1, TXRX_BUF_LEN,
                                       GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY);
+                                      
 GattCharacteristic *uartChars[] = {&txCharacteristic, &rxCharacteristic};
+
 GattService         uartService(uart_base_uuid, uartChars, sizeof(uartChars) / sizeof(GattCharacteristic *));
 
 
@@ -115,16 +115,16 @@ void reportPinCapability(byte pin)
     byte pin_cap = 0;
                       
     if (IS_PIN_DIGITAL(pin))
-      pin_cap |= PIN_CAPABILITY_DIGITAL;
+        pin_cap |= PIN_CAPABILITY_DIGITAL;
               
     if (IS_PIN_ANALOG(pin))
-      pin_cap |= PIN_CAPABILITY_ANALOG;
+        pin_cap |= PIN_CAPABILITY_ANALOG;
   
     if (IS_PIN_PWM(pin))
-      pin_cap |= PIN_CAPABILITY_PWM;
+        pin_cap |= PIN_CAPABILITY_PWM;
   
     if (IS_PIN_SERVO(pin))
-      pin_cap |= PIN_CAPABILITY_SERVO;
+        pin_cap |= PIN_CAPABILITY_SERVO;
   
     buf[2] = pin_cap;
     ble.updateCharacteristicValue(rxCharacteristic.getHandle(), buf, 3);
@@ -133,6 +133,7 @@ void reportPinCapability(byte pin)
 void sendCustomData(uint8_t *buf, uint8_t len)
 {
     uint8_t data[20] = "Z";
+    
     memcpy(&data[1], buf, len);
     ble.updateCharacteristicValue(rxCharacteristic.getHandle(), data, len+1);
 }
@@ -146,7 +147,7 @@ byte reportDigitalInput()
     {
         pin++;
         if (pin >= TOTAL_PINS)
-          pin = 0;
+            pin = 0;
         return 0;
     }
     
@@ -156,17 +157,16 @@ byte reportDigitalInput()
               
         if (pin_state[pin] != current_state)
         {
-          pin_state[pin] = current_state;
-          byte buf[] = {'G', pin, INPUT, current_state};
-          ble.updateCharacteristicValue(rxCharacteristic.getHandle(), buf, 4);
+            pin_state[pin] = current_state;
+            byte buf[] = {'G', pin, INPUT, current_state};
+            ble.updateCharacteristicValue(rxCharacteristic.getHandle(), buf, 4);
           
-          report = 1;
+            report = 1;
         }
     }
-    
     pin++;
     if (pin >= TOTAL_PINS)
-      pin = 0;
+        pin = 0;
       
     return report;
 }
@@ -294,11 +294,11 @@ void onDataWritten(uint16_t charHandle)
                 //if (mode == ANALOG)
                    //reportPinAnalogData(pin);
                 if ( (mode == INPUT) || (mode == OUTPUT) )
-                  reportPinDigitalData(pin);
+                    reportPinDigitalData(pin);
                 else if (mode == PWM)
-                  reportPinPWMData(pin);
+                    reportPinPWMData(pin);
                 else if (mode == SERVO)
-                  reportPinServoData(pin);
+                    reportPinServoData(pin);
              
                 break;
             }
@@ -364,10 +364,7 @@ void onDataWritten(uint16_t charHandle)
                 break;
             }  
         }
-        buf_len = 0;
-        
-        memset(txPayload, 0, TXRX_BUF_LEN);
-        memcpy(txPayload, buf, TXRX_BUF_LEN);		
+        buf_len = 0;	
     }
     status_check_flag = 1;
 }
@@ -417,9 +414,7 @@ void m_status_reback_handle(void * p_context)
 void setup(void)
 {    
     uint32_t err_code = NRF_SUCCESS;
-    uart_callback_t uart_cb;
     
-    //delay(1000);
     Serial.begin(115200);
     
     ble.init();
@@ -433,9 +428,15 @@ void setup(void)
                                     (const uint8_t *)"Biscuit", sizeof("Biscuit") - 1);
     ble.accumulateAdvertisingPayload(GapAdvertisingData::COMPLETE_LIST_128BIT_SERVICE_IDS,
                                     (const uint8_t *)uart_base_uuid_rev, sizeof(uart_base_uuid));
-
-    ble.setAdvertisingInterval(160); /* 100ms; in multiples of 0.625ms. */
+    /* 100ms; in multiples of 0.625ms. */
+    ble.setAdvertisingInterval(160); 
+    
     ble.addService(uartService);
+    
+    //Set Dev_Name
+    err_code = RBL_SetDevName("BLEController");
+    APP_ERROR_CHECK(err_code);
+    
     ble.startAdvertising();
     
     /* Default all to digital input */

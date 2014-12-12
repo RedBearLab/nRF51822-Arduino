@@ -37,6 +37,7 @@ extern "C" {
 extern uint32_t Pin_nRF51822_to_Arduino(uint32_t pin);
 extern void LinkInterrupt( uint8_t IRQn, dynamic_handler_t handler);
 extern void UnlinkInterrupt( uint8_t IRQn );
+
 #ifdef __cplusplus
 }
 #endif

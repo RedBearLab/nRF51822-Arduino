@@ -26,7 +26,7 @@
 */
 #include <Wire.h>
 
-#define DEV_ADDR  0xA0
+#define DEV_ADDR  (0xA0>>1)
 
 static uint8_t wt_data[10] = {'H', 'e', 'l', 'l', 'o', 'W', 'o', 'r', 'l', 'd'};
 static uint8_t rd_data[10];
@@ -47,7 +47,7 @@ void AT24C512_ReadBytes(uint16_t addr, uint8_t *pbuf, uint16_t len)
     Wire.write((uint8_t)addr);    
     Wire.endTransmission();
     
-    Wire.requestFrom(DEV_ADDR+1,len);
+    Wire.requestFrom(DEV_ADDR,len);
     while( Wire.available() > 0 )
     {
         *pbuf = Wire.read();
@@ -61,6 +61,7 @@ void setup()
     Wire.begin();
     Serial.println("Wire demo start");
     AT24C512_WriteBytes(0, wt_data, 10);
+    delay(100);
 }
 
 void loop() 
