@@ -4,6 +4,8 @@ nRF51822-Arduino
 
 Add support for Arduino IDE to allow compiling nRF51822 firmware.
 
+This add-on also provides BLE API for nRF51822 SoC to act as BLE Peripheral role designed for SoftDevice S110 version 6.0.
+
 
 Requirement
 ===========
@@ -111,3 +113,23 @@ Limitations
 2. Central Role
 
     The add-on uses SoftDevice S110, it does not support BLE Central role.
+
+
+ToDo
+====
+
+1. Support SoftDevice S110 version 7.1
+2. Bootloader for both OTA and USB CDC
+
+
+License
+=======
+
+Copyright (c) 2013-2015 RedBearLab
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
