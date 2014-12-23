@@ -9,13 +9,17 @@ In case you have changed the USB interface firmware inside the MK20 chip and wan
 
 4.1 For Windows, just drag the firmware (.bin) to the MSD drive (e.g. E:)
 
-4.2 For Linux or Mac OSX, use the follow command from the Terminal:
+4.2 For Linux or Mac OSX (10.9.x), use the follow command from the Terminal:
 
     Usage:
 	dd if=src_firmware.bin of=/Volumes/BOOTLOADER/dst_firmware.bin conv=notrunc
 
     Example:
 	dd if=BLENano_MK20.bin of=/Volumes/BOOTLOADER/BLENano_MK20.bin conv=notrunc
+
+4.3 For Mac OSX (10.10.x, Yosemite):
+
+    sudo mount -u -w -o sync /Volumes/BOOTLOADER; cp -X ~/Desktop/BLENano_MK20.bin /Volumes/BOOTLOADER/
 
 Note: Use RBL_nRF51822_MK20.bin for the RBL nRF51822 board and use BLENano_MK20.bin for the BLE Nano board
 
