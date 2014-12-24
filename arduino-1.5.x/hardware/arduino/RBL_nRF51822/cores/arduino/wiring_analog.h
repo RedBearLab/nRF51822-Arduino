@@ -30,6 +30,8 @@ extern void GPIOTE_Channel_Clean(uint8_t channel);
 
 extern int find_free_PPI_channel(int exclude_channel);
 
+extern void PPI_Off_FROM_GPIO(uint32_t pin);
+
 #ifdef __cplusplus
 }
 #endif
