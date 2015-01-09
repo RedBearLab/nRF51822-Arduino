@@ -100,29 +100,27 @@ How to Play
   
     Menu > Examples > BLE_API
 
-  ### BLE_HRM
+  #### BLE_HRM
    
   This is an Heart Rate Monitor demo, it simulates Heart Rate detection. You can use Nordic nRFToolBox App to play. For BLEController, SimpleChat and SimpleControls, you can use RBL BLE Controller App to play.
 
-  ### BLE_Beacon
+  #### BLE_Beacon
     
   This is to implement Apple's iBeacon, you can try it with our BeaconTool available in the AppStore for iOS and PlayStore for Android.
 
-  ### SimpleControls
+  #### SimpleControls
   
   This sample shows how to define your own protocol and to control the I/O of the board from a Central (e.g. iPhone) using BLE Controller Apps.
   
-  ### SimpleChat
+  #### SimpleChat
   
   This sample allows you to send text message from the board to your central device such as iPhone or Android using our BLE Controller Apps.
   
-  This example
-  
-  ### BLEController
+  #### BLEController
 
   This example allows you to use our BLE Controller Apps (available for iOS and Android) to control the pin state such as High, Low, PWM, Analog, etc.
   
-  ### nRF51822_UART
+  #### nRF51822_UART
   
   This example allows you to exchange data with your central device (e.g. iPhone 5) and the data will be redirected to the UART.
 
