@@ -19,7 +19,7 @@ extern "C" {
   { \
     __asm( \
         "svc %0\n" \
-        "bx r14" : : "I" (number) : "r0" \
+        "bx r14" : : "I" ((uint16_t)number) : "r0" \
     ); \
   }
 #elif defined (__ICCARM__)
@@ -28,7 +28,7 @@ extern "C" {
 PRAGMA(swi_number = number) \
  __swi return_type signature;
 #else
-#define SVCALL(number, return_type, signature) return_type signature  
+#define SVCALL(number, return_type, signature) return_type signature
 #endif
 #endif  // SVCALL
 
