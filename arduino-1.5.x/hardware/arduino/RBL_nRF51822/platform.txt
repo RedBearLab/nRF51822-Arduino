@@ -62,7 +62,7 @@ recipe.size.regex=\.text\s+([0-9]+).*
 # ----------------------
 
 tools.avrdude.cmd.path={runtime.ide.path}/hardware/tools/avr/bin/avrdude
-tools.avrdude.config.path={runtime.ide.path}/hardware/tools/avr/etc/avrdude.conf
+tools.avrdude.config.path={runtime.ide.path}/hardware/arduino/RBL_nRF51822/avrdude_conf/avrdude.conf
 tools.avrdude.cmd.path.linux={runtime.ide.path}/hardware/tools/avr/bin/avrdude
 tools.avrdude.config.path.linux={runtime.ide.path}/hardware/tools/avr/etc/avrdude.conf
 
