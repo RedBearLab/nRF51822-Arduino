@@ -15,7 +15,7 @@ static uint8_t GPIOTE_Channel_for_Analog[3] = {255, 255, 255};				  				//Save t
 static uint8_t Timer1_Occupied_Pin[3] = {255, 255, 255}; 				      				//the pin which used for analogWrite
 //uint8_t Timer2_Occupied_Pin[3] = {255, 255, 255}; 
 
-static uint32_t PWM_Channels_Value[3] = {((2^PWM_RESOLUTION) - 1), ((2^PWM_RESOLUTION) - 1), ((2^PWM_RESOLUTION) - 1)};		//the PWM value to update
+static uint32_t PWM_Channels_Value[3] = {(pow(2, PWM_RESOLUTION) - 1), (pow(2, PWM_RESOLUTION) - 1), (pow(2, PWM_RESOLUTION) - 1)};		//the PWM value to update
 static uint8_t  PWM_Channels_Start[3] = {0, 0, 0};																			//1:start, 0:stop
 
 //initialize default
@@ -177,7 +177,7 @@ static void update_PWM_value(uint32_t ulPin, uint32_t ulValue, uint32_t PWM_chan
 	uint32_t channel;
 
 	channel = GPIOTE_Channel_for_Analog[PWM_channel];
-	PWM_Channels_Value[PWM_channel] = ((2^PWM_RESOLUTION) - 1) - conversion_Resolution(ulValue, analogWriteResolution_bit, PWM_RESOLUTION);
+	PWM_Channels_Value[PWM_channel] = (pow(2, PWM_RESOLUTION) - 1) - conversion_Resolution(ulValue, analogWriteResolution_bit, PWM_RESOLUTION);
 
 	if ((NRF_GPIOTE->CONFIG[channel] & GPIOTE_CONFIG_MODE_Msk) == (GPIOTE_CONFIG_MODE_Disabled << GPIOTE_CONFIG_MODE_Pos))
 	{	
@@ -422,11 +422,13 @@ function :
 static void TIMER1_handler( void )
 {	
 	uint8_t index;
+	//NRF_TIMER1->TASKS_STOP = 1;
+	NRF_TIMER1->TASKS_CLEAR = 1;
 	// Update the CCx values
 	NRF_TIMER1->CC[0] = PWM_Channels_Value[0];
 	NRF_TIMER1->CC[1] = PWM_Channels_Value[1];
 	NRF_TIMER1->CC[2] = PWM_Channels_Value[2];
-	NRF_TIMER1->CC[3] = 0;
+	NRF_TIMER1->CC[3] = pow(2, PWM_RESOLUTION);;
 	
 	if (PWM_Channels_Start[0] == 1)
 	{
@@ -459,6 +461,7 @@ static void TIMER1_handler( void )
 	}
 	
 	NRF_TIMER1->EVENTS_COMPARE[3] = 0;
+	//NRF_TIMER1->TASKS_START = 1;	
 }
 
 /**********************************************************************
@@ -482,7 +485,9 @@ void analogWrite(uint32_t ulPin, uint32_t ulValue)
 		max_value = (uint32_t)( pow(2, analogWriteResolution_bit) - 1 );
 		if(ulValue >= max_value )
 		{	
-			ulValue = max_value - 1;
+			PPI_Off_FROM_GPIO(nrf_pin);
+			NRF_GPIO->OUTSET = (1 << nrf_pin);
+			return;
 		}
 		//if exist,  update the value
 		if (Timer1_Occupied_Pin[0] == nrf_pin)
@@ -518,15 +523,15 @@ void analogWrite(uint32_t ulPin, uint32_t ulValue)
 				//configure TIMER1
 				NRF_TIMER1->TASKS_STOP = 1;
 				NRF_TIMER1->MODE = TIMER_MODE_MODE_Timer;
-				NRF_TIMER1->PRESCALER = 0; // Source clock frequency is divided by 2^6 = 64 				
+				NRF_TIMER1->PRESCALER = 0; 				
 				//NRF_TIMER1->BITMODE = TIMER_BITMODE_BITMODE_08Bit;
 				NRF_TIMER1->BITMODE = TIMER_BITMODE_BITMODE_16Bit;	
 				// Clears the timer, sets it to 0
 				NRF_TIMER1->TASKS_CLEAR = 1;
-				NRF_TIMER1->CC[0] = ((2^PWM_RESOLUTION) - 1);
-				NRF_TIMER1->CC[1] = ((2^PWM_RESOLUTION) - 1);
-				NRF_TIMER1->CC[2] = ((2^PWM_RESOLUTION) - 1);
-				NRF_TIMER1->CC[3] = 0;
+				NRF_TIMER1->CC[0] = (pow(2, PWM_RESOLUTION) - 1);
+				NRF_TIMER1->CC[1] = (pow(2, PWM_RESOLUTION) - 1);
+				NRF_TIMER1->CC[2] = (pow(2, PWM_RESOLUTION) - 1);
+				NRF_TIMER1->CC[3] =  pow(2, PWM_RESOLUTION);
 				NRF_TIMER1->EVENTS_COMPARE[0] = 0;
 				NRF_TIMER1->EVENTS_COMPARE[1] = 0;
 				NRF_TIMER1->EVENTS_COMPARE[2] = 0;
@@ -546,7 +551,7 @@ void analogWrite(uint32_t ulPin, uint32_t ulValue)
 				PPI_ON_TIMER_GPIO(gpiote_channel, NRF_TIMER1, 0);
 				//Save pin , channel and value
 				GPIOTE_Channel_for_Analog[0] = gpiote_channel;
-				PWM_Channels_Value[0] = ((2^PWM_RESOLUTION) - 1) - conversion_Resolution(ulValue, analogWriteResolution_bit, PWM_RESOLUTION);
+				PWM_Channels_Value[0] = (pow(2, PWM_RESOLUTION) - 1) - conversion_Resolution(ulValue, analogWriteResolution_bit, PWM_RESOLUTION);
 				Timer1_Occupied_Pin[0] = nrf_pin;
 			}
 			else
@@ -570,7 +575,7 @@ void analogWrite(uint32_t ulPin, uint32_t ulValue)
 					PPI_ON_TIMER_GPIO(gpiote_channel, NRF_TIMER1, 0);
 					//save the pin and value
 					GPIOTE_Channel_for_Analog[0] = gpiote_channel;
-					PWM_Channels_Value[0] = ((2^PWM_RESOLUTION) - 1) - conversion_Resolution(ulValue, analogWriteResolution_bit, PWM_RESOLUTION);
+					PWM_Channels_Value[0] = (pow(2, PWM_RESOLUTION) - 1) - conversion_Resolution(ulValue, analogWriteResolution_bit, PWM_RESOLUTION);
 					Timer1_Occupied_Pin[0] = nrf_pin;
 					NRF_TIMER1->EVENTS_COMPARE[0] = 0;
 				}
@@ -594,7 +599,7 @@ void analogWrite(uint32_t ulPin, uint32_t ulValue)
 					PPI_ON_TIMER_GPIO(gpiote_channel, NRF_TIMER1, 1);
 					//save the pin and value
 					GPIOTE_Channel_for_Analog[1] = gpiote_channel;
-					PWM_Channels_Value[1] = ((2^PWM_RESOLUTION) - 1) - conversion_Resolution(ulValue, analogWriteResolution_bit, PWM_RESOLUTION);
+					PWM_Channels_Value[1] = (pow(2, PWM_RESOLUTION) - 1) - conversion_Resolution(ulValue, analogWriteResolution_bit, PWM_RESOLUTION);
 					Timer1_Occupied_Pin[1] = nrf_pin;
 					NRF_TIMER1->EVENTS_COMPARE[1] = 0;
 				}
@@ -618,7 +623,7 @@ void analogWrite(uint32_t ulPin, uint32_t ulValue)
 					PPI_ON_TIMER_GPIO(gpiote_channel, NRF_TIMER1, 2);
 					//save the pin and value
 					GPIOTE_Channel_for_Analog[2] = gpiote_channel;
-					PWM_Channels_Value[2] = ((2^PWM_RESOLUTION) - 1) - conversion_Resolution(ulValue, analogWriteResolution_bit, PWM_RESOLUTION);
+					PWM_Channels_Value[2] = (pow(2, PWM_RESOLUTION) - 1) - conversion_Resolution(ulValue, analogWriteResolution_bit, PWM_RESOLUTION);
 					Timer1_Occupied_Pin[2] = nrf_pin;
 					NRF_TIMER1->EVENTS_COMPARE[2] = 0;
 				}

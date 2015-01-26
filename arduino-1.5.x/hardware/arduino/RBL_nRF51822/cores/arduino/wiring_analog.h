@@ -9,7 +9,7 @@ extern "C" {
 
 
 #define ADC_RESOLUTION        10
-#define PWM_RESOLUTION        16
+#define PWM_RESOLUTION        15
 
 #define WRITE_CURRENT_RESOLUTION    8
 #define READ_CURRENT_RESOLUTION		10
