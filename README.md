@@ -44,8 +44,6 @@ Install nRF51822 Arduino Add-on
     - RBL_nRF51822
     - sam
 
-  - replace the file in hardware/tools/avr/etc/avrdude.conf
-
 
 Install USB CDC Driver
 ======================
