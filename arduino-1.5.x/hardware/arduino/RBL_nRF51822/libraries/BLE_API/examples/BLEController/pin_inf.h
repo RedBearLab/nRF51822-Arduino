@@ -7,7 +7,7 @@
 #define TOTAL_PINS        24
 #define VERSION_BLINK_PIN 13
 #define IS_PIN_DIGITAL(p) ( (p) >= 2 && (p) < 24 )
-#define IS_PIN_ANALOG(p)  ( (p) >= 19 && (p) < 24)
+#define IS_PIN_ANALOG(p)  ( (p) == 17 || (p) == 18 || (p) >= 19 && (p) < 24)
 #define IS_PIN_PWM(p)     ( (p) == 3 || (p) == 5 || (p) == 6 )
 #define IS_PIN_SERVO(p)   ( (p) >= 2 && (p) < 12  )
 
