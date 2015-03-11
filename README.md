@@ -85,6 +85,10 @@ How to Play
   Select the RBL nRF51822 board in the menu of Arduino IDE and serial port.
 
     Menu > Tools > Board > RBL nRF51822
+    
+  If you are using our BLE Nano board,
+
+    Menu > Tools > Board > BLE Nano
   
 2. Blink
 
