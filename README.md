@@ -11,7 +11,7 @@ Requirement
 ===========
 
 1. nRF51822 deveopment board, here we will use RBL nRF51822 as an example.
-2. Arduino IDE version 1.5.8 (currently tested version).
+2. Arduino IDE version 1.6.2 (currently tested version).
 3. PC with one of the following OS:
     - Mac OSX 10.9 (Mavericks) / 10.10 (Yosemite) (currently tested version).    <- Read Note 2
     - Windows 7 and 8.x (currently tested version).
@@ -33,16 +33,19 @@ https://developer.mbed.org/users/okano/notebook/mbed-on-yosemite/?c=14179
 Install nRF51822 Arduino Add-on
 ===============================
 
-1. Get Arduino IDE version 1.5.8 from Arduino website and install it to your PC
+1. Get Arduino IDE version 1.6.2 from Arduino website and install it to your PC
 
     http://arduino.cc/en/Main/Software
+    
+2. Install the "Arduino SAM Boards" add-on via Board Manager: Tools -> Board -> Board Manager ... 
 
-2. Get or clone this repository and put the files to appropriate folder.
+3. Get or clone this repository and copy the "RBL" folder from "arduino-1.5.x/hardware" into  "~/Documents/Arduino/hardware" (if the "hardware" folder does not exist, create it)
 
-  - in your Arduino IDE folder, inside hardware/arduino, you should see
-    - avr
-    - RBL_nRF51822
-    - sam
+Mac OSX:
+Documents > Arduino
+
+Windows:
+C: > Users > YourName > Documents > Arduino
 
 
 Install USB CDC Driver
