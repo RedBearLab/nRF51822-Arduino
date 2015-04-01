@@ -34,8 +34,18 @@ void setup()
     uint32_t err_code = 0;
     uint8_t val = 0;
   
-    Serial.begin(115200);
-    Serial.println("BLE Init!");
+    //Close peripheral power
+    NRF_POWER->DCDCEN = 0x00000001;
+    NRF_TIMER1->POWER = 0;
+    NRF_TIMER2->POWER = 0;
+    NRF_WDT->POWER = 0;
+    NRF_TEMP->POWER = 0;
+    NRF_UART0->POWER = 0;
+    //Serial.begin(115200);
+    //Serial.println("BLE Init!");
+    
+    pinMode(LED, OUTPUT);
+    digitalWrite(LED, HIGH);
     
     err_code = ble.init(); 
     
@@ -46,7 +56,7 @@ void setup()
 
     ble.startAdvertising();
 
-    Serial.println("BLE Start Advertising!");
+    //Serial.println("BLE Start Advertising!");
 }
 
 void loop() 
