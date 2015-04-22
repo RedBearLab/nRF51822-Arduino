@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 #include <BLE_API.h>
-#include "simple_uart.h"
 
 #define HRM_TIME                             APP_TIMER_TICKS(1000, 0)
 
@@ -89,6 +88,10 @@ void setup(void)
     ble.setAdvertisingInterval(160); /* 100ms; in multiples of 0.625ms. */
     
     ble.addService(hrmService);
+    
+    //Set Dev_Name
+    err_code = RBL_SetDevName("BLE HRM");
+    APP_ERROR_CHECK(err_code);    
     
     ble.startAdvertising();
     
