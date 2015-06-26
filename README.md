@@ -2,9 +2,11 @@
 nRF51822-Arduino
 ================
 
+This branch is to provide BLE concurrent Central and Peripheral using Nordic SoftDevice S130. This is a work in progress.
+
 Add support for Arduino IDE to allow compiling nRF51822 firmware.
 
-This add-on also provides BLE API for nRF51822 SoC to act as BLE Peripheral role designed for SoftDevice S110 version 6.0.
+This add-on also provides BLE API for nRF51822 SoC to act as BLE Central/Peripheral role designed for SoftDevice S130.
 
 
 Requirement
@@ -35,7 +37,7 @@ https://developer.mbed.org/users/okano/notebook/mbed-on-yosemite/?c=14179
 Install nRF51822 Arduino Add-on
 ===============================
 
-1. Get Arduino IDE version 1.6.2 from Arduino website and install it to your PC
+1. Get Arduino IDE version 1.6.4 from Arduino website and install it to your PC
 
     http://arduino.cc/en/Main/Software
     
@@ -139,15 +141,11 @@ Limitations
 
     As Arduino does not have flow control in serial port implementation, the Serial port (Pin 0 and 1) is limited to 9600bps since the BLE stack require flow control in order to support higher speed. If you are not going to use BLE, you can use higher speed. 
  
-2. Central Role
-
-    The add-on uses SoftDevice S110, it does not support BLE Central role.
-
 
 ToDo
 ====
 
-1. Support SoftDevice S110 version 7.1
+1. Support SoftDevice S130
 2. Bootloader for both OTA and USB CDC
 
 
