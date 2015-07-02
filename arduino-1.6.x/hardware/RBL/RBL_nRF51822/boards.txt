@@ -1,0 +1,98 @@
+
+nRF51822.name=RBL nRF51822
+
+nRF51822.upload.tool=avrdude
+nRF51822.upload.protocol=avr109
+nRF51822.upload.maximum_size=196608
+nRF51822.upload.maximum_data_size=2560
+nRF51822.upload.speed=115200
+nRF51822.upload.disable_flushing=true
+nRF51822.upload.use_1200bps_touch=true
+nRF51822.upload.wait_for_upload_port=false
+
+nRF51822.tool.avrdude.path={runtime.tools.avrdude.path};
+nRF51822.build.mcu=cortex-m0
+nRF51822.build.f_cpu=16000000
+nRF51822.build.usb_product="Arduino RBL"
+nRF51822.build.board=RBL_nRF51822
+nRF51822.build.core=RBL_nRF51822
+nRF51822.build.variant=RBL_nRF51822
+nRF51822.build.extra_flags=-mthumb
+nRF51822.build.ldscript=linker_scripts/gcc/RBL_nRF51822.ld
+nRF51822.build.variant_system_include="-I{build.system.path}/CMSIS/CMSIS/Include" "-I{runtime.hardware.path}/RBL_nRF51822/nrf51822_SDK/device" "-I{runtime.hardware.path}/RBL_nRF51822/nrf51822_SDK/driver_nrf/hal" "-I{runtime.hardware.path}/RBL_nRF51822/nrf51822_SDK/libraries/util" "-I{runtime.hardware.path}/RBL_nRF51822/nrf51822_SDK/softdevice/s130"       
+
+##############################################################
+
+nRF51822_NANO.name=BLE Nano
+
+nRF51822_NANO.upload.tool=avrdude
+nRF51822_NANO.upload.protocol=avr109
+nRF51822_NANO.upload.maximum_size=196608
+nRF51822_NANO.upload.maximum_data_size=2560
+nRF51822_NANO.upload.speed=115200
+nRF51822_NANO.upload.disable_flushing=true
+nRF51822_NANO.upload.use_1200bps_touch=true
+nRF51822_NANO.upload.wait_for_upload_port=false
+
+nRF51822_NANO.tool.avrdude.path={runtime.tools.avrdude.path};
+nRF51822_NANO.build.mcu=cortex-m0
+nRF51822_NANO.build.f_cpu=16000000
+nRF51822_NANO.build.usb_product="Arduino RBL"
+nRF51822_NANO.build.board=RBL_nRF51822
+nRF51822_NANO.build.core=RBL_nRF51822
+nRF51822_NANO.build.variant=BLE_Nano
+nRF51822_NANO.build.extra_flags=-mthumb
+nRF51822_NANO.build.ldscript=linker_scripts/gcc/RBL_nRF51822.ld
+nRF51822_NANO.build.variant_system_include="-I{build.system.path}/CMSIS/CMSIS/Include" "-I{runtime.hardware.path}/RBL_nRF51822/nrf51822_SDK/device" "-I{runtime.hardware.path}/RBL_nRF51822/nrf51822_SDK/driver_nrf/hal" "-I{runtime.hardware.path}/RBL_nRF51822/nrf51822_SDK/libraries/util" "-I{runtime.hardware.path}/RBL_nRF51822/nrf51822_SDK/softdevice/s130" 
+
+##############################################################
+
+nRF51822_32KB.name=RBL nRF51822 32KB
+
+nRF51822_32KB.upload.tool=avrdude
+nRF51822_32KB.upload.protocol=avr109
+nRF51822_32KB.upload.maximum_size=196608
+nRF51822_32KB.upload.maximum_data_size=2560
+nRF51822_32KB.upload.speed=115200
+nRF51822_32KB.upload.disable_flushing=true
+nRF51822_32KB.upload.use_1200bps_touch=true
+nRF51822_32KB.upload.wait_for_upload_port=false
+
+nRF51822_32KB.tool.avrdude.path={runtime.tools.avrdude.path};
+nRF51822_32KB.build.mcu=cortex-m0
+nRF51822_32KB.build.f_cpu=16000000
+nRF51822_32KB.build.usb_product="Arduino RBL"
+nRF51822_32KB.build.board=RBL_nRF51822
+nRF51822_32KB.build.core=RBL_nRF51822
+nRF51822_32KB.build.variant=RBL_nRF51822_32KB
+nRF51822_32KB.build.extra_flags=-mthumb
+nRF51822_32KB.build.ldscript=linker_scripts/gcc/RBL_nRF51822.ld
+nRF51822_32KB.build.variant_system_include="-I{build.system.path}/CMSIS/CMSIS/Include" "-I{runtime.hardware.path}/RBL_nRF51822/nrf51822_SDK/device" "-I{runtime.hardware.path}/RBL_nRF51822/nrf51822_SDK/driver_nrf/hal" "-I{runtime.hardware.path}/RBL_nRF51822/nrf51822_SDK/libraries/util" "-I{runtime.hardware.path}/RBL_nRF51822/nrf51822_SDK/softdevice/s130"  
+
+##############################################################
+
+nRF51822_NANO_32KB.name=BLE Nano 32KB
+
+nRF51822_NANO_32KB.upload.tool=avrdude
+nRF51822_NANO_32KB.upload.protocol=avr109
+nRF51822_NANO_32KB.upload.maximum_size=196608
+nRF51822_NANO_32KB.upload.maximum_data_size=2560
+nRF51822_NANO_32KB.upload.speed=115200
+nRF51822_NANO_32KB.upload.disable_flushing=true
+nRF51822_NANO_32KB.upload.use_1200bps_touch=true
+nRF51822_NANO_32KB.upload.wait_for_upload_port=false
+
+nRF51822_NANO_32KB.tool.avrdude.path={runtime.tools.avrdude.path};
+nRF51822_NANO_32KB.build.mcu=cortex-m0
+nRF51822_NANO_32KB.build.f_cpu=16000000
+nRF51822_NANO_32KB.build.usb_product="Arduino RBL"
+nRF51822_NANO_32KB.build.board=RBL_nRF51822
+nRF51822_NANO_32KB.build.core=RBL_nRF51822
+nRF51822_NANO_32KB.build.variant=BLE_Nano_32KB
+nRF51822_NANO_32KB.build.extra_flags=-mthumb
+nRF51822_NANO_32KB.build.ldscript=linker_scripts/gcc/RBL_nRF51822.ld
+nRF51822_NANO_32KB.build.ble_api_include="-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/BLE_API-master" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/BLE_API-master/ble/services" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/BLE_API-master/source" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/BLE_API-master/source/services" 
+nRF51822_NANO_32KB.build.nRF51822_api_include="-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/nRF51822-master" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/nRF51822-master/btle" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/nRF51822-master/btle/custom" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/nRF51822-master/common" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/nRF51822-master/nordic-sdk/components/ble/ble_radio_notification" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/nRF51822-master/nordic-sdk/components/ble/ble_services/ble_dfu" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/nRF51822-master/nordic-sdk/components/ble/common" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/nRF51822-master/nordic-sdk/components/ble/device_manager" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/nRF51822-master/nordic-sdk/components/ble/device_manager/config" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/nRF51822-master/nordic-sdk/components/drivers_nrf/ble_flash" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/nRF51822-master/nordic-sdk/components/drivers_nrf/hal" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/nRF51822-master/nordic-sdk/components/drivers_nrf/pstorage" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/nRF51822-master/nordic-sdk/components/drivers_nrf/pstorage/config" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/nRF51822-master/nordic-sdk/components/libraries/bootloader_dfu" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/nRF51822-master/nordic-sdk/components/libraries/bootloader_dfu/experimental" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/nRF51822-master/nordic-sdk/components/libraries/bootloader_dfu/hci_transport" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/nRF51822-master/nordic-sdk/components/libraries/crc16" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/nRF51822-master/nordic-sdk/components/libraries/hci" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/nRF51822-master/nordic-sdk/components/libraries/scheduler" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/nRF51822-master/nordic-sdk/components/libraries/util" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/nRF51822-master/nordic-sdk/components/softdevice/common/softdevice_handler" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/nRF51822-master/nordic-sdk/components/softdevice/s130/include"     
+nRF51822_NANO_32KB.build.mbed_api_include="-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/mbed/api" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/mbed/common" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/mbed/hal" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/mbed/targets/cmsis" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/mbed/targets/cmsis/TARGET_NORDIC/TARGET_MCU_NRF51822/" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/mbed/targets/cmsis/TARGET_NORDIC/TARGET_MCU_NRF51822/TOOLCHAIN_GCC_ARM" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/mbed/targets/cmsis/TARGET_NORDIC/TARGET_MCU_NRF51822/TOOLCHAIN_GCC_ARM/TARGET_MCU_NORDIC_16K" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/mbed/targets/cmsis/TARGET_NORDIC/TARGET_MCU_NRF51822/TOOLCHAIN_GCC_ARM/TARGET_MCU_NORDIC_32K" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/mbed/targets/hal/TARGET_NORDIC/TARGET_MCU_NRF51822" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/mbed/targets/hal/TARGET_NORDIC/TARGET_MCU_NRF51822/Lib/nordic_sdk/components/libraries/crc16" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/mbed/targets/hal/TARGET_NORDIC/TARGET_MCU_NRF51822/Lib/nordic_sdk/components/libraries/scheduler" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/mbed/targets/hal/TARGET_NORDIC/TARGET_MCU_NRF51822/Lib/nordic_sdk/components/libraries/util" "-I{runtime.hardware.path}/RBL_nRF51822/cores/RBL_nRF51822/mbed/targets/hal/TARGET_NORDIC/TARGET_MCU_NRF51822/TARGET_RBLAB_BLENANO"
+
+##############################################################
