@@ -24,10 +24,8 @@ compiler.ar.cmd=arm-none-eabi-ar
 compiler.ar.flags=rcs
 
 # Combine to create elf file options
-#compiler.c.elf.cmd=arm-none-eabi-g++
 compiler.c.elf.cmd=arm-none-eabi-gcc
 compiler.c.elf.flags=-mcpu=cortex-m0 -mthumb 
-#compiler.c.elf.flags=-Os -Wl,--gc-sections  
 compiler.ldflags=--specs=nano.specs 
 
 # Create bin file options
@@ -60,7 +58,7 @@ recipe.ar.pattern="{compiler.path}{compiler.ar.cmd}" {compiler.ar.flags} "{build
 
 ## Combine gc-sections, archives, and objects
 #recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {compiler.c.elf.flags} -mcpu={build.mcu} {build.extra_flags} "-T{build.variant.path}/{build.ldscript}" {compiler.ldflags} "-Wl,-Map,{build.path}/{build.project_name}.map" -o "{build.path}/{build.project_name}.elf" "-L{build.path}" -lm -lgcc -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--warn-unresolved-symbols -Wl,--start-group "{build.path}/system_nrf51.c.o" {object_files} "{build.path}/startup_NRF51822.s.o" "{build.path}/{archive_file}" -Wl,--end-group
-recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" -mcpu={build.mcu} -Wl,--gc-sections --specs=nano.specs -Wl,--wrap,main -Wl,-Map={build.path}/{build.project_name}.map,--cref "-T{build.variant.path}/{build.ldscript}" -o "{build.path}/{build.project_name}.elf" -lstdc++ -lsupc++ -lm -lc -lgcc -lnosys -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--warn-unresolved-symbols -Wl,--start-group "{build.path}/system_nrf51.c.o" {object_files} "{build.path}/startup_NRF51822.s.o" "{build.path}/{archive_file}" -Wl,--end-group
+recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" -mcpu={build.mcu} -mthumb -Wl,--gc-sections --specs=nano.specs -Wl,--wrap,main -Wl,-Map={build.path}/{build.project_name}.map,--cref "-T{build.variant.path}/{build.ldscript}" -o "{build.path}/{build.project_name}.elf" -Wl,--start-group "{build.path}/system_nrf51.c.o" {object_files} "{build.path}/startup_NRF51822.s.o" "{build.path}/{archive_file}" -Wl,--end-group -lstdc++ -lsupc++ -lm -lc -lgcc -lnosys
 
 ## Create bin
 recipe.objcopy.eep.pattern="{compiler.path}{compiler.elf2bin.cmd}" {compiler.elf2bin.flags} "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}.bin"
