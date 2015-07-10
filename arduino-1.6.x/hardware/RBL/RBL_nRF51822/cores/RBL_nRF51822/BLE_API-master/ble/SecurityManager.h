@@ -105,7 +105,13 @@ public:
                              bool                     requireMITM   = true,
                              SecurityIOCapabilities_t iocaps        = IO_CAPS_NONE,
                              const Passkey_t          passkey       = NULL) {
-        return BLE_ERROR_NOT_IMPLEMENTED; /* default implementation; override this if security is supported. */
+        /* avoid compiler warnings about unused variables */
+        (void)enableBonding;
+        (void)requireMITM;
+        (void)iocaps;
+        (void)passkey;
+
+        return BLE_ERROR_NOT_IMPLEMENTED; /* Requesting action from porter(s): override this API if security is supported. */
     }
 
     /**
@@ -117,7 +123,11 @@ public:
      * @return BLE_SUCCESS Or appropriate error code indicating reason for failure.
      */
     virtual ble_error_t getLinkSecurity(Gap::Handle_t connectionHandle, LinkSecurityStatus_t *securityStatusP) {
-        return BLE_ERROR_NOT_IMPLEMENTED; /* default implementation; override this if security is supported. */
+        /* avoid compiler warnings about unused variables */
+        (void)connectionHandle;
+        (void)securityStatusP;
+
+        return BLE_ERROR_NOT_IMPLEMENTED; /* Requesting action from porter(s): override this API if security is supported. */
     }
 
     /**
@@ -129,7 +139,7 @@ public:
      *                                    application registration.
      */
     virtual ble_error_t purgeAllBondingState(void) {
-        return BLE_ERROR_NOT_IMPLEMENTED; /* default implementation; override this if security is supported. */
+        return BLE_ERROR_NOT_IMPLEMENTED; /* Requesting action from porter(s): override this API if security is supported. */
     }
 
     /* Event callback handlers. */

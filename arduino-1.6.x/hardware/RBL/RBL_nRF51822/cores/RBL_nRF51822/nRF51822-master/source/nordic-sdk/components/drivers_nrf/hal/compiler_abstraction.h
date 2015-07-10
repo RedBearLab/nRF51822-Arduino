@@ -69,7 +69,7 @@
 #elif defined   ( __GNUC__ )
     
     #ifndef __ASM
-        #define __ASM               __asm                       /*!< asm keyword for GNU Compiler */
+        #define __ASM               __asm__                     /*!< asm keyword for GNU Compiler */
     #endif
     
     #ifndef __INLINE
@@ -84,7 +84,7 @@
 
     static inline unsigned int gcc_current_sp(void)
     {
-        register unsigned sp asm("sp");
+        register unsigned sp __ASM("sp");
         return sp;
     }
     

@@ -29,7 +29,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-
+#include "compiler_abstraction.h"
 #include "bootloader_util.h"
 #include <stdint.h>
 #include <string.h>
@@ -88,7 +88,7 @@ isr_abort
 #elif defined(TOOLCHAIN_GCC)
 static void bootloader_util_reset(uint32_t start_addr)
 {
-    asm(
+    __ASM(
         ".equ MASK_ONES,  0xFFFFFFFF\n\t" /* Ones, to be loaded into register as default value before reset.  */
         ".equ MASK_ZEROS, 0x00000000\n\t" /* Zeros, to be loaded into register as default value before reset. */
         ".equ xPSR_RESET, 0x21000000\n\t" /* Default value of xPSR after System Reset. */

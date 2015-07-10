@@ -93,7 +93,7 @@ public:
      */
     void updateHeartRate(uint8_t hrmCounter) {
         valueBytes.updateHeartRate(hrmCounter);
-        ble.updateCharacteristicValue(hrmRate.getValueAttribute().getHandle(), valueBytes.getPointer(), valueBytes.getNumValueBytes());
+        ble.gattServer().write(hrmRate.getValueHandle(), valueBytes.getPointer(), valueBytes.getNumValueBytes());
     }
 
     /**
@@ -104,7 +104,7 @@ public:
      */
     void updateHeartRate(uint16_t hrmCounter) {
         valueBytes.updateHeartRate(hrmCounter);
-        ble.updateCharacteristicValue(hrmRate.getValueAttribute().getHandle(), valueBytes.getPointer(), valueBytes.getNumValueBytes());
+        ble.gattServer().write(hrmRate.getValueHandle(), valueBytes.getPointer(), valueBytes.getNumValueBytes());
     }
 
     /**

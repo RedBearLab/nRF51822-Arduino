@@ -41,8 +41,7 @@ extern const uint8_t  UARTServiceRXCharacteristicUUID[UUID::LENGTH_OF_LONG_UUID]
 class UARTService {
 public:
     /**< Maximum length of data (in bytes) that can be transmitted by the UART service module to the peer. */
-    static const unsigned GATT_MTU_SIZE_DEFAULT         = 23;
-    static const unsigned BLE_UART_SERVICE_MAX_DATA_LEN = (GATT_MTU_SIZE_DEFAULT - 3);
+    static const unsigned BLE_UART_SERVICE_MAX_DATA_LEN = (BLE_GATT_MTU_SIZE_DEFAULT - 3);
 
 public:
 
@@ -118,7 +117,7 @@ public:
                 if ((sendBufferIndex == BLE_UART_SERVICE_MAX_DATA_LEN) ||
                     // (sendBuffer[sendBufferIndex - 1] == '\r')          ||
                     (sendBuffer[sendBufferIndex - 1] == '\n')) {
-                    ble.updateCharacteristicValue(getRXCharacteristicHandle(), static_cast<const uint8_t *>(sendBuffer), sendBufferIndex);
+                    ble.gattServer().write(getRXCharacteristicHandle(), static_cast<const uint8_t *>(sendBuffer), sendBufferIndex);
                     sendBufferIndex = 0;
                 }
             }
@@ -160,7 +159,7 @@ public:
         return receiveBuffer[receiveBufferIndex++];
     }
 
-private:
+protected:
     /**
      * This callback allows the UART service to receive updates to the
      * txCharacteristic. The application should forward the call to this
@@ -178,7 +177,7 @@ private:
         }
     }
 
-private:
+protected:
     BLE                &ble;
 
     uint8_t             receiveBuffer[BLE_UART_SERVICE_MAX_DATA_LEN]; /**< The local buffer into which we receive

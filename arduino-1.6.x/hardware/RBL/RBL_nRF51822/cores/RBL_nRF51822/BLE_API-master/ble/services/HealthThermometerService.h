@@ -73,7 +73,7 @@ public:
     void updateTemperature(float temperature) {
         if (ble.getGapState().connected) {
             valueBytes.updateTemperature(temperature);
-            ble.updateCharacteristicValue(tempMeasurement.getValueAttribute().getHandle(), valueBytes.getPointer(), sizeof(TemperatureValueBytes));
+            ble.gattServer().write(tempMeasurement.getValueHandle(), valueBytes.getPointer(), sizeof(TemperatureValueBytes));
         }
     }
 
@@ -83,7 +83,7 @@ public:
      *        new location value.
      */
     void updateLocation(SensorLocation_t loc) {
-        ble.updateCharacteristicValue(tempLocation.getValueHandle(), reinterpret_cast<uint8_t *>(&loc), sizeof(uint8_t));
+        ble.gattServer().write(tempLocation.getValueHandle(), reinterpret_cast<uint8_t *>(&loc), sizeof(uint8_t));
     }
 
 private:
@@ -140,7 +140,7 @@ private:
         uint8_t bytes[SIZEOF_VALUE_BYTES];
     };
 
-private:
+protected:
     BLE                                               &ble;
     TemperatureValueBytes                              valueBytes;
     ReadOnlyGattCharacteristic<TemperatureValueBytes>  tempMeasurement;

@@ -54,6 +54,7 @@
 /** @} */
 
 
+#if 0 /* The following have been duplicated in blecommon.h */
 /** @defgroup BLE_UUID_VALUES Assigned Values for BLE UUIDs
  * @{ */
 /* Generic UUIDs, applicable to all services */
@@ -79,6 +80,7 @@
 #define BLE_UUID_GAP_CHARACTERISTIC_RECONN_ADDR       0x2A03 /**< Reconnection Address Characteristic. */
 #define BLE_UUID_GAP_CHARACTERISTIC_PPCP              0x2A04 /**< Peripheral Preferred Connection Parameters Characteristic. */
 /** @} */
+#endif /* The following have been duplicated in blecommon.h */
 
 
 /** @defgroup BLE_UUID_TYPES Types of UUID
@@ -88,7 +90,7 @@
 #define BLE_UUID_TYPE_VENDOR_BEGIN  0x02 /**< Vendor UUID types start at this index (128-bit). */
 /** @} */
 
-
+#if 0 /* The following have been duplicated in blecommon.h */
 /** @defgroup BLE_APPEARANCES Bluetooth Appearance values
  *  @note Retrieved from http://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.gap.appearance.xml
  * @{ */
@@ -142,6 +144,7 @@
 #define BLE_APPEARANCE_OUTDOOR_SPORTS_ACT_LOC_POD          5187 /**< Location Pod (Outdoor Sports Activity subtype). */
 #define BLE_APPEARANCE_OUTDOOR_SPORTS_ACT_LOC_AND_NAV_POD  5188 /**< Location and Navigation Pod (Outdoor Sports Activity subtype). */
 /** @} */
+#endif /* The following have been duplicated in blecommon.h */
 
 /** @brief Set .type and .uuid fields of ble_uuid_struct to specified uuid value. */
 #define BLE_UUID_BLE_ASSIGN(instance, value) do {\

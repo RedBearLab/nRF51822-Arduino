@@ -75,4 +75,12 @@ struct GattReadAuthCallbackParams {
                                                   * request is to proceed; false otherwise. */
 };
 
+/* For encapsulating handle-value update events (notifications or indications) generated at the remote server. */
+struct GattHVXCallbackParams {
+  GattAttribute::Handle_t  handle; /**< Attribute Handle to which the HVx operation applies. */
+  HVXType_t                type;   /**< Indication or Notification, see @ref HVXType_t. */
+  uint16_t                 len;    /**< Attribute data length. */
+  const uint8_t           *data;   /**< Attribute data, variable length. */
+};
+
 #endif /*__GATT_CALLBACK_PARAM_TYPES_H__*/

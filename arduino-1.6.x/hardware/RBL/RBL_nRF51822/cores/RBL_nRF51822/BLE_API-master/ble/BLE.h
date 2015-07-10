@@ -916,7 +916,7 @@ public:
      *
      * @note This API is a version of above with an additional connection handle
      *     parameter to allow fetches for connection-specific multivalued
-     *     attribtues (such as the CCCDs).
+     *     attributes (such as the CCCDs).
      *
      * @note: This API is now *deprecated* and will be dropped in the future.
      * You should use the parallel API from GattServer directly. A former call
@@ -960,7 +960,7 @@ public:
     /**
      * Update the value of a characteristic on the local GattServer. A version
      * of the same as above with connection handle parameter to allow updates
-     * for connection-specific multivalued attribtues (such as the CCCDs).
+     * for connection-specific multivalued attributes (such as the CCCDs).
      *
      * @param[in] connectionHandle
      *              Connection Handle.

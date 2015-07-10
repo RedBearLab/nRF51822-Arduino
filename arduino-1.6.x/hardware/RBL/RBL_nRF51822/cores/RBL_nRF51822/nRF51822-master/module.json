@@ -1,0 +1,57 @@
+{
+  "name": "ble-nrf51822",
+  "version": "0.4.2",
+  "description": "Nordic stack and drivers for the mbed BLE API.",
+  "keywords": [
+    "Bluetooth",
+    "BLE"
+  ],
+  "author": "Rohit Grover",
+  "repository": {
+    "url": "git@github.com:mbedmicro/nRF51822.git",
+    "type": "git"
+  },
+  "homepage": "https://developer.mbed.org/teams/Nordic-Semiconductor/",
+  "licenses": [
+    {
+      "url": "https://spdx.org/licenses/Apache-2.0",
+      "type": "Apache-2.0"
+    }
+  ],
+  "dependencies": {
+    "ble": "~0.4.2"
+  },
+  "extraIncludes": [
+    "source/btle",
+    "source/btle/custom",
+    "source/common",
+    "source/nordic-sdk/components",
+    "source/nordic-sdk/components/libraries",
+    "source/nordic-sdk/components/libraries/scheduler",
+    "source/nordic-sdk/components/libraries/util",
+    "source/nordic-sdk/components/libraries/hci",
+    "source/nordic-sdk/components/libraries/bootloader_dfu",
+    "source/nordic-sdk/components/libraries/bootloader_dfu/hci_transport",
+    "source/nordic-sdk/components/libraries/bootloader_dfu/experimental",
+    "source/nordic-sdk/components/libraries/crc16",
+    "source/nordic-sdk/components/softdevice",
+    "source/nordic-sdk/components/softdevice/s130",
+    "source/nordic-sdk/components/softdevice/s130/include",
+    "source/nordic-sdk/components/softdevice/s130/doc",
+    "source/nordic-sdk/components/softdevice/common",
+    "source/nordic-sdk/components/softdevice/common/softdevice_handler",
+    "source/nordic-sdk/components/drivers_nrf",
+    "source/nordic-sdk/components/drivers_nrf/hal",
+    "source/nordic-sdk/components/drivers_nrf/ble_flash",
+    "source/nordic-sdk/components/drivers_nrf/pstorage",
+    "source/nordic-sdk/components/drivers_nrf/pstorage/config",
+    "source/nordic-sdk/components/ble",
+    "source/nordic-sdk/components/ble/ble_radio_notification",
+    "source/nordic-sdk/components/ble/ble_services",
+    "source/nordic-sdk/components/ble/ble_services/ble_dfu",
+    "source/nordic-sdk/components/ble/common",
+    "source/nordic-sdk/components/ble/device_manager",
+    "source/nordic-sdk/components/ble/device_manager/config"
+  ],
+  "targetDependencies": {}
+}

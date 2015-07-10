@@ -1,6 +1,6 @@
 {
   "name": "ble",
-  "version": "0.0.0",
+  "version": "0.4.2",
   "description": "The BLE module offers a high level abstraction for using Bluetooth Low Energy on multiple platforms.",
   "keywords": [
     "Bluetooth",
@@ -19,11 +19,11 @@
     }
   ],
   "dependencies": {
-    "mbed": "^3.0.2"
+    "mbed-classic":"~0.0.1"
   },
   "targetDependencies": {
     "nrf51822": {
-      "ble-nrf51822":"~0.0.1"
+      "ble-nrf51822":"~0.4.2"
     }
   }
 }

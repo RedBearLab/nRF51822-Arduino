@@ -66,7 +66,7 @@ public:
         ble.setAdvertisingType(GapAdvertisingParams::ADV_NON_CONNECTABLE_UNDIRECTED);
     }
 
-private:
+protected:
     BLE     &ble;
     Payload  data;
 };

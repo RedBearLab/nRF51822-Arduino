@@ -135,14 +135,6 @@ public:
      */
     ble_error_t write(uint16_t length, const uint8_t *value) const;
 
-    static void setupOnDataRead(GattClient::ReadCallback_t callback) {
-        onDataReadCallback = callback;
-    }
-
-    static void setupOnDataWrite(GattClient::WriteCallback_t callback) {
-        onDataWriteCallback = callback;
-    }
-
     void setupLongUUID(UUID::LongUUIDBytes_t longUUID) {
         uuid.setupLong(longUUID);
     }
@@ -182,10 +174,6 @@ protected:
     GattAttribute::Handle_t  valueHandle;
 
     Gap::Handle_t            connHandle;
-
-public:
-    static GattClient::ReadCallback_t  onDataReadCallback;
-    static GattClient::WriteCallback_t onDataWriteCallback;
 };
 
 #endif /*__DISCOVERED_CHARACTERISTIC_H__*/

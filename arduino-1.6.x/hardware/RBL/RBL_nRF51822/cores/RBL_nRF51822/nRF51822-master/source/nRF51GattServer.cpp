@@ -103,10 +103,9 @@ ble_error_t nRF51GattServer::addService(GattService &service)
                  BLE_ERROR_PARAM_OUT_OF_RANGE );
 
         /* Update the characteristic handle */
-        uint16_t charHandle = characteristicCount;
-        p_characteristics[characteristicCount++] = p_char;
-
-        p_char->getValueAttribute().setHandle(charHandle);
+        p_characteristics[characteristicCount] = p_char;
+        p_char->getValueAttribute().setHandle(nrfCharacteristicHandles[characteristicCount].value_handle);
+        characteristicCount++;
 
         /* Add optional descriptors if any */
         /* ToDo: Make sure we don't overflow the array */
@@ -128,9 +127,8 @@ ble_error_t nRF51GattServer::addService(GattService &service)
                                             &nrfDescriptorHandles[descriptorCount]),
                 BLE_ERROR_PARAM_OUT_OF_RANGE);
 
-            uint16_t descHandle = descriptorCount;
             p_descriptors[descriptorCount++] = p_desc;
-            p_desc->setHandle(descHandle);
+            p_desc->setHandle(nrfDescriptorHandles[descriptorCount]);
         }
     }
 
@@ -173,7 +171,7 @@ ble_error_t nRF51GattServer::read(Gap::Handle_t connectionHandle, GattAttribute:
     };
 
     ASSERT( ERROR_NONE ==
-            sd_ble_gatts_value_get(connectionHandle, nrfCharacteristicHandles[attributeHandle].value_handle, &value),
+            sd_ble_gatts_value_get(connectionHandle, attributeHandle, &value),
             BLE_ERROR_PARAM_OUT_OF_RANGE);
     *lengthP = value.len;
 
@@ -218,19 +216,21 @@ ble_error_t nRF51GattServer::write(Gap::Handle_t connectionHandle, GattAttribute
     if (localOnly) {
         /* Only update locally regardless of notify/indicate */
         ASSERT_INT( ERROR_NONE,
-                    sd_ble_gatts_value_set(connectionHandle, nrfCharacteristicHandles[attributeHandle].value_handle, &value),
+                    sd_ble_gatts_value_set(connectionHandle, attributeHandle, &value),
                     BLE_ERROR_PARAM_OUT_OF_RANGE );
         return BLE_ERROR_NONE;
     }
 
-    if ((p_characteristics[attributeHandle]->getProperties() & (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_INDICATE | GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY)) &&
+    int characteristicIndex = resolveValueHandleToCharIndex(attributeHandle);
+    if ((characteristicIndex != -1) &&
+        (p_characteristics[characteristicIndex]->getProperties() & (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_INDICATE | GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY)) &&
         (gapConnectionHandle != connectionHandle)) {
         /* HVX update for the characteristic value */
         ble_gatts_hvx_params_t hvx_params;
 
-        hvx_params.handle = nrfCharacteristicHandles[attributeHandle].value_handle;
+        hvx_params.handle = attributeHandle;
         hvx_params.type   =
-            (p_characteristics[attributeHandle]->getProperties() & GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY) ? BLE_GATT_HVX_NOTIFICATION : BLE_GATT_HVX_INDICATION;
+            (p_characteristics[characteristicIndex]->getProperties() & GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY) ? BLE_GATT_HVX_NOTIFICATION : BLE_GATT_HVX_INDICATION;
         hvx_params.offset = 0;
         hvx_params.p_data = const_cast<uint8_t *>(buffer);
         hvx_params.p_len  = &len;
@@ -240,7 +240,7 @@ ble_error_t nRF51GattServer::write(Gap::Handle_t connectionHandle, GattAttribute
         /* ERROR_INVALID_STATE, ERROR_BUSY, ERROR_GATTS_SYS_ATTR_MISSING and ERROR_NO_TX_BUFFERS the ATT table has been updated. */
         if ((error != ERROR_NONE) && (error != ERROR_INVALID_STATE) && (error != ERROR_BLE_NO_TX_BUFFERS) && (error != ERROR_BUSY) && (error != ERROR_BLEGATTS_SYS_ATTR_MISSING)) {
             ASSERT_INT( ERROR_NONE,
-                        sd_ble_gatts_value_set(connectionHandle, nrfCharacteristicHandles[attributeHandle].value_handle, &value),
+                        sd_ble_gatts_value_set(connectionHandle, attributeHandle, &value),
                         BLE_ERROR_PARAM_OUT_OF_RANGE );
         }
 
@@ -252,11 +252,44 @@ ble_error_t nRF51GattServer::write(Gap::Handle_t connectionHandle, GattAttribute
         }
     } else {
         ASSERT_INT( ERROR_NONE,
-                    sd_ble_gatts_value_set(connectionHandle, nrfCharacteristicHandles[attributeHandle].value_handle, &value),
+                    sd_ble_gatts_value_set(connectionHandle, attributeHandle, &value),
                     BLE_ERROR_PARAM_OUT_OF_RANGE );
     }
 
     return returnValue;
+}
+
+ble_error_t nRF51GattServer::areUpdatesEnabled(const GattCharacteristic &characteristic, bool *enabledP)
+{
+    /* Forward the call with the default connection handle. */
+    return areUpdatesEnabled(nRF51Gap::getInstance().getConnectionHandle(), characteristic, enabledP);
+}
+
+ble_error_t nRF51GattServer::areUpdatesEnabled(Gap::Handle_t connectionHandle, const GattCharacteristic &characteristic, bool *enabledP)
+{
+    int characteristicIndex = resolveValueHandleToCharIndex(characteristic.getValueHandle());
+    if (characteristicIndex == -1) {
+        return BLE_ERROR_INVALID_PARAM;
+    }
+
+    /* Read the cccd value from the GATT server. */
+    GattAttribute::Handle_t cccdHandle = nrfCharacteristicHandles[characteristicIndex].cccd_handle;
+    uint16_t cccdValue;
+    uint16_t length = sizeof(cccdValue);
+    ble_error_t rc = read(connectionHandle, cccdHandle, reinterpret_cast<uint8_t *>(&cccdValue), &length);
+    if (rc != BLE_ERROR_NONE) {
+        return rc;
+    }
+    if (length != sizeof(cccdValue)) {
+        return BLE_ERROR_INVALID_STATE;
+    }
+
+    /* Check for NOTFICATION or INDICATION in CCCD. */
+    if ((cccdValue & BLE_GATT_HVX_NOTIFICATION) || (cccdValue & BLE_GATT_HVX_INDICATION)) {
+        *enabledP = true;
+    }
+
+    return BLE_ERROR_NONE;
 }
 
 /**************************************************************************/
@@ -271,30 +304,32 @@ void nRF51GattServer::hwCallback(ble_evt_t *p_ble_evt)
     const ble_gatts_evt_t         *gattsEventP = &p_ble_evt->evt.gatts_evt;
 
     switch (p_ble_evt->header.evt_id) {
-        case BLE_GATTS_EVT_WRITE:
-            /* There are 2 use case here: Values being updated & CCCD (indicate/notify) enabled */
+        case BLE_GATTS_EVT_WRITE: {
+                /* There are 2 use case here: Values being updated & CCCD (indicate/notify) enabled */
 
-            /* 1.) Handle CCCD changes */
-            handle_value = gattsEventP->params.write.handle;
-            for (uint8_t i = 0; i < characteristicCount; i++) {
-                if ((p_characteristics[i]->getProperties() & (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_INDICATE | GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY)) &&
-                    (nrfCharacteristicHandles[i].cccd_handle == handle_value)) {
+                /* 1.) Handle CCCD changes */
+                handle_value = gattsEventP->params.write.handle;
+                int characteristicIndex = resolveCCCDHandleToCharIndex(handle_value);
+                if ((characteristicIndex != -1) &&
+                    (p_characteristics[characteristicIndex]->getProperties() &
+                        (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_INDICATE | GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY))) {
+
                     uint16_t cccd_value = (gattsEventP->params.write.data[1] << 8) | gattsEventP->params.write.data[0]; /* Little Endian but M0 may be mis-aligned */
 
-                    if (((p_characteristics[i]->getProperties() & GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_INDICATE) && (cccd_value & BLE_GATT_HVX_INDICATION)) ||
-                        ((p_characteristics[i]->getProperties() & GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY) && (cccd_value & BLE_GATT_HVX_NOTIFICATION))) {
+                    if (((p_characteristics[characteristicIndex]->getProperties() & GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_INDICATE) && (cccd_value & BLE_GATT_HVX_INDICATION)) ||
+                        ((p_characteristics[characteristicIndex]->getProperties() & GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY) && (cccd_value & BLE_GATT_HVX_NOTIFICATION))) {
                         eventType = GattServerEvents::GATT_EVENT_UPDATES_ENABLED;
                     } else {
                         eventType = GattServerEvents::GATT_EVENT_UPDATES_DISABLED;
                     }
 
-                    handleEvent(eventType, handle_value);
+                    handleEvent(eventType, p_characteristics[characteristicIndex]->getValueHandle());
                     return;
                 }
-            }
 
-            /* 2.) Changes to the characteristic value will be handled with other events below */
-            eventType = GattServerEvents::GATT_EVENT_DATA_WRITTEN;
+                /* 2.) Changes to the characteristic value will be handled with other events below */
+                eventType = GattServerEvents::GATT_EVENT_DATA_WRITTEN;
+            }
             break;
 
         case BLE_GATTS_EVT_HVC:
@@ -331,91 +366,92 @@ void nRF51GattServer::hwCallback(ble_evt_t *p_ble_evt)
             return;
     }
 
+    int characteristicIndex = resolveValueHandleToCharIndex(handle_value);
+    if (characteristicIndex == -1) {
+        return;
+    }
+
     /* Find index (charHandle) in the pool */
-    for (uint8_t i = 0; i < characteristicCount; i++) {
-        if (nrfCharacteristicHandles[i].value_handle == handle_value) {
-            switch (eventType) {
-                case GattServerEvents::GATT_EVENT_DATA_WRITTEN: {
-                    GattWriteCallbackParams cbParams = {
-                        .handle  = i,
-                        .writeOp = static_cast<GattWriteCallbackParams::WriteOp_t>(gattsEventP->params.write.op),
-                        .offset  = gattsEventP->params.write.offset,
-                        .len     = gattsEventP->params.write.len,
-                        .data    = gattsEventP->params.write.data
-                    };
-                    handleDataWrittenEvent(&cbParams);
-                    break;
-                }
-                case GattServerEvents::GATT_EVENT_WRITE_AUTHORIZATION_REQ: {
-                    GattWriteAuthCallbackParams cbParams = {
-                        .handle  = i,
-                        .offset  = gattsEventP->params.authorize_request.request.write.offset,
-                        .len     = gattsEventP->params.authorize_request.request.write.len,
-                        .data    = gattsEventP->params.authorize_request.request.write.data,
-                    };
-                    ble_gatts_rw_authorize_reply_params_t reply = {
-                        .type = BLE_GATTS_AUTHORIZE_TYPE_WRITE,
-                        .params = {
-                            .write = {
-                                .gatt_status = p_characteristics[i]->authorizeWrite(&cbParams)
-                            }
-                        }
-                    };
-                    sd_ble_gatts_rw_authorize_reply(gattsEventP->conn_handle, &reply);
-
-                    /*
-                     * If write-authorization is enabled for a characteristic,
-                     * AUTHORIZATION_REQ event (if replied with true) is *not*
-                     * followed by another DATA_WRITTEN event; so we still need
-                     * to invoke handleDataWritten(), much the same as we would
-                     * have done if write-authorization had not been enabled.
-                     */
-                    if (reply.params.write.gatt_status == BLE_GATT_STATUS_SUCCESS) {
-                        GattWriteCallbackParams cbParams = {
-                            .handle  = i,
-                            .writeOp = static_cast<GattWriteCallbackParams::WriteOp_t>(gattsEventP->params.authorize_request.request.write.op),
-                            .offset  = gattsEventP->params.authorize_request.request.write.offset,
-                            .len     = gattsEventP->params.authorize_request.request.write.len,
-                            .data    = gattsEventP->params.authorize_request.request.write.data,
-                        };
-                        handleDataWrittenEvent(&cbParams);
-                    }
-                    break;
-                }
-                case GattServerEvents::GATT_EVENT_READ_AUTHORIZATION_REQ: {
-                    GattReadAuthCallbackParams cbParams = {
-                        .handle = i,
-                        .offset = gattsEventP->params.authorize_request.request.read.offset,
-                        .len    = 0,
-                        .data   = NULL
-                    };
-
-                    ble_gatts_rw_authorize_reply_params_t reply = {
-                        .type = BLE_GATTS_AUTHORIZE_TYPE_READ,
-                        .params = {
-                            .read = {
-                                .gatt_status = p_characteristics[i]->authorizeRead(&cbParams)
-                            }
-                        }
-                    };
-
-                    if (cbParams.authorizationReply == BLE_GATT_STATUS_SUCCESS) {
-                        if (cbParams.data != NULL) {
-                            reply.params.read.update = 1;
-                            reply.params.read.offset = cbParams.offset;
-                            reply.params.read.len    = cbParams.len;
-                            reply.params.read.p_data = cbParams.data;
-                        }
-                    }
-
-                    sd_ble_gatts_rw_authorize_reply(gattsEventP->conn_handle, &reply);
-                    break;
-                }
-
-                default:
-                    handleEvent(eventType, handle_value);
-                    break;
-            }
+    switch (eventType) {
+        case GattServerEvents::GATT_EVENT_DATA_WRITTEN: {
+            GattWriteCallbackParams cbParams = {
+                .handle  = handle_value,
+                .writeOp = static_cast<GattWriteCallbackParams::WriteOp_t>(gattsEventP->params.write.op),
+                .offset  = gattsEventP->params.write.offset,
+                .len     = gattsEventP->params.write.len,
+                .data    = gattsEventP->params.write.data
+            };
+            handleDataWrittenEvent(&cbParams);
+            break;
         }
+        case GattServerEvents::GATT_EVENT_WRITE_AUTHORIZATION_REQ: {
+            GattWriteAuthCallbackParams cbParams = {
+                .handle  = handle_value,
+                .offset  = gattsEventP->params.authorize_request.request.write.offset,
+                .len     = gattsEventP->params.authorize_request.request.write.len,
+                .data    = gattsEventP->params.authorize_request.request.write.data,
+            };
+            ble_gatts_rw_authorize_reply_params_t reply = {
+                .type = BLE_GATTS_AUTHORIZE_TYPE_WRITE,
+                .params = {
+                    .write = {
+                        .gatt_status = p_characteristics[characteristicIndex]->authorizeWrite(&cbParams)
+                    }
+                }
+            };
+            sd_ble_gatts_rw_authorize_reply(gattsEventP->conn_handle, &reply);
+
+            /*
+             * If write-authorization is enabled for a characteristic,
+             * AUTHORIZATION_REQ event (if replied with true) is *not*
+             * followed by another DATA_WRITTEN event; so we still need
+             * to invoke handleDataWritten(), much the same as we would
+             * have done if write-authorization had not been enabled.
+             */
+            if (reply.params.write.gatt_status == BLE_GATT_STATUS_SUCCESS) {
+                GattWriteCallbackParams cbParams = {
+                    .handle  = handle_value,
+                    .writeOp = static_cast<GattWriteCallbackParams::WriteOp_t>(gattsEventP->params.authorize_request.request.write.op),
+                    .offset  = gattsEventP->params.authorize_request.request.write.offset,
+                    .len     = gattsEventP->params.authorize_request.request.write.len,
+                    .data    = gattsEventP->params.authorize_request.request.write.data,
+                };
+                handleDataWrittenEvent(&cbParams);
+            }
+            break;
+        }
+        case GattServerEvents::GATT_EVENT_READ_AUTHORIZATION_REQ: {
+            GattReadAuthCallbackParams cbParams = {
+                .handle = handle_value,
+                .offset = gattsEventP->params.authorize_request.request.read.offset,
+                .len    = 0,
+                .data   = NULL
+            };
+
+            ble_gatts_rw_authorize_reply_params_t reply = {
+                .type = BLE_GATTS_AUTHORIZE_TYPE_READ,
+                .params = {
+                    .read = {
+                        .gatt_status = p_characteristics[characteristicIndex]->authorizeRead(&cbParams)
+                    }
+                }
+            };
+
+            if (cbParams.authorizationReply == BLE_GATT_STATUS_SUCCESS) {
+                if (cbParams.data != NULL) {
+                    reply.params.read.update = 1;
+                    reply.params.read.offset = cbParams.offset;
+                    reply.params.read.len    = cbParams.len;
+                    reply.params.read.p_data = cbParams.data;
+                }
+            }
+
+            sd_ble_gatts_rw_authorize_reply(gattsEventP->conn_handle, &reply);
+            break;
+        }
+
+        default:
+            handleEvent(eventType, handle_value);
+            break;
     }
 }

@@ -17,7 +17,7 @@
 #include "ble/BLE.h"
 
 #if defined(TARGET_OTA_ENABLED)
-#include "DFUService.h"
+#include "ble/services/DFUService.h"
 #endif
 
 ble_error_t

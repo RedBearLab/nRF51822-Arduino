@@ -53,7 +53,7 @@ public:
      */
     void updateBatteryLevel(uint8_t newLevel) {
         batteryLevel = newLevel;
-        ble.updateCharacteristicValue(batteryLevelCharacteristic.getValueAttribute().getHandle(), &batteryLevel, 1);
+        ble.gattServer().write(batteryLevelCharacteristic.getValueHandle(), &batteryLevel, 1);
     }
 
 protected:

@@ -267,7 +267,7 @@ class URIBeaconConfigService {
                     paramsUpdated = true;
                 }
                 if (paramsUpdated) {
-                    ble.updateCharacteristicValue(beaconPeriodChar.getValueHandle(), reinterpret_cast<uint8_t *>(&params.beaconPeriod), sizeof(uint16_t));
+                    ble.gattServer().write(beaconPeriodChar.getValueHandle(), reinterpret_cast<uint8_t *>(&params.beaconPeriod), sizeof(uint16_t));
                 }
             }
         } else if (handle == resetChar.getValueHandle()) {
@@ -295,17 +295,17 @@ class URIBeaconConfigService {
      * change to the internal state of the service object.
      */
     void updateCharacteristicValues(void) {
-        ble.updateCharacteristicValue(lockedStateChar.getValueHandle(), &lockedState, 1);
-        ble.updateCharacteristicValue(uriDataChar.getValueHandle(), params.uriData, params.uriDataLength);
-        ble.updateCharacteristicValue(flagsChar.getValueHandle(), &params.flags, 1);
-        ble.updateCharacteristicValue(beaconPeriodChar.getValueHandle(),
+        ble.gattServer().write(lockedStateChar.getValueHandle(), &lockedState, 1);
+        ble.gattServer().write(uriDataChar.getValueHandle(), params.uriData, params.uriDataLength);
+        ble.gattServer().write(flagsChar.getValueHandle(), &params.flags, 1);
+        ble.gattServer().write(beaconPeriodChar.getValueHandle(),
                                       reinterpret_cast<uint8_t *>(&params.beaconPeriod), sizeof(uint16_t));
-        ble.updateCharacteristicValue(txPowerModeChar.getValueHandle(), &params.txPowerMode, 1);
-        ble.updateCharacteristicValue(advPowerLevelsChar.getValueHandle(),
+        ble.gattServer().write(txPowerModeChar.getValueHandle(), &params.txPowerMode, 1);
+        ble.gattServer().write(advPowerLevelsChar.getValueHandle(),
                                       reinterpret_cast<uint8_t *>(params.advPowerLevels), sizeof(PowerLevels_t));
     }
 
-private:
+protected:
     void lockAuthorizationCallback(GattWriteAuthCallbackParams *authParams) {
         if (lockedState) {
             authParams->authorizationReply = AUTH_CALLBACK_REPLY_ATTERR_INSUF_AUTHORIZATION;

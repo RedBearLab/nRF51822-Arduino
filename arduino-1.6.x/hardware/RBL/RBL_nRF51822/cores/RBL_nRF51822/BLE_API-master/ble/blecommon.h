@@ -126,6 +126,14 @@ enum ble_error_t {
     BLE_ERROR_UNSPECIFIED             = 9, /**< Unknown error. */
 };
 
+/** @brief Default MTU size. */
+static const unsigned BLE_GATT_MTU_SIZE_DEFAULT = 23;
+
+enum HVXType_t {
+    BLE_HVX_NOTIFICATION = 0x01,  /**< Handle Value Notification. */
+    BLE_HVX_INDICATION   = 0x02,  /**< Handle Value Indication. */
+};
+
 #ifdef __cplusplus
 }
 #endif
