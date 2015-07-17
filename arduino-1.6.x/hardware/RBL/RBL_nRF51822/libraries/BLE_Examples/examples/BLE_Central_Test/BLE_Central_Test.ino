@@ -3,15 +3,22 @@
 #include "DeviceInformationService.h"
 #include "ble/ServiceDiscovery.h"
 #include "ble/DiscoveredCharacteristic.h"
+#include "ble/DiscoveredService.h"
 #include "ble_advdata_parser.h"
 #include "ble_gap.h"
 
 
 BLE           ble;
-UUID service_uuid((uint16_t)0x0001);
-UUID chars_uuid1((uint16_t)0x0002);
-UUID chars_uuid2((uint16_t)0x0003);
-UUID chars_uuid3((uint16_t)0x0000);
+
+static uint8_t service1_uuid[]           = {0x71, 0x3D, 0, 0, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
+static uint8_t service1_chars1[]         = {0x71, 0x3D, 0, 2, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
+static uint8_t service1_chars2[]         = {0x71, 0x3D, 0, 3, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
+static uint8_t service1_chars3[]         = {0x71, 0x3D, 0, 4, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
+
+UUID service_uuid(service1_uuid);
+UUID chars_uuid1(service1_chars1);
+UUID chars_uuid2(service1_chars2);
+UUID chars_uuid3(service1_chars3);
     
 DigitalOut    led1(P0_19);
 Serial       pc(USBTX, USBRX);
@@ -73,8 +80,14 @@ void scanCallBack(const Gap::AdvertisementCallbackParams_t *params)
     }
     else if( NRF_SUCCESS == ble_advdata_parser(BLE_GAP_AD_TYPE_COMPLETE_LOCAL_NAME, params->advertisingDataLen, (uint8_t *)params->advertisingData, &len, adv_name) )
     {
-        pc.printf("Short name len : %d \r\n", len);
+        pc.printf("Long name len : %d \r\n", len);
         pc.printf("Long name is %s \r\n", adv_name);  
+        if( (len == 5) && (memcmp("HRM1", adv_name, len) == 0x00) )
+        {
+            pc.printf("Got device, stop scan \r\n");    
+            ble.stopScan();
+            ble.connect(params->peerAddr, Gap::ADDR_TYPE_RANDOM_STATIC, NULL, NULL);
+        }
     }
     pc.printf("\r\n");   
 }
@@ -82,7 +95,7 @@ void scanCallBack(const Gap::AdvertisementCallbackParams_t *params)
 void ServiceCallBack(const DiscoveredService *service)
 {
     pc.printf("Servuce Discovered............ \r\n");      
-        
+    pc.printf("UUID : %2x \r\n", service->getUUID().getShortUUID());    
 }
 
 void CharacteristicCallBack(const DiscoveredCharacteristic *chars)
@@ -99,6 +112,7 @@ void CharacteristicCallBack(const DiscoveredCharacteristic *chars)
 
     uint16_t value = 0x0102;
     ble.gattClient().read(conn_handle, chars->getValueHandle(), 0);
+    //ble.gattClient().write(GattClient::GATT_OP_WRITE_CMD,conn_handle,chars->getValueHandle(),2,(uint8_t *)&value);
 }
 
  // GAP call back handle
@@ -116,7 +130,7 @@ static void connectionCallBack( const Gap::ConnectionCallbackParams_t *params )
     pc.printf("\r\n");  
     
     conn_handle = params->handle;
-    ble.gattClient().launchServiceDiscovery(params->handle, ServiceCallBack, NULL, service_uuid, chars_uuid3);
+    ble.gattClient().launchServiceDiscovery(params->handle, ServiceCallBack, CharacteristicCallBack, service_uuid, chars_uuid3);
 }
 
 static void disconnectionCallBack(Gap::Handle_t handle, Gap::DisconnectionReason_t reason)
@@ -143,7 +157,7 @@ static void onDataRead(const GattReadCallbackParams *params)
     pc.printf("The data : ");
     for(uint8_t index=0; index<params->len; index++)
     {
-        pc.printf("%d ", params->data[index]);    
+        pc.printf("%X ", params->data[index]);    
     }
     pc.printf("\r\n");
 }

@@ -126,24 +126,65 @@ void
 nRF51ServiceDiscovery::progressCharacteristicDiscovery(void)
 {
     /* Iterate through the previously discovered characteristics cached in characteristics[]. */
-    while ((state == CHARACTERISTIC_DISCOVERY_ACTIVE) && (characteristicIndex < numCharacteristics)) {
+    // while ((state == CHARACTERISTIC_DISCOVERY_ACTIVE) && (characteristicIndex < numCharacteristics)) {
+		// pc.printf("progressCharacteristicDiscovery \r\n");  
+		// pc.printf("matchingCharacteristicUUID : %2x \r\n", matchingCharacteristicUUID.getShortUUID());
+		// pc.printf("characteristics[characteristicIndex].getShortUUID() : %2x \r\n", characteristics[characteristicIndex].getShortUUID());
+		// pc.printf("matchingServiceUUID.getShortUUID() : %2x \r\n", matchingServiceUUID.getShortUUID() );
+		// pc.printf("UUID::ShortUUIDBytes_t(BLE_UUID_UNKNOWN) : %2x \r\n", UUID::ShortUUIDBytes_t(BLE_UUID_UNKNOWN) );
+        // if ((matchingCharacteristicUUID.getShortUUID() == UUID::ShortUUIDBytes_t(BLE_UUID_UNKNOWN)) ||
+            // ((matchingCharacteristicUUID.getShortUUID() == characteristics[characteristicIndex].getShortUUID()) &&
+             // (matchingServiceUUID.getShortUUID() != UUID::ShortUUIDBytes_t(BLE_UUID_UNKNOWN)))) {
+			// pc.printf("progressCharacteristic1 \r\n");  
+            // if (characteristicCallback) {
+                // characteristicCallback(&characteristics[characteristicIndex]);
+            // }
+        // }
+
+        // characteristicIndex++;
+    // }
+	// while( (state == CHARACTERISTIC_DISCOVERY_ACTIVE) && (characteristicIndex < numCharacteristics) ) {
+		// pc.printf("progressCharacteristicDiscovery \r\n");  
+		// if( (matchingCharacteristicUUID.shortOrLong() == UUID::UUID_Type_t(UUID::UUID_TYPE_SHORT)) &&
+			// (characteristics[characteristicIndex].getUUID().shortOrLong() == UUID::UUID_Type_t(UUID::UUID_TYPE_SHORT)) &&
+			// (matchingCharacteristicUUID.getShortUUID() == characteristics[characteristicIndex].getUUID().getShortUUID()) )
+		// {
+			// pc.printf("Short uuid \r\n");  
+            // if (characteristicCallback) {
+                // characteristicCallback(&characteristics[characteristicIndex]);
+            // }	
+		// }
+		// else if( (matchingCharacteristicUUID.shortOrLong() == UUID::UUID_Type_t(UUID::UUID_TYPE_LONG)) &&
+			     // (characteristics[characteristicIndex].getUUID().shortOrLong() == UUID::UUID_Type_t(UUID::UUID_TYPE_LONG)) &&
+				 // (0x00 == memcmp(matchingCharacteristicUUID.getBaseUUID(), characteristics[characteristicIndex].getUUID().getBaseUUID(), UUID::LENGTH_OF_LONG_UUID)) )
+		// {
+			// pc.printf("Long uuid \r\n");  
+            // if (characteristicCallback) {
+                // characteristicCallback(&characteristics[characteristicIndex]);
+            // }				
+		// }
+		
+		// characteristicIndex++;
+	// }
+	while( (state == CHARACTERISTIC_DISCOVERY_ACTIVE) && (characteristicIndex < numCharacteristics) ) {
 		pc.printf("progressCharacteristicDiscovery \r\n");  
-		pc.printf("matchingCharacteristicUUID : %2x \r\n", matchingCharacteristicUUID.getShortUUID());
-		pc.printf("characteristics[characteristicIndex].getShortUUID() : %2x \r\n", characteristics[characteristicIndex].getShortUUID());
-		pc.printf("matchingServiceUUID.getShortUUID() : %2x \r\n", matchingServiceUUID.getShortUUID() );
-		pc.printf("UUID::ShortUUIDBytes_t(BLE_UUID_UNKNOWN) : %2x \r\n", UUID::ShortUUIDBytes_t(BLE_UUID_UNKNOWN) );
-        if ((matchingCharacteristicUUID.getShortUUID() == UUID::ShortUUIDBytes_t(BLE_UUID_UNKNOWN)) ||
-            ((matchingCharacteristicUUID.getShortUUID() == characteristics[characteristicIndex].getShortUUID()) &&
-             (matchingServiceUUID.getShortUUID() != UUID::ShortUUIDBytes_t(BLE_UUID_UNKNOWN)))) {
-			pc.printf("progressCharacteristic1 \r\n");  
+		if( ((matchingCharacteristicUUID.shortOrLong() == UUID::UUID_Type_t(UUID::UUID_TYPE_SHORT)) &&
+			 (characteristics[characteristicIndex].getUUID().shortOrLong() == UUID::UUID_Type_t(UUID::UUID_TYPE_SHORT)) &&
+			 (matchingCharacteristicUUID.getShortUUID() == characteristics[characteristicIndex].getUUID().getShortUUID()) 
+			) || 
+			((matchingCharacteristicUUID.shortOrLong() == UUID::UUID_Type_t(UUID::UUID_TYPE_LONG)) &&
+			 (characteristics[characteristicIndex].getUUID().shortOrLong() == UUID::UUID_Type_t(UUID::UUID_TYPE_LONG)) &&
+			 (0x00 == memcmp(matchingCharacteristicUUID.getBaseUUID(), characteristics[characteristicIndex].getUUID().getBaseUUID(), UUID::LENGTH_OF_LONG_UUID))
+			) )
+		{
+			pc.printf("match uuid \r\n");  
             if (characteristicCallback) {
                 characteristicCallback(&characteristics[characteristicIndex]);
-            }
-        }
-
-        characteristicIndex++;
-    }
-
+            }	
+		}
+		
+		characteristicIndex++;
+	}
     /* Relaunch discovery of new characteristics beyond the last entry cached in characteristics[]. */
     if (state == CHARACTERISTIC_DISCOVERY_ACTIVE) {
         /* Determine the ending handle of the last cached characteristic. */
@@ -171,27 +212,106 @@ void
 nRF51ServiceDiscovery::progressServiceDiscovery(void)
 {
     /* Iterate through the previously discovered services cached in services[]. */
-    while ((state == SERVICE_DISCOVERY_ACTIVE) && (serviceIndex < numServices)) {
-		pc.printf("progressServiceDiscovery \r\n");  
-        if ((matchingServiceUUID.getShortUUID() == UUID::ShortUUIDBytes_t(BLE_UUID_UNKNOWN)) ||
-            (matchingServiceUUID.getShortUUID() == services[serviceIndex].getUUID().getShortUUID())) {
-			pc.printf("progressService1 \r\n");  
-            if (serviceCallback && (matchingCharacteristicUUID.getShortUUID() == UUID::ShortUUIDBytes_t(BLE_UUID_UNKNOWN))) {
-				pc.printf("progressService2 \r\n");  
+    // while ((state == SERVICE_DISCOVERY_ACTIVE) && (serviceIndex < numServices)) {
+		// pc.printf("progressServiceDiscovery \r\n");  
+        // if ((matchingServiceUUID.getShortUUID() == UUID::ShortUUIDBytes_t(BLE_UUID_UNKNOWN)) ||
+            // (matchingServiceUUID.getShortUUID() == services[serviceIndex].getUUID().getShortUUID())) {
+			// pc.printf("progressService1 \r\n");  
+            // if (serviceCallback && (matchingCharacteristicUUID.getShortUUID() == UUID::ShortUUIDBytes_t(BLE_UUID_UNKNOWN))) {
+				// pc.printf("progressService2 \r\n");  
+                // serviceCallback(&services[serviceIndex]);
+            // }
+
+            // if ((state == SERVICE_DISCOVERY_ACTIVE) && characteristicCallback) {
+				// pc.printf("progressService3 \r\n");  
+                // launchCharacteristicDiscovery(connHandle, services[serviceIndex].getStartHandle(), services[serviceIndex].getEndHandle());
+            // } else {
+                // serviceIndex++;
+            // }
+        // } else {
+            // serviceIndex++;
+        // }
+    // }
+	// while ((state == SERVICE_DISCOVERY_ACTIVE) && (serviceIndex < numServices)) {
+		// pc.printf("progressServiceDiscovery \r\n"); 
+		// if( (matchingServiceUUID.shortOrLong() == UUID::UUID_Type_t(UUID::UUID_TYPE_SHORT)) && 
+			// (services[serviceIndex].getUUID().shortOrLong() == UUID::UUID_Type_t(UUID::UUID_TYPE_SHORT)) &&
+			// (matchingServiceUUID.getShortUUID() == services[serviceIndex].getUUID().getShortUUID()) )
+		// {
+			// pc.printf("Short type \r\n"); 
+			// if ( serviceCallback ){
+				// pc.printf("CallBack \r\n");  
+                // serviceCallback(&services[serviceIndex]);
+            // }
+			
+			// if( (state == SERVICE_DISCOVERY_ACTIVE) && characteristicCallback )
+			// {
+				// pc.printf("start Scan chars \r\n");  
+                // launchCharacteristicDiscovery(connHandle, services[serviceIndex].getStartHandle(), services[serviceIndex].getEndHandle());		
+			// }
+			// else
+			// {
+				// serviceIndex++;
+			// }
+		// }
+		// else if( (matchingServiceUUID.shortOrLong() == UUID::UUID_Type_t(UUID::UUID_TYPE_LONG)) &&
+				 // (services[serviceIndex].getUUID().shortOrLong() == UUID::UUID_Type_t(UUID::UUID_TYPE_LONG)) &&
+				 // (0x00 == memcmp(matchingServiceUUID.getBaseUUID(), services[serviceIndex].getUUID().getBaseUUID(), UUID::LENGTH_OF_LONG_UUID)) )
+		// {
+			// pc.printf("Long type \r\n"); 
+			// if ( serviceCallback ){
+				// pc.printf("CallBack \r\n");  
+                // serviceCallback(&services[serviceIndex]);
+            // }
+			
+			// if( (state == SERVICE_DISCOVERY_ACTIVE) && characteristicCallback )
+			// {
+				// pc.printf("start Scan chars \r\n");  
+                // launchCharacteristicDiscovery(connHandle, services[serviceIndex].getStartHandle(), services[serviceIndex].getEndHandle());		
+			// }	
+			// else
+			// {
+				// serviceIndex++;
+			// }
+		// }
+		// else
+		// {
+			// serviceIndex++;
+		// }
+	// }
+
+	while ((state == SERVICE_DISCOVERY_ACTIVE) && (serviceIndex < numServices)) {
+		pc.printf("progressServiceDiscovery \r\n"); 
+		if( ((matchingServiceUUID.shortOrLong() == UUID::UUID_Type_t(UUID::UUID_TYPE_SHORT)) && 
+			 (services[serviceIndex].getUUID().shortOrLong() == UUID::UUID_Type_t(UUID::UUID_TYPE_SHORT)) &&
+			 (matchingServiceUUID.getShortUUID() == services[serviceIndex].getUUID().getShortUUID()) 
+			) || 
+			((matchingServiceUUID.shortOrLong() == UUID::UUID_Type_t(UUID::UUID_TYPE_LONG)) &&
+			 (services[serviceIndex].getUUID().shortOrLong() == UUID::UUID_Type_t(UUID::UUID_TYPE_LONG)) &&
+			 (0x00 == memcmp(matchingServiceUUID.getBaseUUID(), services[serviceIndex].getUUID().getBaseUUID(), UUID::LENGTH_OF_LONG_UUID))
+			) )
+		{
+			pc.printf("match uuid \r\n"); 
+			if ( serviceCallback ){
+				pc.printf("CallBack \r\n");  
                 serviceCallback(&services[serviceIndex]);
             }
-
-            if ((state == SERVICE_DISCOVERY_ACTIVE) && characteristicCallback) {
-				pc.printf("progressService3 \r\n");  
-                launchCharacteristicDiscovery(connHandle, services[serviceIndex].getStartHandle(), services[serviceIndex].getEndHandle());
-            } else {
-                serviceIndex++;
-            }
-        } else {
-            serviceIndex++;
-        }
-    }
-
+			
+			if( (state == SERVICE_DISCOVERY_ACTIVE) && characteristicCallback )
+			{
+				pc.printf("start Scan chars \r\n");  
+                launchCharacteristicDiscovery(connHandle, services[serviceIndex].getStartHandle(), services[serviceIndex].getEndHandle());		
+			}
+			else
+			{
+				serviceIndex++;
+			}
+		}
+		else
+		{
+			serviceIndex++;
+		}
+	}
     /* Relaunch discovery of new services beyond the last entry cached in services[]. */
     if ((state == SERVICE_DISCOVERY_ACTIVE) && (numServices > 0) && (serviceIndex > 0)) {
         /* Determine the ending handle of the last cached service. */

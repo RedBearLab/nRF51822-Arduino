@@ -140,6 +140,10 @@ public:
     }
 
 public:
+    const UUID &getUUID(void) const {
+        return uuid;
+    }
+	
     UUID::ShortUUIDBytes_t getShortUUID(void) const {
         return uuid.getShortUUID();
     }

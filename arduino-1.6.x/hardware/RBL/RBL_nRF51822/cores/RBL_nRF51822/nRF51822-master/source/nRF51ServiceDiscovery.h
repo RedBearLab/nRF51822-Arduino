@@ -33,8 +33,8 @@ public:
     static const uint16_t SRV_DISC_END_HANDLE               = 0xFFFF; /**< The end handle value used during service discovery. */
 
 public:
-    static const unsigned BLE_DB_DISCOVERY_MAX_SRV          = 4;      /**< Maximum number of services we can retain information for after a single discovery. */
-    static const unsigned BLE_DB_DISCOVERY_MAX_CHAR_PER_SRV = 4;      /**< Maximum number of characteristics per service we can retain information for. */
+    static const unsigned BLE_DB_DISCOVERY_MAX_SRV          = 6;      /**< Maximum number of services we can retain information for after a single discovery. */
+    static const unsigned BLE_DB_DISCOVERY_MAX_CHAR_PER_SRV = 8;      /**< Maximum number of characteristics per service we can retain information for. */
 
 public:
     nRF51ServiceDiscovery(nRF51GattClient *gattcIn) :

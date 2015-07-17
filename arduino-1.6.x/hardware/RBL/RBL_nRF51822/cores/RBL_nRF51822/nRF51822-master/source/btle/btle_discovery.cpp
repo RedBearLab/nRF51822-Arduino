@@ -59,8 +59,13 @@ void bleGattcEventHandler(const ble_evt_t *p_ble_evt)
                 sdSingleton.processDiscoverUUIDResponse(&p_ble_evt->evt.gattc_evt.params.char_val_by_uuid_read_rsp);
             }
             break;
+			
+		case BLE_GATTC_EVT_CHAR_DISC_RSP:
+			pc.printf("EVT : BLE_GATTC_EVT_CHAR_DISC_RSP \r\n");  
+			break;
 
         case BLE_GATTC_EVT_READ_RSP: {
+			pc.printf("EVT : BLE_GATTC_EVT_READ_RSP \r\n"); 
                 GattReadCallbackParams response = {
                     .handle = p_ble_evt->evt.gattc_evt.params.read_rsp.handle,
                     .offset = p_ble_evt->evt.gattc_evt.params.read_rsp.offset,
@@ -72,6 +77,7 @@ void bleGattcEventHandler(const ble_evt_t *p_ble_evt)
             break;
 
         case BLE_GATTC_EVT_WRITE_RSP: {
+			pc.printf("EVT : BLE_GATTC_EVT_WRITE_RSP \r\n"); 
                 GattWriteCallbackParams response = {
                     .handle  = p_ble_evt->evt.gattc_evt.params.write_rsp.handle,
                     .writeOp = (GattWriteCallbackParams::WriteOp_t)(p_ble_evt->evt.gattc_evt.params.write_rsp.write_op),
@@ -84,6 +90,7 @@ void bleGattcEventHandler(const ble_evt_t *p_ble_evt)
             break;
 
         case BLE_GATTC_EVT_HVX: {
+			pc.printf("EVT : BLE_GATTC_EVT_HVX \r\n"); 
                 GattHVXCallbackParams params;
                 params.handle = p_ble_evt->evt.gattc_evt.params.hvx.handle;
                 params.type   = static_cast<HVXType_t>(p_ble_evt->evt.gattc_evt.params.hvx.type);
