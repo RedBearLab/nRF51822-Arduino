@@ -158,13 +158,23 @@ public:
     const GattAttribute::Handle_t& getValueHandle(void) const {
         return valueHandle;
     }
+	
+	const GattAttribute::Handle_t& getDescHandle(void) const {
+        return description_handle;
+    }
+    const GattAttribute::Handle_t& getCCCDHndle(void) const {
+        return cccd_handle;
+    }
 
 public:
     DiscoveredCharacteristic() : gattc(NULL),
                                  uuid(UUID::ShortUUIDBytes_t(0)),
                                  props(),
                                  declHandle(GattAttribute::INVALID_HANDLE),
-                                 valueHandle(GattAttribute::INVALID_HANDLE) {
+                                 valueHandle(GattAttribute::INVALID_HANDLE),
+                                 description_handle(GattAttribute::INVALID_HANDLE),
+                                 cccd_handle(GattAttribute::INVALID_HANDLE)
+	{
         /* empty */
     }
 
@@ -176,6 +186,9 @@ protected:
     Properties_t             props;
     GattAttribute::Handle_t  declHandle;
     GattAttribute::Handle_t  valueHandle;
+	
+	GattAttribute::Handle_t  description_handle;
+	GattAttribute::Handle_t  cccd_handle;
 
     Gap::Handle_t            connHandle;
 };

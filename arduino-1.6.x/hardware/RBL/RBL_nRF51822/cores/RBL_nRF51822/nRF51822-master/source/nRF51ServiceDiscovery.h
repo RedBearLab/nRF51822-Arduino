@@ -43,6 +43,8 @@ public:
         numServices(0),
         characteristicIndex(0),
         numCharacteristics(0),
+		matchServiceIndex(0xFF),
+		matchCharsIndex(0xFF),
         state(INACTIVE),
         services(),
         characteristics(),
@@ -105,7 +107,8 @@ private:
 private:
     void setupDiscoveredServices(const ble_gattc_evt_prim_srvc_disc_rsp_t *response);
     void setupDiscoveredCharacteristics(const ble_gattc_evt_char_disc_rsp_t *response);
-
+	void setupDiscoveredDescriptor(const ble_gattc_evt_desc_disc_rsp_t *respone);
+	
     void triggerServiceUUIDDiscovery(void);
     void processDiscoverUUIDResponse(const ble_gattc_evt_char_val_by_uuid_read_rsp_t *response);
     void removeFirstServiceNeedingUUIDDiscovery(void);
@@ -120,21 +123,32 @@ private:
     }
 
     void terminateCharacteristicDiscovery(void) {
-        if (state == CHARACTERISTIC_DISCOVERY_ACTIVE) {
-            state = SERVICE_DISCOVERY_ACTIVE;
-        }
-        serviceIndex++; /* Progress service index to keep discovery alive. */
+        // if (state == CHARACTERISTIC_DISCOVERY_ACTIVE) {
+            // state = SERVICE_DISCOVERY_ACTIVE;
+        // }
+        // serviceIndex++; /* Progress service index to keep discovery alive. */
+		if(state == CHARACTERISTIC_DISCOVERY_ACTIVE){
+			state = DESCRIPTOR_DISCOVERY_START;
+		}
     }
+	
+	void terminateDescriptorDiscovery(void){
+		if(state == DESCRIPTOR_DISCOVERY_ACTIVE){
+			state = SERVICE_DISCOVERY_ACTIVE;
+		}
+	}
 
 private:
     void resetDiscoveredServices(void) {
         numServices  = 0;
         serviceIndex = 0;
+		matchServiceIndex = 0xFF;
     }
 
     void resetDiscoveredCharacteristics(void) {
         numCharacteristics  = 0;
         characteristicIndex = 0;
+		matchCharsIndex = 0xFF;
     }
 
 private:
@@ -273,6 +287,7 @@ private:
 private:
     friend void bleGattcEventHandler(const ble_evt_t *p_ble_evt);
     void progressCharacteristicDiscovery(void);
+	void progressDescriptorDiscovery(void);
     void progressServiceDiscovery(void);
 
 private:
@@ -283,11 +298,15 @@ private:
     uint8_t  numServices;         /**< Number of services at the peers GATT database.*/
     uint8_t  characteristicIndex; /**< Index of the current characteristic being discovered. This is intended for internal use during service discovery.*/
     uint8_t  numCharacteristics;  /**< Number of characteristics within the service.*/
-
+	uint8_t  matchServiceIndex;
+	uint8_t	 matchCharsIndex;
+	
     enum State_t {
         INACTIVE,
         SERVICE_DISCOVERY_ACTIVE,
         CHARACTERISTIC_DISCOVERY_ACTIVE,
+		DESCRIPTOR_DISCOVERY_START,
+		DESCRIPTOR_DISCOVERY_ACTIVE,
         DISCOVER_SERVICE_UUIDS,
         DISCOVER_CHARACTERISTIC_UUIDS,
     } state;

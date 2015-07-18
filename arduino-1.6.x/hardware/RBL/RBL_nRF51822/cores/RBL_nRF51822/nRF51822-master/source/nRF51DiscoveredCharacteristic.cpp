@@ -52,7 +52,7 @@ nRF51DiscoveredCharacteristic::setup(nRF51GattClient         *gattcIn,
     uuid        = uuidIn;
     declHandle  = declHandleIn;
     valueHandle = valueHandleIn;
-
+	
     props._broadcast       = propsIn.broadcast;
     props._read            = propsIn.read;
     props._writeWoResp     = propsIn.write_wo_resp;
@@ -61,3 +61,17 @@ nRF51DiscoveredCharacteristic::setup(nRF51GattClient         *gattcIn,
     props._indicate        = propsIn.indicate;
     props._authSignedWrite = propsIn.auth_signed_wr;
 }
+
+void 
+nRF51DiscoveredCharacteristic::setDescHandle(GattAttribute::Handle_t descHandleIn)
+{
+	description_handle = descHandleIn;
+}
+	
+void 
+nRF51DiscoveredCharacteristic::setCCCDHandle(GattAttribute::Handle_t CCCDHandleIn)
+{
+	cccd_handle = CCCDHandleIn;
+}
+	
+	

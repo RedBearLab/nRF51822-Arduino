@@ -47,6 +47,7 @@ void bleGattcEventHandler(const ble_evt_t *p_ble_evt)
                     break;
 
                 case BLE_GATT_STATUS_ATTERR_ATTRIBUTE_NOT_FOUND:
+				pc.printf("EVT : BLE_GATT_STATUS_ATTERR_ATTRIBUTE_NOT_FOUND \r\n"); 
                 default:
                     sdSingleton.terminateCharacteristicDiscovery();
                     break;
@@ -60,8 +61,18 @@ void bleGattcEventHandler(const ble_evt_t *p_ble_evt)
             }
             break;
 			
-		case BLE_GATTC_EVT_CHAR_DISC_RSP:
-			pc.printf("EVT : BLE_GATTC_EVT_CHAR_DISC_RSP \r\n");  
+		case BLE_GATTC_EVT_DESC_DISC_RSP:
+			pc.printf("EVT : BLE_GATTC_EVT_DESC_DISC_RSP \r\n");  
+			switch(p_ble_evt->evt.gattc_evt.gatt_status){
+				case BLE_GATT_STATUS_SUCCESS : 
+					sdSingleton.setupDiscoveredDescriptor(&p_ble_evt->evt.gattc_evt.params.desc_disc_rsp);
+					break;
+				case BLE_GATT_STATUS_ATTERR_ATTRIBUTE_NOT_FOUND:
+					pc.printf("EVT : BLE_GATT_STATUS_ATTERR_ATTRIBUTE_NOT_FOUND \r\n"); 
+                default:
+                    sdSingleton.terminateDescriptorDiscovery();
+                    break;
+			}
 			break;
 
         case BLE_GATTC_EVT_READ_RSP: {
@@ -103,6 +114,7 @@ void bleGattcEventHandler(const ble_evt_t *p_ble_evt)
     }
 
     sdSingleton.progressCharacteristicDiscovery();
+	sdSingleton.progressDescriptorDiscovery();
     sdSingleton.progressServiceDiscovery();
 }
 
