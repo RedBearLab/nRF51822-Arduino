@@ -21,6 +21,9 @@
 #include "wiring_buffer.h"
 #include "wiring_serial.h"
 
+#include "wiring_analog.h"
+#include "WMath.h"
+
 /* sketch */
 extern void setup( void ) ;
 extern void loop( void ) ;

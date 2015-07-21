@@ -14,6 +14,7 @@
 #define RISING 			0x04
 
 
+
 #ifndef min
 #define min(a,b) ((a)<(b)?(a):(b))
 #endif // min
@@ -38,7 +39,10 @@
 #define bitClear(value, bit) ((value) &= ~(1UL << (bit)))
 #define bitWrite(value, bit, bitvalue) (bitvalue ? bitSet(value, bit) : bitClear(value, bit))
 
+#define bit(b) (1UL << (b))
 
+#define interrupts() __enable_irq()
+#define noInterrupts() __disable_irq()
 
 typedef unsigned int word;
 typedef uint8_t boolean ;
