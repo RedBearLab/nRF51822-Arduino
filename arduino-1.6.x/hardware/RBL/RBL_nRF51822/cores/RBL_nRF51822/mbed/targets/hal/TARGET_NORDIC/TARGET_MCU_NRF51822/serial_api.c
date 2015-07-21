@@ -22,6 +22,7 @@
 #include "cmsis.h"
 #include "pinmap.h"
 
+void store(uint8_t c);
 /******************************************************************************
  * INITIALIZATION
  ******************************************************************************/
@@ -168,6 +169,8 @@ void UART0_IRQHandler()
         irtype = 1;
     } else if((NRF_UART0->INTENSET & 0x04) && NRF_UART0->EVENTS_RXDRDY) {
         irtype = 2;
+		NRF_UART0->EVENTS_RXDRDY = 0;
+		store((uint8_t)NRF_UART0->RXD);
     }
     uart_irq(irtype, 0);
 }
