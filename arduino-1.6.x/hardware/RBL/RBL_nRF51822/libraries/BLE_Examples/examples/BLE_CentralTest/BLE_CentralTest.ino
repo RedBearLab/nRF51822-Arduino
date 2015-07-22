@@ -1,7 +1,4 @@
 
-
-
-
 BLE           ble;
 
 static uint8_t service1_uuid[]           = {0x71, 0x3D, 0, 0, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
@@ -14,10 +11,6 @@ UUID chars_uuid1(0x2A37);
 UUID chars_uuid2(service1_chars2);
 UUID chars_uuid3(service1_chars3);
     
-DigitalOut    led1(P0_19);
-Serial       pc(USBTX, USBRX);
-
-static uint16_t conn_handle;
 
 uint32_t ble_advdata_parser(uint8_t type, uint8_t advdata_len, uint8_t *p_advdata, uint8_t *len, uint8_t *p_field_data)
 {
@@ -39,34 +32,35 @@ uint32_t ble_advdata_parser(uint8_t type, uint8_t advdata_len, uint8_t *p_advdat
     return NRF_ERROR_NOT_FOUND;
 }
 
-void periodicCallback(void)
-{
-    led1 = !led1; /* Do blinky on LED1 while we're waiting for BLE events */
-}
-
 void scanCallBack(const Gap::AdvertisementCallbackParams_t *params)
 {
-    pc.printf("Scan CallBack \r\n");
-    pc.printf("PerrAddress: ");
+    Serial1.println("Scan CallBack ");
+    Serial1.print("PerrAddress: ");
     for(uint8_t index=0; index<6; index++)
     {
-       pc.printf("%x ", params->peerAddr[index]);  
+        Serial1.print(params->peerAddr[index], HEX);  
+        Serial1.print(" ");
     }   
-    pc.printf("\r\n");  
+    Serial1.println(" ");  
     
-    pc.printf("The Rssi : %d \r\n", params->rssi);
+    Serial1.print("The Rssi : ");
+    Serial1.println(params->rssi, DEC);
     
-    pc.printf("The adv_data : %s \r\n", params->advertisingData);
+    Serial1.print("The adv_data : ");
+    Serial1.println((const char*)params->advertisingData);
     
     uint8_t len;
     uint8_t adv_name[31];
     if( NRF_SUCCESS == ble_advdata_parser(BLE_GAP_AD_TYPE_SHORT_LOCAL_NAME, params->advertisingDataLen, (uint8_t *)params->advertisingData, &len, adv_name) )
     {
-        pc.printf("Short name len : %d \r\n", len);
-        pc.printf("Short name is %s \r\n", adv_name);  
+        Serial1.print("Short name len : ");
+        Serial1.println(len, DEC);
+        Serial1.print("Short name is : ");  
+        Serial1.println((const char*)adv_name);
+        
         if( (len == 4) && (memcmp("TXRX", adv_name, len) == 0x00) )
         {
-            pc.printf("Got device, stop scan \r\n");    
+            Serial1.println("Got device, stop scan ");    
             ble.stopScan();
             ble.connect(params->peerAddr, Gap::ADDR_TYPE_RANDOM_STATIC, NULL, NULL);
         }
@@ -74,113 +68,119 @@ void scanCallBack(const Gap::AdvertisementCallbackParams_t *params)
     }
     else if( NRF_SUCCESS == ble_advdata_parser(BLE_GAP_AD_TYPE_COMPLETE_LOCAL_NAME, params->advertisingDataLen, (uint8_t *)params->advertisingData, &len, adv_name) )
     {
-        pc.printf("Long name len : %d \r\n", len);
-        pc.printf("Long name is %s \r\n", adv_name);  
+        Serial1.print("Long name len : ");
+        Serial1.println(len, DEC);
+        Serial1.print("Long name is : ");  
+        Serial1.println((const char*)adv_name);
+
         if( (len == 5) && (memcmp("HRM1", adv_name, len) == 0x00) )
         {
-            pc.printf("Got device, stop scan \r\n");    
+             Serial1.println("Got device, stop scan ");    
             ble.stopScan();
             ble.connect(params->peerAddr, Gap::ADDR_TYPE_RANDOM_STATIC, NULL, NULL);
         }
     }
-    pc.printf("\r\n");   
+    Serial1.println(" ");   
 }
 
 void ServiceCallBack(const DiscoveredService *service)
 {
-    pc.printf("Servuce Discovered............ \r\n");      
-    pc.printf("UUID : %2x \r\n", service->getUUID().getShortUUID());    
+    Serial1.println("Servuce Discovered............ ");   
+    Serial1.print("Short UUID : ");   
+    Serial1.println(service->getUUID().getShortUUID(), HEX);    
 }
 
 void CharacteristicCallBack(const DiscoveredCharacteristic *chars)
 {
-    pc.printf("Characteristic Discovered........... \r\n");   
-    pc.printf("properties_broadcast   : %d \r\n", chars->getProperties()._broadcast);
-    pc.printf("properties_read        : %d \r\n", chars->getProperties()._read);
-    pc.printf("properties_writeWoResp : %d \r\n", chars->getProperties()._writeWoResp);
-    pc.printf("properties_write       : %d \r\n", chars->getProperties()._write);
-    pc.printf("properties_notify      : %d \r\n", chars->getProperties()._notify);    
+    Serial1.println("Characteristic Discovered........... \r\n");   
+    Serial1.print("properties_read        : ");
+    Serial1.println(chars->getProperties()._read, DEC);
+    Serial1.print("properties_writeWoResp : ");
+    Serial1.println(chars->getProperties()._writeWoResp, DEC);
+    Serial1.print("properties_write       : ");
+    Serial1.println(chars->getProperties()._write, DEC); 
+    Serial1.print("properties_notify      : ");    
+    Serial1.println(chars->getProperties()._notify, DEC);     
 
-    pc.printf("declHandle             : %2x \r\n", chars->getDeclHandle());  
-    pc.printf("valueHandle             : %2x \r\n", chars->getValueHandle());  
-
-     pc.printf("descHandle             : %2x \r\n", chars->getDescHandle());  
-    pc.printf("CCCDHandle             : %2x \r\n", chars->getCCCDHndle());     
-
+    Serial1.print("valueHandle             : ");  
+    Serial1.println(chars->getValueHandle(), HEX);   
+    Serial1.print("CCCDHandle             : ");     
+    Serial1.println(chars->getCCCDHndle(), HEX);  
+    
     uint16_t value = 0x0001;
-    //ble.gattClient().read(conn_handle, chars->getValueHandle(), 0);
-    //ble.gattClient().write(GattClient::GATT_OP_WRITE_CMD,conn_handle,chars->getValueHandle(),2,(uint8_t *)&value);
-    ble.gattClient().write(GattClient::GATT_OP_WRITE_REQ,conn_handle,chars->getCCCDHndle(),2,(uint8_t *)&value);
+    //ble.gattClient().read(chars->getConnHandle(), chars->getValueHandle(), 0);
+    //ble.gattClient().write(GattClient::GATT_OP_WRITE_CMD,chars->getConnHandle(),chars->getValueHandle(),2,(uint8_t *)&value);
+    ble.gattClient().write(GattClient::GATT_OP_WRITE_REQ, chars->getConnHandle(), chars->getCCCDHndle(),2,(uint8_t *)&value);
 }
 
  // GAP call back handle
 static void connectionCallBack( const Gap::ConnectionCallbackParams_t *params )
 {
-    pc.printf("GAP_EVT_CONNECTED");    
-    pc.printf("The conn handle : %2x \r\n", params->handle);
-
-    pc.printf("PeerAddr type is : %x", params->peerAddrType);
-    pc.printf("PeerAddr is : ");
+    Serial1.print("GAP_EVT_CONNECTED");    
+    Serial1.print("The conn handle : ");
+    Serial1.println(params->handle, HEX);  
+  
+    Serial1.print("  The peerAddr : ");
     for(uint8_t index=0; index<6; index++)
     {
-        pc.printf("%x ", params->peerAddr[index]);  
+       Serial1.print(params->peerAddr[index], HEX);
+       Serial1.print(" ");  
     }
-    pc.printf("\r\n");  
+    Serial1.println(" ");  
     
-    conn_handle = params->handle;
     ble.gattClient().launchServiceDiscovery(params->handle, ServiceCallBack, CharacteristicCallBack, service_uuid, chars_uuid1);
 }
 
 static void disconnectionCallBack(Gap::Handle_t handle, Gap::DisconnectionReason_t reason)
 {
-    pc.printf("Disconnected \r\n");
+   Serial1.println("Disconnected ");
 }
 
 static void discoveryTermination(Gap::Handle_t connectionHandle)
 {
-    pc.printf("discoveryTermination............ \r\n");    
+    Serial1.println("discoveryTermination............ ");    
 }
 
 static void onDataWrite(const GattWriteCallbackParams *params)
 {
-    pc.printf("GattClient write call back \r\n");    
+    Serial1.println("GattClient write call back ");    
 }
 
 static void onDataRead(const GattReadCallbackParams *params)
 {
-    pc.printf("GattClient read call back \r\n");      
-    pc.printf("The handle : %2x \r\n", params->handle);
-    pc.printf("The offset : %d \r\n", params->offset);
-    pc.printf("The len : %2x \r\n", params->len);
-    pc.printf("The data : ");
+    Serial1.println("GattClient read call back ");      
+    Serial1.print("The handle : ");
+    Serial1.println(params->handle, HEX);  
+    Serial1.print("The offset : ");
+    Serial1.println(params->offset, DEC); 
+    Serial1.print("The len : ");
+    Serial1.println(params->len, DEC); 
+    Serial1.print("The data : ");
     for(uint8_t index=0; index<params->len; index++)
     {
-        pc.printf("%X ", params->data[index]);    
+        Serial1.print( params->data[index], HEX);    
     }
-    pc.printf("\r\n");
+    Serial1.println("");
 }
 
 static void hvxCallBack(const GattHVXCallbackParams *params)
 {
-    pc.printf("GattClient notify call back \r\n");  
-    pc.printf("The len : %d \r\n", params->len);
+    Serial1.println("GattClient notify call back \r\n");  
+    Serial1.print("The len : ");
+    Serial1.println(params->len, DEC); 
     for(unsigned char index=0; index<params->len; index++)
     {
-        pc.printf("%d ", params->data[index]);  
+        Serial1.print(params->data[index], HEX);  
     }
-    pc.printf("\r\n");
+    Serial1.println("");
 }
 
 int main(void)
 {
-    pc.baud(9600);
+    Serial1.begin(9600);
     wait(8);
-    pc.printf("BLE Scan \r\n");
+    Serial1.println("BLE Scan ");
     
-    led1 = 1;
-    Ticker ticker;
-    ticker.attach(periodicCallback, 1); // blink LED every second
-
     ble.init();
     ble.onConnection(connectionCallBack);
     ble.onDisconnection(disconnectionCallBack);
@@ -196,5 +196,4 @@ int main(void)
     {
           
     }
-  
 }

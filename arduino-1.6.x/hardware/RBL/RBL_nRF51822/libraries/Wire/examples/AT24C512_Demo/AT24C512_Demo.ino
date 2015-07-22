@@ -1,4 +1,3 @@
-
 /*
 
     Copyright (c) 2014 RedBearLab, All rights reserved.
@@ -24,39 +23,61 @@
     CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
     TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-*/
-/*    RBL nRF51822                UNO
-*Example:
-*     mast_write              slave_sender
-*Pin:
-*     SCL                         SCL
-*     SDA                         SDA
-*address:
-*     0x02                        0x02
-*read_len:
-      0x06
 */
 
 #include <Wire.h>
 
-void setup() 
+#define DEV_ADDR  (0xA0>>1)
+
+static uint8_t wt_data[10] = {'H', 'e', 'l', 'l', 'o', 'W', 'o', 'r', 'l', 'd'};
+static uint8_t rd_data[10];
+
+void AT24C512_WriteBytes(uint16_t addr, uint8_t *pbuf, uint16_t len)
 {
-    // put your setup code here, to run once:
-    Serial1.begin(115200);
-    Wire.begin();
-    Serial1.println("master read...");
+    Wire.beginTransmission(DEV_ADDR);
+    Wire.write((uint8_t)addr>>8);
+    Wire.write((uint8_t)addr);
+    Wire.write(pbuf, len);
+    Wire.endTransmission();
 }
 
-void loop() 
-{
-    // put your main code here, to run repeatedly: 
-    Wire.requestFrom(0x02,6);
+void AT24C512_ReadBytes(uint16_t addr, uint8_t *pbuf, uint16_t len)
+{    
+    Wire.beginTransmission(DEV_ADDR);
+    Wire.write((uint8_t)addr>>8);
+    Wire.write((uint8_t)addr);    
+    Wire.endTransmission();
     
+    Wire.requestFrom(DEV_ADDR,len);
     while( Wire.available() > 0 )
     {
-        uint8_t c = Wire.read();
-        Serial1.write(c);
+        *pbuf = Wire.read();
+        pbuf++;
     }
-    delay(1000);
 }
+
+void setup() {
+    // put your setup code here, to run once:
+    pinMode(D13, OUTPUT);
+    Serial1.begin(115200);
+    Serial1.println("Wire demo start ");   
+
+    Wire.begin();
+    Serial1.println("Wire demo start");
+    AT24C512_WriteBytes(0, wt_data, 10);
+}
+
+void loop() {
+    // put your main code here, to run repeatedly:
+    digitalWrite(D13,HIGH);
+    delay(500);
+    digitalWrite(D13, LOW);
+    delay(500);
+
+    AT24C512_ReadBytes(0, rd_data, 10);
+    Serial1.println("Read data from AT24C512: ");
+    Serial1.write(rd_data, 10);
+    Serial1.print("\r\n");
+}
+
+

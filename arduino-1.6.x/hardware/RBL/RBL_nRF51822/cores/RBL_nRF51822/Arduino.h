@@ -24,6 +24,9 @@
 #include "wiring_analog.h"
 #include "WMath.h"
 
+#include "wiring_shift_pulseIn.h"
+
+
 /* sketch */
 extern void setup( void ) ;
 extern void loop( void ) ;

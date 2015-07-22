@@ -41,9 +41,9 @@
 void setup() 
 {
     // put your setup code here, to run once:
-    Serial.begin(115200);
+    Serial1.begin(115200);
     Wire.begin();
-    Serial.println("master write...");
+    Serial1.println("master write...");
 }
 
 byte x = 0;
@@ -51,7 +51,7 @@ byte x = 0;
 void loop() 
 {
     // put your main code here, to run repeatedly: 
-    Serial.println("master send begin: ");
+    Serial1.println("master send begin: ");
     
     Wire.beginTransmission(0x04);
     Wire.write("x is");

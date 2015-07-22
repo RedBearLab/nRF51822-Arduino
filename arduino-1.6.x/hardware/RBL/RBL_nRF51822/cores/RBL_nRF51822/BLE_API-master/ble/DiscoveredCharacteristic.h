@@ -152,9 +152,14 @@ public:
         return props;
     }
 
+	const GattAttribute::Handle_t& getConnHandle(void) const {
+        return connHandle;
+    }
+	
     const GattAttribute::Handle_t& getDeclHandle(void) const {
         return declHandle;
     }
+	
     const GattAttribute::Handle_t& getValueHandle(void) const {
         return valueHandle;
     }
