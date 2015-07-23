@@ -84,7 +84,7 @@ void setup() {
     ble.accumulateScanResponse(GapAdvertisingData::SHORTENED_LOCAL_NAME, 
                               (const uint8_t *)"hello", sizeof("hello") - 1);                        
     ble.accumulateScanResponse(GapAdvertisingData::COMPLETE_LIST_128BIT_SERVICE_IDS, 
-                              (const uint8_t *)uart_base_uuid_rev, sizeof(uart_base_uuid_rev));    
+                              (const uint8_t *)uart_base_uuid_rev, sizeof(uart_base_uuid_rev));     
 							  
     // set adv_type
     ble.setAdvertisingType(GapAdvertisingParams::ADV_CONNECTABLE_UNDIRECTED);    
