@@ -2,7 +2,7 @@
 
 #define TXRX_BUF_LEN                      20
 
-BLE                                 	  ble;
+BLE                                 	    ble;
 Ticker                                    ticker;
 
 static uint16_t value=0;
@@ -84,17 +84,17 @@ void setup() {
     ble.accumulateScanResponse(GapAdvertisingData::SHORTENED_LOCAL_NAME, 
                               (const uint8_t *)"hello", sizeof("hello") - 1);                        
     ble.accumulateScanResponse(GapAdvertisingData::COMPLETE_LIST_128BIT_SERVICE_IDS, 
-                              (const uint8_t *)uart_base_uuid_rev, sizeof(uart_base_uuid_rev));                                         
-    // add service
+                              (const uint8_t *)uart_base_uuid_rev, sizeof(uart_base_uuid_rev));    
+							  
+    // set adv_type
+    ble.setAdvertisingType(GapAdvertisingParams::ADV_CONNECTABLE_UNDIRECTED);    
+	// add service
     ble.addService(uartService);
     // set device name
     ble.setDeviceName((const uint8_t *)"Serial UART");
-    // set appearance
-    //ble.setAppearance(BLE_APPEARANCE_UNKNOWN);
     // set tx power,valid values are -40, -20, -16, -12, -8, -4, 0, 4
     ble.setTxPower(4);
-    // set adv_type
-    ble.setAdvertisingType(GapAdvertisingParams::ADV_CONNECTABLE_UNDIRECTED);
+
     // set adv_interval, 100ms in multiples of 0.625ms.
     ble.setAdvertisingInterval(160);
     // set adv_timeout, in seconds
