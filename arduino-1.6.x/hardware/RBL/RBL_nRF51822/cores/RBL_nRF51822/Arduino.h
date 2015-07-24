@@ -25,6 +25,7 @@
 #include "WMath.h"
 
 #include "wiring_shift_pulseIn.h"
+#include "wiring_interrupter.h"
 
 
 /* sketch */
