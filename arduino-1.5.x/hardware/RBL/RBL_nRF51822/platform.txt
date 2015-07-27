@@ -51,8 +51,12 @@ recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {compiler.c.elf.f
 recipe.objcopy.eep.pattern="{compiler.path}{compiler.elf2bin.cmd}" {compiler.elf2bin.flags} "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}.bin"
 
 ## Create hex
-#recipe.objcopy.hex.pattern="{compiler.path}{compiler.elf2hex.cmd}" {compiler.elf2hex.flagx} "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}.hex"
-recipe.objcopy.hex.pattern="{compiler.path}{compiler.elf2hex.cmd}" {compiler.elf2hex.flags} "{build.path}/{build.project_name}.bin" "{build.path}/{build.project_name}.hex"
+recipe.objcopy.hex1.pattern="{compiler.path}{compiler.elf2hex.cmd}" {compiler.elf2hex.flagx} "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}_OTA.hex"
+recipe.objcopy.hex2.pattern="{compiler.path}{compiler.elf2hex.cmd}" {compiler.elf2hex.flags} "{build.path}/{build.project_name}.bin" "{build.path}/{build.project_name}.hex"
+
+## Save hex
+recipe.output.tmp_file={build.project_name}_OTA.hex
+recipe.output.save_file={build.project_name}_OTA.{build.variant}.hex
 
 ## Compute size
 recipe.size.pattern="{compiler.path}{compiler.size.cmd}" -A "{build.path}/{build.project_name}.elf"
