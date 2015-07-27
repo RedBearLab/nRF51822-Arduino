@@ -124,24 +124,27 @@ void analogWrite(PinName pin, uint32_t value)
 	num = getMatchChannel(pin);
 	if(num < 3) {
 		/* Channel has exit, Write value */	
-		if( value == 0 )
-		{	
-			setPWMChannel(num, (PinName)NC);
-			obj.pwm = (PWMName)num;
-			pwmout_free(&obj);
-			pinMode(pin, OUTPUT);
-			digitalWrite(pin, LOW);
-			return;
-		}
-		if( value >= (pow(2, analogWriteResolution_bit)-1) )
-		{
-			setPWMChannel(num, (PinName)NC);
-			obj.pwm = (PWMName)num;
-			pwmout_free(&obj);
-			pinMode(pin, OUTPUT);
-			digitalWrite(pin, HIGH);
-			return;	
-		}
+		// if( value == 0 )
+		// {	
+			// setPWMChannel(num, (PinName)NC);
+			// obj.pwm = (PWMName)num;
+			// pwmout_free(&obj);
+			// pinMode(pin, OUTPUT);
+			// digitalWrite(pin, LOW);
+			// return;
+		// }
+		// Serial1.print("here1 : ");
+		// Serial1.println((pow(2, analogWriteResolution_bit)-2), DEC);
+		// Serial1.println(value, DEC);
+		// if( value >= (pow(2, analogWriteResolution_bit)-2) )
+		// {	Serial1.print("here2 : ");
+			// setPWMChannel(num, (PinName)NC);
+			// obj.pwm = (PWMName)num;
+			// pwmout_free(&obj);
+			// pinMode(pin, OUTPUT);
+			// digitalWrite(pin, HIGH);
+			// return;	
+		// }
 		uint32_t value_8bit;
 		float duty;
 		value_8bit = conversion_Resolution(value, analogWriteResolution_bit, 8);
@@ -164,7 +167,7 @@ void analogWrite(PinName pin, uint32_t value)
 			digitalWrite(pin, LOW);
 			return;
 		}
-		if( value >= (pow(2, analogWriteResolution_bit)-1) )
+		if( value >= (pow(2, analogWriteResolution_bit)-2) )
 		{
 			setPWMChannel(num, (PinName)NC);
 			obj.pwm = (PWMName)num;
