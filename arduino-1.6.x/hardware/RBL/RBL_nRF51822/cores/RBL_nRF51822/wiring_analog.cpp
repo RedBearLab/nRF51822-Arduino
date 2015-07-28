@@ -86,14 +86,18 @@ static void setPWMChannel(uint8_t channel, PinName pin)
 		PWM_Pins[channel] = pin;
 }
 
-uint32_t analogRead(PinName pin)
+uint32_t analogRead(uint32_t pin)
 {
+	PinName 	nrf_pin;
 	uint32_t pValue, value;
 	
-	if((uint32_t)pin > 7 || (uint32_t)pin == 0)
+	nrf_pin = Pin_nRF51822_to_Arduino(pin);
+	MBED_ASSERT(nrf_pin != (PinName)NC);
+	
+	if((uint32_t)nrf_pin > 7 || (uint32_t)nrf_pin == 0)
 		return 0xFFFF;
 	
-	pValue = (1 << ((uint32_t)pin + 1));
+	pValue = (1 << ((uint32_t)nrf_pin + 1));
 	NRF_ADC->CONFIG = ( ADC_CONFIG_RES_10bit << ADC_CONFIG_RES_Pos) |
 					  ( analogReference_inpsel_type << ADC_CONFIG_INPSEL_Pos) |
 					  ( analogReference_ref_type << ADC_CONFIG_REFSEL_Pos) |
@@ -116,12 +120,16 @@ uint32_t analogRead(PinName pin)
 	return value;
 }
 
-void analogWrite(PinName pin, uint32_t value)
+void analogWrite(uint32_t pin, uint32_t value)
 {
+	PinName	nrf_pin;
 	uint8_t num;
 	pwmout_t obj;
+
+	nrf_pin = Pin_nRF51822_to_Arduino(pin);
+	MBED_ASSERT(nrf_pin != (PinName)NC);
 	
-	num = getMatchChannel(pin);
+	num = getMatchChannel(nrf_pin);
 	if(num < 3) {
 		/* Channel has exit, Write value */	
 		// if( value == 0 )
@@ -178,14 +186,14 @@ void analogWrite(PinName pin, uint32_t value)
 		}
 		/* Have a free channel */	
 		obj.pwm = (PWMName)num;
-		pwmout_init(&obj, pin);	
+		pwmout_init(&obj, nrf_pin);	
 		/* Write value */	
 		uint32_t value_8bit;
 		float duty;
 		value_8bit = conversion_Resolution(value, analogWriteResolution_bit, 8);
 		duty = (float)value_8bit / (255);
 		pwmout_write(&obj, duty);
-		setPWMChannel(num, pin);
+		setPWMChannel(num, nrf_pin);
 	}
 }
 

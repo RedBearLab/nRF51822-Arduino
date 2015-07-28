@@ -4,15 +4,17 @@
 #include "wiring_digital.h"
 
 
-void pinMode(PinName pin, uint32_t mode)
+void pinMode(uint32_t pin, uint32_t mode)
 {	
+	PinName			nrf_pin;
 	gpio_t			gpio;
 	PinMode			pin_mode;
 	PinDirection	direction;
 	
-	MBED_ASSERT(pin != (PinName)NC);
+	nrf_pin = Pin_nRF51822_to_Arduino(pin);
+	MBED_ASSERT(nrf_pin != (PinName)NC);
 		
-	gpio.pin = pin;
+	gpio.pin = nrf_pin;
 	
 	switch(mode)
 	{
@@ -25,17 +27,28 @@ void pinMode(PinName pin, uint32_t mode)
 	gpio_mode(&gpio, pin_mode);
 }
 
-void digitalWrite(PinName pin, uint32_t value)
+void digitalWrite(uint32_t pin, uint32_t value)
 {
-	MBED_ASSERT(pin != (PinName)NC);
+	PinName			nrf_pin;
+	
+	nrf_pin = Pin_nRF51822_to_Arduino(pin);
+	MBED_ASSERT(nrf_pin != (PinName)NC);
 	if(value)
-		NRF_GPIO->OUTSET = (1ul << pin);
+		NRF_GPIO->OUTSET = (1ul << nrf_pin);
 	else
-		NRF_GPIO->OUTCLR = (1ul << pin);
+		NRF_GPIO->OUTCLR = (1ul << nrf_pin);
 }
 
-uint32_t digitalRead(PinName pin)
+
+uint32_t digitalRead(uint32_t pin)
 {
-	MBED_ASSERT(pin != (PinName)NC);
-	return ( (NRF_GPIO->IN >> pin) & 1UL );
+	PinName			nrf_pin;
+	
+	nrf_pin = Pin_nRF51822_to_Arduino(pin);
+	MBED_ASSERT(nrf_pin != (PinName)NC);
+	
+	return ( (NRF_GPIO->IN >> nrf_pin) & 1UL );
 }
+
+
+

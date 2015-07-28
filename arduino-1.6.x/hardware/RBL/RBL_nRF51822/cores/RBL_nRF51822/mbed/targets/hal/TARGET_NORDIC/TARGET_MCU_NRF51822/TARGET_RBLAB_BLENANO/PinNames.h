@@ -98,7 +98,7 @@ typedef enum {
     P0_29 = p29,
     P0_30 = p30,
     
-    LED     = p19,
+    //LED     = p19,
     LED1    = p19,
     LED2    = p19,
     LED3    = p19,
@@ -130,7 +130,7 @@ typedef enum {
 
     I2C_SDA0 = p10,
     I2C_SCL0 = p8,
-
+/*
     D0  = p11,
     D1  = p9,
     D2  = p10,
@@ -155,7 +155,7 @@ typedef enum {
     D22 = A3,
     D23 = A4,
     D24 = A5,
-
+*/
     // Not connected
     NC = (int)0xFFFFFFFF
 } PinName;

@@ -4,9 +4,9 @@
 #define WIRING_DIGITAL_H_
 
 
-void pinMode(PinName pin, uint32_t mode);
-void digitalWrite(PinName pin, uint32_t value);
-uint32_t digitalRead(PinName pin);
+void pinMode(uint32_t pin, uint32_t mode);
+void digitalWrite(uint32_t pin, uint32_t value);
+uint32_t digitalRead(uint32_t pin);
 
 
 #endif

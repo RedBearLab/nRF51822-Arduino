@@ -29,8 +29,8 @@
 void analogReference(uint8_t ref_type, uint8_t input_type);
 void analogReadResolution(uint8_t resolution);
 void analogWriteResolution( uint8_t resolution );
-uint32_t analogRead(PinName pin);
-void analogWrite(PinName pin, uint32_t value);
+uint32_t analogRead(uint32_t pin);
+void analogWrite(uint32_t pin, uint32_t value);
 
 #endif
 

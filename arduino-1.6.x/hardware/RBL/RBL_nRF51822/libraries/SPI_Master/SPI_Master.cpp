@@ -61,9 +61,15 @@ SPIClass::SPIClass()
 	//do nothing
 }
 
-void SPIClass::begin(PinName scl, PinName mosi, PinName miso)
+void SPIClass::begin(uint32_t scl, uint32_t mosi, uint32_t miso)
 {
-	spi_init(&spi, mosi, miso, scl, (PinName)NC);
+	PinName nrf_scl, nrf_mosi, nrf_miso;
+	
+	nrf_scl  = Pin_nRF51822_to_Arduino(scl);
+	nrf_mosi = Pin_nRF51822_to_Arduino(mosi);
+	nrf_miso = Pin_nRF51822_to_Arduino(miso);
+
+	spi_init(&spi, nrf_mosi, nrf_miso, nrf_scl, (PinName)NC);
 	/* 8-bits, MODE0, master(0)/slave(1) */
 	spi_format(&spi, 8, SPI_MODE0, 0);
 	/* Default speed : 1MHz */
@@ -72,7 +78,7 @@ void SPIClass::begin(PinName scl, PinName mosi, PinName miso)
 
 void SPIClass::begin()
 {
-	begin(SPI_PSELSCK0, SPI_PSELMOSI0, SPI_PSELMISO0);	
+	begin(SCK, MOSI, MISO);	
 }
 
 uint8_t SPIClass::transfer(uint8_t data)

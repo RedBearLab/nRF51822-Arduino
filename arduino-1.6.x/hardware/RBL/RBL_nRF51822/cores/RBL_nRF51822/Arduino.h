@@ -27,6 +27,8 @@
 #include "wiring_shift_pulseIn.h"
 #include "wiring_interrupter.h"
 
+#include "pins_arduino.h"
+#include "pin_transform.h"
 
 /* sketch */
 extern void setup( void ) ;

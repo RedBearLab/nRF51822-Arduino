@@ -87,8 +87,8 @@ class Servo
 		
 	public:
 		Servo();
-		uint8_t attach(PinName pin);
-		uint8_t attach(PinName pin, uint16_t min, uint16_t max);
+		uint8_t attach(uint32_t pin);
+		uint8_t attach(uint32_t pin, uint16_t min, uint16_t max);
 		void detach();
 		
 		void write(uint16_t value);

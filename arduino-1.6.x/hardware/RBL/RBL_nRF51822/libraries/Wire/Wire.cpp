@@ -47,10 +47,15 @@ TwoWire::TwoWire() :
 name :
 function : 
 **********************************************************************/
-void TwoWire::begin(PinName scl, PinName sda, uint32_t speed)
+void TwoWire::begin(uint32_t scl, uint32_t sda, uint32_t speed)
 {	
+	PinName nrf_sda, nrf_scl;
+	
+	nrf_scl = Pin_nRF51822_to_Arduino(scl);
+	nrf_sda = Pin_nRF51822_to_Arduino(sda);
+	
 	/* Initialize i2c */
-	i2c_init(&i2c, sda, scl);
+	i2c_init(&i2c, nrf_sda, nrf_scl);
 	i2c_frequency(&i2c, speed);
 	twi_status = UNINITIALIZED;
 }
@@ -60,8 +65,12 @@ function :
 **********************************************************************/
 void TwoWire::begin()
 {
+	PinName nrf_sda, nrf_scl;
+	
+	nrf_scl = Pin_nRF51822_to_Arduino(SCL1);
+	nrf_sda = Pin_nRF51822_to_Arduino(SDA1);	
 	/* Initialize i2c, default 100KHz */
-	i2c_init(&i2c, I2C_SDA0, I2C_SCL0);
+	i2c_init(&i2c, nrf_sda, nrf_scl);
 	twi_status = UNINITIALIZED;
 }
 /**********************************************************************

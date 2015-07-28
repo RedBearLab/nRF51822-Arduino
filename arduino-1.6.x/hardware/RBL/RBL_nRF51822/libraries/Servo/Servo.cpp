@@ -196,7 +196,7 @@ Servo::Servo()
 name :
 function : 
 **********************************************************************/	
-uint8_t Servo::attach(PinName pin)
+uint8_t Servo::attach(uint32_t pin)
 {
 	return this->attach(pin, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
 }
@@ -204,14 +204,19 @@ uint8_t Servo::attach(PinName pin)
 name :
 function : 
 **********************************************************************/
-uint8_t Servo::attach(PinName pin, uint16_t min, uint16_t max)
+uint8_t Servo::attach(uint32_t pin, uint16_t min, uint16_t max)
 {
+	PinName nrf_pin;
 	timer16_Sequence_t timer;
 	
 	if(this->servoIndex < MAX_SERVOS)
-	{	// set servo pin to output
-		pinMode(pin, OUTPUT);                                   
-		servos[this->servoIndex].Pin.nbr = pin;
+	{	
+		// set servo pin to output
+		pinMode(pin, OUTPUT);     
+
+		nrf_pin = Pin_nRF51822_to_Arduino(pin);
+		
+		servos[this->servoIndex].Pin.nbr = nrf_pin;
 		//resolution of min/max is 4 uS
 		this->min_ticks  = (MIN_PULSE_WIDTH - min)/4; 
 		this->max_ticks  = (MAX_PULSE_WIDTH - max)/4;

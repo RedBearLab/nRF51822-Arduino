@@ -36,14 +36,18 @@ void UARTClass::attach( uart_irq_handler handle )
 	serial_irq_handler(&obj, handle, 1);
 }
 
-void UARTClass::begin(const uint32_t BaudRate, PinName rx_pin, PinName tx_pin)
+void UARTClass::begin(const uint32_t BaudRate, uint32_t rx_pin, uint32_t tx_pin)
 {
+	PinName	pin_rx, pin_tx;
 	UARTName uart = UART_0;
 	serial_t obj;
 	
+	pin_rx = Pin_nRF51822_to_Arduino(rx_pin);
+	pin_tx = Pin_nRF51822_to_Arduino(tx_pin);
+	
 	obj.uart = (NRF_UART_Type *)uart;
-	serial_init(&obj, tx_pin, rx_pin);
-	serial_set_flow_control(&obj, FlowControlNone, CTS_PIN_NUMBER, RTS_PIN_NUMBER);
+	serial_init(&obj, pin_tx, pin_rx);
+	serial_set_flow_control(&obj, FlowControlNone, (PinName)NC, (PinName)NC);
 	serial_baud(&obj, BaudRate);
 	/* TXIrq has a error, don't use it */
 	serial_irq_set(&obj, RxIrq, 1);
@@ -52,7 +56,7 @@ void UARTClass::begin(const uint32_t BaudRate, PinName rx_pin, PinName tx_pin)
 
 void UARTClass::begin(const uint32_t BaudRate )
 {	
-	begin(BaudRate, RX_PIN_NUMBER, TX_PIN_NUMBER);
+	begin(BaudRate, DEFAULT_RX_PIN, DERAULT_TX_PIN);
 }
 
 void UARTClass::end(void)

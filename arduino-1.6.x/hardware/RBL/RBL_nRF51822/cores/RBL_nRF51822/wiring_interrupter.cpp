@@ -67,49 +67,57 @@ void gpio_irq_handle_cb(uint32_t id, gpio_irq_event event)
 
 }
 
-void attachInterrupt(PinName pin, irqHandle_t handle, uint8_t mode)
+void attachInterrupt(uint32_t pin, irqHandle_t handle, uint8_t mode)
 {
-	if(pin == (PinName)NC || handle == NULL )
+	PinName nrf_pin;
+	
+	nrf_pin = Pin_nRF51822_to_Arduino(pin);
+
+	if(nrf_pin == (PinName)NC || handle == NULL )
 		return;
 		
 	if(mode != CHANGE && mode != FALLING && mode != RISING )
 		return;
 	
 	if(mode == CHANGE) {
-		pinHandle[(uint32_t)pin].riseHandle = handle;
-		pinHandle[(uint32_t)pin].fallHandle = handle;
+		pinHandle[(uint32_t)nrf_pin].riseHandle = handle;
+		pinHandle[(uint32_t)nrf_pin].fallHandle = handle;
 	}
 	else if(mode == RISING) {
-		pinHandle[(uint32_t)pin].riseHandle = handle;
-		pinHandle[(uint32_t)pin].fallHandle = NULL;
+		pinHandle[(uint32_t)nrf_pin].riseHandle = handle;
+		pinHandle[(uint32_t)nrf_pin].fallHandle = NULL;
 	}
 	else {
-		pinHandle[(uint32_t)pin].riseHandle = NULL;
-		pinHandle[(uint32_t)pin].fallHandle = handle;	
+		pinHandle[(uint32_t)nrf_pin].riseHandle = NULL;
+		pinHandle[(uint32_t)nrf_pin].fallHandle = handle;	
 	}
 	
-	gpio_irq_init(&pinHandle[(uint32_t)pin].gpio_irq, pin, gpio_irq_handle_cb, (uint32_t)&pinHandle[(uint32_t)pin]);
-	gpio_init_in(&pinHandle[(uint32_t)pin].gpio, pin);
+	gpio_irq_init(&pinHandle[(uint32_t)nrf_pin].gpio_irq, nrf_pin, gpio_irq_handle_cb, (uint32_t)&pinHandle[(uint32_t)nrf_pin]);
+	gpio_init_in(&pinHandle[(uint32_t)nrf_pin].gpio, nrf_pin);
 
 	if(mode == CHANGE) {
-		gpio_irq_set(&pinHandle[(uint32_t)pin].gpio_irq, IRQ_RISE, 1);
-		gpio_irq_set(&pinHandle[(uint32_t)pin].gpio_irq, IRQ_FALL, 1);
+		gpio_irq_set(&pinHandle[(uint32_t)nrf_pin].gpio_irq, IRQ_RISE, 1);
+		gpio_irq_set(&pinHandle[(uint32_t)nrf_pin].gpio_irq, IRQ_FALL, 1);
 	}
 	else if(mode == RISING) {
-		gpio_irq_set(&pinHandle[(uint32_t)pin].gpio_irq, IRQ_RISE, 1);
+		gpio_irq_set(&pinHandle[(uint32_t)nrf_pin].gpio_irq, IRQ_RISE, 1);
 	}
 	else {
-		gpio_irq_set(&pinHandle[(uint32_t)pin].gpio_irq, IRQ_FALL, 1);
+		gpio_irq_set(&pinHandle[(uint32_t)nrf_pin].gpio_irq, IRQ_FALL, 1);
 	}	
 }
 
 
-void detachInterrupt(PinName pin )
+void detachInterrupt(uint32_t pin )
 {
-	gpio_irq_free(&pinHandle[(uint32_t)pin].gpio_irq);
-	memset(&pinHandle[(uint32_t)pin], 0x00, sizeof(PinHandle_t));
-	pinHandle[(uint32_t)pin].riseHandle = NULL;
-	pinHandle[(uint32_t)pin].fallHandle = NULL;	
+	PinName nrf_pin;
+	
+	nrf_pin = Pin_nRF51822_to_Arduino(pin);
+	
+	gpio_irq_free(&pinHandle[(uint32_t)nrf_pin].gpio_irq);
+	memset(&pinHandle[(uint32_t)nrf_pin], 0x00, sizeof(PinHandle_t));
+	pinHandle[(uint32_t)nrf_pin].riseHandle = NULL;
+	pinHandle[(uint32_t)nrf_pin].fallHandle = NULL;	
 }
 
 

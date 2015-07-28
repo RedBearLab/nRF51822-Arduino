@@ -16,8 +16,8 @@ typedef struct{
 }PinHandle_t;
 
 
-void attachInterrupt(PinName pin, irqHandle_t handle, uint8_t mode);
-void detachInterrupt(PinName pin );
+void attachInterrupt(uint32_t pin, irqHandle_t handle, uint8_t mode);
+void detachInterrupt(uint32_t pin );
 
 
 #endif

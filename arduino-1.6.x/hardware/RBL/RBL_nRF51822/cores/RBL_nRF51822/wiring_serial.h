@@ -11,7 +11,7 @@ class UARTClass : public HardwareSerial
 	
 		void attach(uart_irq_handler handle);
 		void begin(const uint32_t BaudRate );
-		void begin(const uint32_t BaudRate, PinName rx_pin, PinName tx_pin);
+		void begin(const uint32_t BaudRate, uint32_t rx_pin, uint32_t tx_pin);
 		void end(void);
 		
 		int available( void );

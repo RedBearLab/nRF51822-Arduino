@@ -73,7 +73,7 @@ class TwoWire : public WStream
 	public :
 		TwoWire();
 		void begin();
-		void begin(PinName scl_pin, PinName sda_pin, uint32_t speed);
+		void begin(uint32_t scl_pin, uint32_t sda_pin, uint32_t speed);
 		void beginTransmission(uint8_t);
 		void beginTransmission(int);
 		

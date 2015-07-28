@@ -36,7 +36,7 @@ void Flash_Buff_WriteBytes(uint16_t addr, uint8_t *pbuf, uint16_t len)
 {    
     uint16_t index;
 
-    digitalWrite(D10, LOW);
+    digitalWrite(10, LOW);
     delayMicroseconds(200);
 
     SPI_Master.transfer(0x84);
@@ -50,13 +50,13 @@ void Flash_Buff_WriteBytes(uint16_t addr, uint8_t *pbuf, uint16_t len)
     }
 
     delayMicroseconds(200);
-    digitalWrite(D10, HIGH);
+    digitalWrite(10, HIGH);
 }
 void Flash_Buff_ReadBytes(uint16_t addr, uint8_t *pbuf, uint16_t len)
 {
     uint16_t index;
 
-    digitalWrite(D10, LOW);
+    digitalWrite(10, LOW);
     delayMicroseconds(200); 
 
     SPI_Master.transfer(0xD1);
@@ -70,7 +70,7 @@ void Flash_Buff_ReadBytes(uint16_t addr, uint8_t *pbuf, uint16_t len)
     }   
 
     delayMicroseconds(200);
-    digitalWrite(D10, HIGH);   
+    digitalWrite(10, HIGH);   
 }
 
 uint8_t i;
@@ -84,10 +84,10 @@ void setup() {
     Serial1.begin(9600);  
     Serial1.println("SPI Start ");
     
-    pinMode(D10, OUTPUT);
-    digitalWrite(D10, HIGH);
-    SPI_Master.begin();
-    //SPI_Master.begin(D13, D11, D12);
+    pinMode(10, OUTPUT);
+    digitalWrite(10, HIGH);
+    //SPI_Master.begin();
+    SPI_Master.begin(SCK, MOSI, MISO);
     SPI_Master.setFrequency(SPI_4M);
 
     delay(1000);
@@ -96,9 +96,9 @@ void setup() {
 
 void loop() {
     // put your main code here, to run repeatedly:
-    digitalWrite(D13,HIGH);
+    digitalWrite(13,HIGH);
     delay(1000);
-    digitalWrite(D13, LOW);
+    digitalWrite(13, LOW);
     delay(1000);
 
     memset(rd_buf, 0x00, 7);
