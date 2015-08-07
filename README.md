@@ -6,6 +6,9 @@ Add support for Arduino IDE to allow compiling nRF51822 firmware.
 
 This add-on also provides BLE API for nRF51822 SoC to act as BLE Peripheral role designed for SoftDevice S110 version 6.0.
 
+*** Note: S110 will not be updated, consider to use S130 in this development branch
+https://github.com/RedBearLab/nRF51822-Arduino/tree/S130
+
 
 Requirement
 ===========
