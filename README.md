@@ -2,54 +2,39 @@
 nRF51822-Arduino
 ================
 
-This branch is to provide BLE concurrent Central and Peripheral using Nordic SoftDevice S130. This is a work in progress.
+This branch is to provide BLE concurrent Central and Peripheral using Nordic SoftDevice S130.
 
-Add support for Arduino IDE to allow compiling nRF51822 firmware.
+This is a work in progress which add support for Arduino IDE to allow compiling nRF51822 firmware.
 
-This add-on also provides BLE API for nRF51822 SoC to act as BLE Central/Peripheral role designed for SoftDevice S130.
+This add-on also provides BLE API for the nRF51822 SoC to act as BLE Central/Peripheral role designed for SoftDevice S130.
 
 
 Requirement
 ===========
 
 1. nRF51822 deveopment board, here we will use RBL nRF51822 as an example.
-2. Arduino IDE version 1.6.2 (currently tested version).
+2. Arduino IDE version 1.6.5 (currently tested version).
 3. PC with one of the following OS:
-    - Mac OSX 10.9 (Mavericks) / 10.10.3 (Yosemite) (currently tested version).    <- Read Note 2
-    - Windows 7 and 8.x (currently tested version).
-    - Linux (currently tested on Ubuntu 14.04).
+    - Mac OSX 10.9 (Mavericks) / 10.10.4 (Yosemite) (current tested version).
+    - Windows 7 and 8.x (current tested version).
+    - Linux (current tested on Ubuntu 14.04).
 
-Note 1:
+Note:
 If you have changed the USB interface firmware (MK20 chip) for some reasons, follow the instructions inside the **MK20** folder to restore it in order to use this add-on for Arduino IDE.
-
-Note 2:
-For Mac OSX 10.10.0 - 10.10.2 (Yosemite), Apple changed the security checking so it will think our MK20 USB dongle firmware is not securer, and it will mount it as read only, thus, you cannot drag the bootloader firmware to it.
-
-This problem has been fixed with 10.10.3, please update your OSX.
-
-A workaround using Terminal if you are using 10.10.0 - 10.10.2:
-sudo mount -u -w -o sync /Volumes/MBED ; cp -X bootloader.hex /Volumes/MBED/
-
-Thanks @okano for this and you can use his droplet to do drag and drop without using the Terminal:
-https://developer.mbed.org/users/okano/notebook/mbed-on-yosemite/?c=14179
 
 
 Install nRF51822 Arduino Add-on
 ===============================
 
-1. Get Arduino IDE version 1.6.4 from Arduino website and install it to your PC
+1. Get Arduino IDE version 1.6.5 from Arduino website and install it to your PC
 
     http://arduino.cc/en/Main/Software
-    
-2. Install the "Arduino SAM Boards" add-on via Board Manager: Tools -> Board -> Board Manager ... 
 
-3. Get or clone this repository and copy the "RBL" folder from "arduino-1.5.x/hardware" into  "~/Documents/Arduino/hardware" (if the "hardware" folder does not exist, create it)
-
-Mac OSX:
-Documents > Arduino
-
-Windows:
-C: > Users > YourName > Documents > Arduino
+2. Start the IDE and from the Menu, click "Preference...", add the following line to "Additional Boards Manager URLs"
+ 
+	https://redbearlab.github.io/arduino/package_redbearlab_index.json  
+  
+3. Install the "RedBearLab nRF51822 Boards" add-on via Boards Manager from the Menu: Tools -> Board -> Boards Manager ... 
 
 
 Install USB CDC Driver
@@ -65,15 +50,11 @@ Note that you do not need any driver for OSX and Linux platforms.
 Flash with RBL Bootloader
 =========================
 
-In the "bootloader" folder, there is a firmware for the RBL nRF51822 board, it allows you to load firmware using Arduino IDE.
+In the "bootloader" folder, there is a firmware (bootloader.hex) for the RBL nRF51822 board, it allows you to load firmware using Arduino IDE.
 
 To load the bootloader, connect the board to your PC using a micro USB cable, it will prompt a drive, drag the bootloader firmware to the drive.
 
-Note that for OSX 10.10 (Yosemite), you need to do this by using Terminal (will be fixed as soon as possible):
-sudo mount -u -w -o sync /Volumes/MBED ; cp -X bootloader.hex /Volumes/MBED/
-
-Or refer to this:
-https://developer.mbed.org/users/okano/notebook/mbed-on-yosemite/?c=14179
+Note that the bootloader has OTA feature and you can follow the OTA session for instructions.
 
 
 How It Works
@@ -134,19 +115,26 @@ How to Play
   This example allows you to exchange data with your central device (e.g. iPhone 5) and the data will be redirected to the UART.
 
 
+OTA
+===
+
+The bootloader allows you to load firmware Over-the-air. Everytime, if you reset the board by hitting the button on the board, the bootloader will broacast the OTA service via BLE for 5 sec waiting for a connection to be made. Otherwise, it will start the pre-loaded firmware.
+
+You can use the "export" feature from Arduino IDE 1.6.5 to get the firmware for OTA.
+
+Menu -> Sketch -> Export Compiled Binary
+
+Try the blink example, the firmware is named "Blink.cpp_OTA.BLE_Nano.hex".
+
+You can send this firmware to your phone, e.g. iPhone, using Air-Drop and use Nordic "nRF Toolbox" App to open it, then select file type "application" and select a device (you should see DFU_S130_V1.0 in the device list). Select it and click upload, the App will transfer the firmware to the board via BLE.
+
+
 Limitations
 ===========
 
-1. Serial Port
+1. Serial Interface
 
     As Arduino does not have flow control in serial port implementation, the Serial port (Pin 0 and 1) is limited to 9600bps since the BLE stack require flow control in order to support higher speed. If you are not going to use BLE, you can use higher speed. 
- 
-
-ToDo
-====
-
-1. Support SoftDevice S130
-2. Bootloader for both OTA and USB CDC
 
 
 License
