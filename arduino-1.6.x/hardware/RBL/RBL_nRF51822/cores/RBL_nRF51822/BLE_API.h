@@ -25,7 +25,7 @@
 #include "ble/ServiceDiscovery.h"
 #include "ble/UUID.h"
 
-
+#include "nRF51822_API.h"
 
 // #include "BatteryService.h"
 // #include "DeviceInformationService.h"
