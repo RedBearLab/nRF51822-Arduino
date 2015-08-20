@@ -4,7 +4,7 @@
 #include "serial_api.h"
 
 Buffer 		rxbuffer;
-UARTClass 	Serial1;
+UARTClass 	Serial;
 
 void store(uint8_t c)
 {

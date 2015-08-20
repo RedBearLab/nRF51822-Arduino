@@ -41,7 +41,7 @@
 #include "AnalogIn.h"
 #include "AnalogOut.h"
 #include "PwmOut.h"
-#include "Serial.h"
+// #include "Serial.h" // this conflicts with the Arduino Serial, leave it out
 #include "SPI.h"
 #include "SPISlave.h"
 #include "I2C.h"

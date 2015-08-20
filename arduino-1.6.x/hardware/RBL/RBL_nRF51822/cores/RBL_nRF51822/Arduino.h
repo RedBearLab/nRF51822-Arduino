@@ -34,7 +34,7 @@
 extern void setup( void ) ;
 extern void loop( void ) ;
 
-extern UARTClass Serial1;
+extern UARTClass Serial;
 
 #endif
 
