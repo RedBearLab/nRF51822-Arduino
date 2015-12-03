@@ -6,6 +6,7 @@ name=RedBearLab Boards
 
 # Compile tool path
 compiler.path={runtime.tools.arm-none-eabi-gcc.path}/bin/
+#compiler.path={runtime.platform.path}/tools/gcc-arm-none-eabi/bin/
 
 # Compile s files options
 compiler.S.cmd=arm-none-eabi-as
@@ -54,11 +55,11 @@ recipe.c.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.c.flags} -mcpu={b
 recipe.cpp.o.pattern="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} -mcpu={build.mcu} -DF_CPU={build.f_cpu} -D{software}={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} {build.extra_flags} {build.mbed_api_include} {build.nRF51822_api_include} {build.ble_api_include} {includes} "{source_file}" -o "{object_file}" 
 
 ## Create archives
+#recipe.ar.pattern="{compiler.path}{compiler.ar.cmd}" {compiler.ar.flags} "{archive_file_path}" "{object_file}"
 recipe.ar.pattern="{compiler.path}{compiler.ar.cmd}" {compiler.ar.flags} "{build.path}/{archive_file}" "{object_file}"
 
 ## Combine gc-sections, archives, and objects
-#recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {compiler.c.elf.flags} -mcpu={build.mcu} {build.extra_flags} "-T{build.variant.path}/{build.ldscript}" {compiler.ldflags} "-Wl,-Map,{build.path}/{build.project_name}.map" -o "{build.path}/{build.project_name}.elf" "-L{build.path}" -lm -lgcc -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--warn-unresolved-symbols -Wl,--start-group "{build.path}/system_nrf51.c.o" {object_files} "{build.path}/startup_NRF51822.S.o" "{build.path}/{archive_file}" -Wl,--end-group
-recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" -mcpu={build.mcu} -mthumb -Wl,--gc-sections --specs=nano.specs -Wl,--wrap,main -Wl,-Map={build.path}/{build.project_name}.map,--cref "-T{build.variant.path}/{build.ldscript}" -o "{build.path}/{build.project_name}.elf" -Wl,--start-group "{build.path}/system_nrf51.c.o" {object_files} "{build.path}/startup_NRF51822.S.o" "{build.path}/{archive_file}" -Wl,--end-group -lstdc++ -lsupc++ -lm -lc -lgcc -lnosys
+recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" -mcpu={build.mcu} -mthumb -Wl,--gc-sections --specs=nano.specs -Wl,--wrap,main -Wl,-Map={build.path}/{build.project_name}.map,--cref "-T{build.variant.path}/{build.ldscript}" -o "{build.path}/{build.project_name}.elf" -Wl,--start-group {object_files} "{build.path}/{archive_file}" -Wl,--end-group -lstdc++ -lsupc++ -lm -lc -lgcc -lnosys
 
 ## Create bin
 recipe.objcopy.eep.pattern="{compiler.path}{compiler.elf2bin.cmd}" {compiler.elf2bin.flags} "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}.bin"
@@ -81,9 +82,9 @@ recipe.size.regex=\.text\s+([0-9]+).*
 tools.avrdude.path={runtime.tools.avrdude.path}
 
 tools.avrdude.cmd.path={runtime.tools.avrdude.path}/bin/avrdude
-tools.avrdude.config.path={runtime.hardware.path}/1.0.0/avrdude_conf/avrdude.conf
+tools.avrdude.config.path={runtime.platform.path}/avrdude_conf/avrdude.conf
 tools.avrdude.cmd.path.linux={runtime.tools.avrdude.path}/bin/avrdude
-tools.avrdude.config.path.linux={runtime.hardware.path}/1.0.0/avrdude_conf/avrdude.conf
+tools.avrdude.config.path.linux={{runtime.platform.path}/avrdude_conf/avrdude.conf
 
 tools.avrdude.upload.params.verbose=-v -V
 tools.avrdude.upload.params.quiet=-q -q

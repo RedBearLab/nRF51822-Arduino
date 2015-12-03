@@ -52,8 +52,8 @@
 #define DEFAULT_RX_PIN D0 
 #define DERAULT_TX_PIN D1
 
-#define TWI_SDA D14
-#define TWI_SCL D15
+#define TWI_SDA SDA1
+#define TWI_SCL SCL1
 
 #define LED D13
 

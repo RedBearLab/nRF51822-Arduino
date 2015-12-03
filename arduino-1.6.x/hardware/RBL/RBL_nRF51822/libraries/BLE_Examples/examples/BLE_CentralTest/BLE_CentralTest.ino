@@ -113,8 +113,8 @@ void CharacteristicCallBack(const DiscoveredCharacteristic *chars)
     ble.gattClient().write(GattClient::GATT_OP_WRITE_REQ, chars->getConnHandle(), chars->getCCCDHndle(),2,(uint8_t *)&value);
 }
 
- // GAP call back handle
-static void connectionCallBack( const Gap::ConnectionCallbackParams_t *params )
+// GAP call back handle
+void connectionCallBack( const Gap::ConnectionCallbackParams_t *params )
 {
     Serial1.print("GAP_EVT_CONNECTED");    
     Serial1.print("The conn handle : ");
@@ -131,22 +131,22 @@ static void connectionCallBack( const Gap::ConnectionCallbackParams_t *params )
     ble.gattClient().launchServiceDiscovery(params->handle, ServiceCallBack, CharacteristicCallBack, service_uuid, chars_uuid1);
 }
 
-static void disconnectionCallBack(Gap::Handle_t handle, Gap::DisconnectionReason_t reason)
+void disconnectionCallBack(Gap::Handle_t handle, Gap::DisconnectionReason_t reason)
 {
    Serial1.println("Disconnected ");
 }
 
-static void discoveryTermination(Gap::Handle_t connectionHandle)
+void discoveryTermination(Gap::Handle_t connectionHandle)
 {
     Serial1.println("discoveryTermination............ ");    
 }
 
-static void onDataWrite(const GattWriteCallbackParams *params)
+void onDataWrite(const GattWriteCallbackParams *params)
 {
     Serial1.println("GattClient write call back ");    
 }
 
-static void onDataRead(const GattReadCallbackParams *params)
+void onDataRead(const GattReadCallbackParams *params)
 {
     Serial1.println("GattClient read call back ");      
     Serial1.print("The handle : ");
@@ -163,7 +163,7 @@ static void onDataRead(const GattReadCallbackParams *params)
     Serial1.println("");
 }
 
-static void hvxCallBack(const GattHVXCallbackParams *params)
+void hvxCallBack(const GattHVXCallbackParams *params)
 {
     Serial1.println("GattClient notify call back \r\n");  
     Serial1.print("The len : ");

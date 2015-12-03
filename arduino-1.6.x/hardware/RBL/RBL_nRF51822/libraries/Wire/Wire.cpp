@@ -67,8 +67,8 @@ void TwoWire::begin()
 {
 	PinName nrf_sda, nrf_scl;
 	
-	nrf_scl = Pin_nRF51822_to_Arduino(I2C_SCL0);
-	nrf_sda = Pin_nRF51822_to_Arduino(I2C_SDA0);	
+	nrf_scl = Pin_nRF51822_to_Arduino(TWI_SCL);
+	nrf_sda = Pin_nRF51822_to_Arduino(TWI_SDA);	
 	/* Initialize i2c, default 100KHz */
 	i2c_init(&i2c, nrf_sda, nrf_scl);
 	twi_status = UNINITIALIZED;

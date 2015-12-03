@@ -6,11 +6,13 @@
 # Datatypes (KEYWORD1)
 #######################################
 
+BLE_Exampls KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 
+invalid KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

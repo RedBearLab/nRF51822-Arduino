@@ -27,7 +27,7 @@ GattCharacteristic *uartChars[] = {&characteristic1, &characteristic2};
 GattService         uartService(service1_uuid, uartChars, sizeof(uartChars) / sizeof(GattCharacteristic *));
 
 
-static void disconnectionCallBack(Gap::Handle_t handle, Gap::DisconnectionReason_t reason)
+void disconnectionCallBack(Gap::Handle_t handle, Gap::DisconnectionReason_t reason)
 {
     ble.startAdvertising();
 }
