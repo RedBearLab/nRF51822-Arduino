@@ -84,7 +84,7 @@ tools.avrdude.path={runtime.tools.avrdude.path}
 tools.avrdude.cmd.path={runtime.tools.avrdude.path}/bin/avrdude
 tools.avrdude.config.path={runtime.platform.path}/avrdude_conf/avrdude.conf
 tools.avrdude.cmd.path.linux={runtime.tools.avrdude.path}/bin/avrdude
-tools.avrdude.config.path.linux={{runtime.platform.path}/avrdude_conf/avrdude.conf
+tools.avrdude.config.path.linux={runtime.platform.path}/avrdude_conf/avrdude.conf
 
 tools.avrdude.upload.params.verbose=-v -V
 tools.avrdude.upload.params.quiet=-q -q
