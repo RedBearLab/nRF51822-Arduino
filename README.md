@@ -2,9 +2,7 @@
 nRF51822-Arduino
 ================
 
-This branch is to provide BLE concurrent Central and Peripheral using Nordic SoftDevice S130.
-
-This is a work in progress which add support for Arduino IDE to allow compiling nRF51822 firmware.
+This branch is to provide BLE concurrent Central and Peripheral using Nordic SoftDevice S130. This is a work in progress which adds support for Arduino IDE to allow compiling nRF51822 firmware for fast prototyping and learning how BLE works.
 
 This add-on also provides BLE API for the nRF51822 SoC to act as BLE Central/Peripheral role designed for SoftDevice S130.
 
@@ -135,6 +133,10 @@ Limitations
 1. Serial Interface
 
     As Arduino does not have flow control in serial port implementation, the Serial port (Pin 0 and 1) is limited to 9600bps since the BLE stack require flow control in order to support higher speed. If you are not going to use BLE, you can use higher speed. 
+
+2. Compatibility
+
+    It is not easy for the nRF51822 chip (ARM 32-bit) to be 100% compatible (the SoC has to do BLE tasks and ensure low power) with the Atmel chips (AVR 8-bit), the underlying driver from Nordic for the peripherals may also have their limitations.
 
 
 License
