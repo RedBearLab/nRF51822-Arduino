@@ -133,7 +133,7 @@ int i2c_stop(i2c_t *obj)
         }
     }
     obj->address_set = 0;
-    i2c_reset(obj);
+    //i2c_reset(obj);
     return 0;
 }
 

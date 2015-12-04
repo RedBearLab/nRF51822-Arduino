@@ -96,27 +96,42 @@ void TwoWire::beginTransmission( int address )
 /**********************************************************************
 name :
 function : 
+return : 0 success, -1 no slave, -2 bus busy
 **********************************************************************/
-uint8_t TwoWire::endTransmission( uint8_t stop)
+int8_t TwoWire::endTransmission( uint8_t stop)
 {
-	uint8_t result;
+	int8_t result=0;
 	
-	if(TX_BufferHead > 0 ) {
-		result = i2c_write(&i2c, Transfer_Addr, (const char *)TX_Buffer, TX_BufferHead, stop);
-	}
+	result = i2c_write(&i2c, Transfer_Addr, (const char *)TX_Buffer, TX_BufferHead, stop);
 	
-	TX_BufferHead = 0;
-	twi_status = MASTER_IDLE;
-	
-	return result;
+    TX_BufferHead = 0;
+	twi_status = MASTER_IDLE;	
+    
+    if(i2c.i2c->EVENTS_ERROR == 1) {
+        if (i2c.i2c->ERRORSRC & TWI_ERRORSRC_ANACK_Msk) {
+            i2c.i2c->EVENTS_ERROR = 0;
+            i2c.i2c->TASKS_STOP   = 1;
+            result = I2C_ERROR_NO_SLAVE;
+        }
+        else if(i2c.i2c->ERRORSRC & TWI_ERRORSRC_DNACK_Msk) {
+            i2c.i2c->EVENTS_ERROR = 0;
+            i2c.i2c->TASKS_STOP   = 1;
+            result = I2C_ERROR_BUS_BUSY;
+        }
+    }
+    
+    if(stop)
+        i2c_reset(&i2c);
+
+    return result;
 }
 /**********************************************************************
 name :
 function : 
 **********************************************************************/
-uint8_t TwoWire::endTransmission(void)
+int8_t TwoWire::endTransmission(void)
 {
-	uint8_t result;
+	int8_t result;
 	
 	result = endTransmission(1);
 	
