@@ -25,6 +25,7 @@
     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
+#include <BLE_API.h>
 #include <Servo.h>
 #include "pin_inf.h"
 
@@ -41,8 +42,8 @@
 #define TXRX_BUF_LEN                     20
 
 BLE                                 	   ble;
-Ticker                                   ticker1, ticker2;   
-Servo                                    servos[MAX_SERVOS];       
+Ticker                                   ticker1, ticker2;
+Servo                                    servos[MAX_SERVOS];
 
 //for BLEController
 byte pins_mode[TOTAL_PINS];
@@ -75,8 +76,8 @@ GattService         uartService(service1_uuid, uartChars, sizeof(uartChars) / si
 
 void disconnectionCallBack(Gap::Handle_t handle, Gap::DisconnectionReason_t reason)
 {
-    Serial1.println("Disconnected!");
-    Serial1.println("Restarting the advertising process");
+    Serial.println("Disconnected!");
+    Serial.println("Restarting the advertising process");
     ble.startAdvertising();
 }
 
@@ -84,7 +85,7 @@ void reportPinDigitalData(byte pin)
 {
     byte state = digitalRead(pin);
     byte mode = pins_mode[pin];
-    byte buf[] = {'G', pin, mode, state};  
+    byte buf[] = {'G', pin, mode, state};
     ble.updateCharacteristicValue(characteristic2.getValueAttribute().getHandle(), buf, 4);
 }
 
@@ -92,7 +93,7 @@ void reportPinPWMData(byte pin)
 {
     byte value = pins_pwm[pin];
     byte mode = pins_mode[pin];
-    byte buf[] = {'G', pin, mode, value};         
+    byte buf[] = {'G', pin, mode, value};
     ble.updateCharacteristicValue(characteristic2.getValueAttribute().getHandle(), buf, 4);
 }
 
@@ -100,7 +101,7 @@ void reportPinServoData(byte pin)
 {
     byte value = pins_servo[pin];
     byte mode = pins_mode[pin];
-    byte buf[] = {'G', pin, mode, value};         
+    byte buf[] = {'G', pin, mode, value};
     ble.updateCharacteristicValue(characteristic2.getValueAttribute().getHandle(), buf, 4);
 }
 
@@ -108,19 +109,19 @@ void reportPinCapability(byte pin)
 {
     byte buf[] = {'P', pin, 0x00};
     byte pin_cap = 0;
-                      
+
     if (IS_PIN_DIGITAL(pin))
         pin_cap |= PIN_CAPABILITY_DIGITAL;
-              
+
     if (IS_PIN_ANALOG(pin))
         pin_cap |= PIN_CAPABILITY_ANALOG;
-  
+
     if (IS_PIN_PWM(pin))
         pin_cap |= PIN_CAPABILITY_PWM;
-  
+
     if (IS_PIN_SERVO(pin))
         pin_cap |= PIN_CAPABILITY_SERVO;
-  
+
     buf[2] = pin_cap;
     ble.updateCharacteristicValue(characteristic2.getValueAttribute().getHandle(), buf, 3);
 }
@@ -128,7 +129,7 @@ void reportPinCapability(byte pin)
 void sendCustomData(uint8_t *buf, uint8_t len)
 {
     uint8_t data[20] = "Z";
-    
+
     memcpy(&data[1], buf, len);
     ble.updateCharacteristicValue(characteristic2.getValueAttribute().getHandle(), data, len+1);
 }
@@ -145,24 +146,24 @@ byte reportDigitalInput()
             pin = 0;
         return 0;
     }
-    
+
     if (pins_mode[pin] == INPUT)
     {
         byte current_state = digitalRead(pin);
-              
+
         if (pins_state[pin] != current_state)
         {
             pins_state[pin] = current_state;
             byte buf[] = {'G', pin, INPUT, current_state};
             ble.updateCharacteristicValue(characteristic2.getValueAttribute().getHandle(), buf, 4);
-          
+
             report = 1;
         }
     }
     pin++;
     if (pin >= TOTAL_PINS)
         pin = 0;
-      
+
     return report;
 }
 
@@ -171,7 +172,7 @@ byte reportPinAnalogData()
 {
     static byte pin = 0;
     byte report = 0;
-  
+
     if (!IS_PIN_DIGITAL(pin))
     {
         pin++;
@@ -179,24 +180,24 @@ byte reportPinAnalogData()
             pin = 0;
         return 0;
     }
-    
+
     if (pins_mode[pin] == ANALOG)
     {
         uint16_t value = analogRead(pin);
         byte value_lo = value;
         byte value_hi = value>>8;
-        
+
         byte mode = pins_mode[pin];
         mode = (value_hi << 4) | mode;
-        
-        byte buf[] = {'G', pin, mode, value_lo};         
+
+        byte buf[] = {'G', pin, mode, value_lo};
         ble.updateCharacteristicValue(characteristic2.getValueAttribute().getHandle(), buf, 4);
     }
-    
+
     pin++;
     if (pin >= TOTAL_PINS)
         pin = 0;
-      
+
     return report;
 }
 
@@ -216,20 +217,20 @@ void m_status_check_handle()
 }
 
 void m_status_reback_handle()
-{   
+{
     uint32_t err_code = NRF_SUCCESS;
 
     if(reback_pin < TOTAL_PINS)
     {
-        reportPinCapability(reback_pin);     
+        reportPinCapability(reback_pin);
         if ( (pins_mode[reback_pin] == INPUT) || (pins_mode[reback_pin] == OUTPUT) )
             reportPinDigitalData(reback_pin);
         else if (pins_mode[reback_pin] == PWM)
             reportPinPWMData(reback_pin);
         else if (pins_mode[reback_pin] == SERVO)
-            reportPinServoData(reback_pin);     
-     
-        reback_pin++;     
+            reportPinServoData(reback_pin);
+
+        reback_pin++;
     }
     else
     {
@@ -249,14 +250,14 @@ void writtenHandle(const GattWriteCallbackParams *Handler)
 
     if (Handler->handle == characteristic1.getValueAttribute().getHandle()) {
         ble.readCharacteristicValue(characteristic1.getValueAttribute().getHandle(), buf, &bytesRead);
-        Serial1.print("bytesRead: ");
-        Serial1.println(bytesRead, HEX);
+        Serial.print("bytesRead: ");
+        Serial.println(bytesRead, HEX);
         //for(byte index=0; index<bytesRead; index++) {
-            Serial1.write(buf[0]);
-            Serial1.print(buf[1], DEC);
-            Serial1.print(buf[2], DEC);
+            Serial.write(buf[0]);
+            Serial.print(buf[1], DEC);
+            Serial.print(buf[2], DEC);
         //}
-        Serial1.println("");
+        Serial.println("");
         switch(buf[0])
         {
             case 'V': //query protocol version
@@ -269,13 +270,13 @@ void writtenHandle(const GattWriteCallbackParams *Handler)
             {
                 byte buf_tx[2] = {'C', TOTAL_PINS};
                 ble.updateCharacteristicValue(characteristic2.getValueAttribute().getHandle(), buf_tx, 2);
-                break;       
+                break;
             }
             case 'M': // query pin mode
             {
                 byte buf_tx[] = {'M', buf[1], pins_mode[ buf[2] ]};
                 ble.updateCharacteristicValue(characteristic2.getValueAttribute().getHandle(), buf_tx, 3);
-                break;                  
+                break;
             }
             case 'S': // set pin mode
             {
@@ -301,9 +302,9 @@ void writtenHandle(const GattWriteCallbackParams *Handler)
                     }
                     else if (mode == ANALOG)
                     {
-                        if (IS_PIN_ANALOG(pin)) 
+                        if (IS_PIN_ANALOG(pin))
                         {
-                            if (IS_PIN_DIGITAL(pin)) 
+                            if (IS_PIN_DIGITAL(pin))
                             {
                                 pinMode(PIN_TO_DIGITAL(pin), LOW);
                             }
@@ -338,11 +339,11 @@ void writtenHandle(const GattWriteCallbackParams *Handler)
                     reportPinPWMData(pin);
                 else if (mode == SERVO)
                     reportPinServoData(pin);
-             
+
                 break;
             }
             case 'G': // query pin data
-            {  
+            {
                 byte pin = buf[1];
                 reportPinDigitalData(pin);
                 break;
@@ -359,7 +360,7 @@ void writtenHandle(const GattWriteCallbackParams *Handler)
             {
                 byte pin = buf[1];
                 byte value = buf[2];
-                
+
                 analogWrite(PIN_TO_PWM(pin), value);
                 pins_pwm[pin] = value;
                 reportPinPWMData(pin);
@@ -373,13 +374,13 @@ void writtenHandle(const GattWriteCallbackParams *Handler)
                 if (IS_PIN_SERVO(pin))
                     servos[PIN_TO_SERVO(pin)].write(value);
                 pins_servo[pin] = value;
-                reportPinServoData(pin);       
-                break;         
+                reportPinServoData(pin);
+                break;
             }
             case 'A':// query all pin status
-            {    
+            {
                 reback_pin = 2;
-                ticker2.attach_us(m_status_reback_handle, 30000);  
+                ticker2.attach_us(m_status_reback_handle, 30000);
                 break;
             }
             case 'P':// query pin capability
@@ -391,18 +392,18 @@ void writtenHandle(const GattWriteCallbackParams *Handler)
             case 'Z':
             {
                 byte len = buf[1];
-                Serial1.println("->");
-                Serial1.print("Received: ");
-                Serial1.print(len);
-                Serial1.println(" byte(s)");
-                Serial1.print(" Hex: ");
+                Serial.println("->");
+                Serial.print("Received: ");
+                Serial.print(len);
+                Serial.println(" byte(s)");
+                Serial.print(" Hex: ");
                 for (int i=0;i<len;i++)
-                  Serial1.print(buf[i+2], HEX);
-                Serial1.println();
+                  Serial.print(buf[i+2], HEX);
+                Serial.println();
                 break;
-            }  
+            }
         }
-        buf_len = 0;          
+        buf_len = 0;
     }
     status_check_flag = 1;
 }
@@ -411,22 +412,22 @@ void writtenHandle(const GattWriteCallbackParams *Handler)
 
 void setup() {
     // put your setup code here, to run once
-    
-    Serial1.begin(9600);
+
+    Serial.begin(9600);
 
     ble.init();
     ble.onDisconnection(disconnectionCallBack);
     ble.onDataWritten(writtenHandle);
-      
+
     // setup adv_data and srp_data
     ble.accumulateAdvertisingPayload(GapAdvertisingData::BREDR_NOT_SUPPORTED);
     ble.accumulateAdvertisingPayload(GapAdvertisingData::SHORTENED_LOCAL_NAME,
                                      (const uint8_t *)"TXRX", sizeof("TXRX") - 1);
     ble.accumulateAdvertisingPayload(GapAdvertisingData::COMPLETE_LIST_128BIT_SERVICE_IDS,
                                      (const uint8_t *)uart_base_uuid_rev, sizeof(uart_base_uuid_rev));
-							  
+
     // set adv_type
-    ble.setAdvertisingType(GapAdvertisingParams::ADV_CONNECTABLE_UNDIRECTED);    
+    ble.setAdvertisingType(GapAdvertisingParams::ADV_CONNECTABLE_UNDIRECTED);
 	  // add service
     ble.addService(uartService);
     // set device name
@@ -446,7 +447,7 @@ void setup() {
         // Set pin to input with internal pull up
         pinMode(pin, INPUT);
         digitalWrite(pin, HIGH);
-    
+
         // Save pin mode and state
         pins_mode[pin] = INPUT;
         pins_state[pin] = LOW;
@@ -454,7 +455,7 @@ void setup() {
 
     ticker1.attach_us(m_status_check_handle, 100000);
 
-    Serial1.println("Advertising Start!");
+    Serial.println("Advertising Start!");
 }
 
 void loop() {

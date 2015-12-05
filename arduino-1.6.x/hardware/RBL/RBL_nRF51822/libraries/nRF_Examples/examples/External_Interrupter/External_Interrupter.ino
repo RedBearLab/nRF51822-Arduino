@@ -27,17 +27,17 @@
 
 void handle_irq1(void)
 {
-    Serial1.println(" Handle1  ");
+    Serial.println(" Handle1  ");
 }
 
 void handle_irq2(void)
 {
-    Serial1.println(" Handle2  ");
+    Serial.println(" Handle2  ");
 }
 
 void handle_irq3(void)
 {
-    Serial1.println(" Handle3  ");
+    Serial.println(" Handle3  ");
 }
 
 void setup() {
@@ -45,10 +45,10 @@ void setup() {
     attachInterrupt(D6, handle_irq1, RISING);
     attachInterrupt(D7, handle_irq2, FALLING);
     attachInterrupt(D8, handle_irq3, CHANGE);
-    
+
     pinMode(D13, OUTPUT);
-    Serial1.begin(9600);  
-    Serial1.println("External Interrupter Demo ");
+    Serial.begin(9600);
+    Serial.println("External Interrupter Demo ");
 }
 
 void loop() {

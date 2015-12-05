@@ -38,26 +38,26 @@
 
 #include <Wire.h>
 
-void setup() 
+void setup()
 {
     // put your setup code here, to run once:
-    Serial1.begin(115200);
+    Serial.begin(115200);
     Wire.begin();
-    Serial1.println("master write...");
+    Serial.println("master write...");
 }
 
 byte x = 0;
 
-void loop() 
+void loop()
 {
-    // put your main code here, to run repeatedly: 
-    Serial1.println("master send begin: ");
-    
+    // put your main code here, to run repeatedly:
+    Serial.println("master send begin: ");
+
     Wire.beginTransmission(0x04);
     Wire.write("x is");
     Wire.write(x);
     Wire.endTransmission();
-    
+
     x++;
     delay(1000);
 }

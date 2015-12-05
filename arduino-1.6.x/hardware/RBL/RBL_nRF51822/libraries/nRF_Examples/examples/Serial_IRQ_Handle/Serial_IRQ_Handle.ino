@@ -26,22 +26,22 @@
 */
 
 void uart_handle(uint32_t id, SerialIrq event)
-{   /* Serial1 rx IRQ */
+{   /* Serial rx IRQ */
     if(event == RxIrq)
-    {   
-        if(Serial1.available())
+    {
+        if(Serial.available())
         {
-            Serial1.write(Serial1.read()); 
-        }      
+            Serial.write(Serial.read());
+        }
     }
 }
 
 void setup() {
-  
+
     pinMode(D13, OUTPUT);
-    Serial1.begin(9600);  
-    Serial1.attach(uart_handle);
-    Serial1.println("Serial1 IRQ Handle ");
+    Serial.begin(9600);
+    Serial.attach(uart_handle);
+    Serial.println("Serial IRQ Handle ");
 }
 
 void loop() {

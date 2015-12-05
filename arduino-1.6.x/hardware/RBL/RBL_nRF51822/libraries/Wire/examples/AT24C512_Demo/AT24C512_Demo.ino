@@ -42,12 +42,12 @@ void AT24C512_WriteBytes(uint16_t addr, uint8_t *pbuf, uint16_t len)
 }
 
 void AT24C512_ReadBytes(uint16_t addr, uint8_t *pbuf, uint16_t len)
-{    
+{
     Wire.beginTransmission(DEV_ADDR);
     Wire.write((uint8_t)addr>>8);
-    Wire.write((uint8_t)addr);    
+    Wire.write((uint8_t)addr);
     Wire.endTransmission();
-    
+
     Wire.requestFrom(DEV_ADDR,len);
     while( Wire.available() > 0 )
     {
@@ -59,11 +59,11 @@ void AT24C512_ReadBytes(uint16_t addr, uint8_t *pbuf, uint16_t len)
 void setup() {
     // put your setup code here, to run once:
     pinMode(D13, OUTPUT);
-    Serial1.begin(115200);
-    Serial1.println("Wire demo start ");   
+    Serial.begin(115200);
+    Serial.println("Wire demo start ");
 
     Wire.begin();
-    Serial1.println("Wire demo start");
+    Serial.println("Wire demo start");
     AT24C512_WriteBytes(0, wt_data, 10);
 }
 
@@ -75,9 +75,9 @@ void loop() {
     delay(500);
 
     AT24C512_ReadBytes(0, rd_data, 10);
-    Serial1.println("Read data from AT24C512: ");
-    Serial1.write(rd_data, 10);
-    Serial1.print("\r\n");
+    Serial.println("Read data from AT24C512: ");
+    Serial.write(rd_data, 10);
+    Serial.print("\r\n");
 }
 
 

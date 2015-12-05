@@ -6,12 +6,12 @@ Ticker ticker1, ticker2;
 
 void m_ticker1_handle(void)
 {
-    Serial1.println("handle1 ");    
+    Serial.println("handle1 ");
 }
 
 void m_ticker2_handle(void)
 {
-    Serial1.println("handle2 ");    
+    Serial.println("handle2 ");
 }
 
 void setup() {
@@ -20,8 +20,8 @@ void setup() {
     ticker2.attach_us(m_ticker2_handle, 200000);
 
     pinMode(D13, OUTPUT);
-    Serial1.begin(115200);
-    Serial1.println("Ticker Task Test ");    
+    Serial.begin(115200);
+    Serial.println("Ticker Task Test ");
 }
 
 void loop() {
