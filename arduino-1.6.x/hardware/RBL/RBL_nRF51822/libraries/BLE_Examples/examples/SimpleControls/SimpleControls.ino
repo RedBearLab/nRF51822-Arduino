@@ -25,6 +25,7 @@
     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
+#include <BLE_API.h>
 #include <Servo.h>
 
 #define TXRX_BUF_LEN                      20
@@ -36,9 +37,9 @@
 #define ANALOG_IN_PIN                     A5
 
 
-BLE                                 	    ble;
-Ticker                                    ticker;   
-Servo                                    myservo;       
+BLE                                       ble;
+Ticker                                    ticker;
+Servo                                     myservo;
 
 static boolean analog_enabled = false;
 static byte old_state         = LOW;
@@ -63,8 +64,8 @@ GattService         uartService(service1_uuid, uartChars, sizeof(uartChars) / si
 
 void disconnectionCallBack(Gap::Handle_t handle, Gap::DisconnectionReason_t reason)
 {
-    Serial1.println("Disconnected!");
-    Serial1.println("Restarting the advertising process");
+    Serial.println("Disconnected!");
+    Serial.println("Restarting the advertising process");
     ble.startAdvertising();
 }
 
@@ -75,12 +76,12 @@ void writtenHandle(const GattWriteCallbackParams *Handler)
 
     if (Handler->handle == characteristic1.getValueAttribute().getHandle()) {
         ble.readCharacteristicValue(characteristic1.getValueAttribute().getHandle(), buf, &bytesRead);
-        Serial1.print("bytesRead: ");
-        Serial1.println(bytesRead, HEX);
+        Serial.print("bytesRead: ");
+        Serial.println(bytesRead, HEX);
         for(byte index=0; index<bytesRead; index++) {
-            Serial1.write(buf[index]);
+            Serial.write(buf[index]);
         }
-        Serial1.println("");
+        Serial.println("");
         //Process the data
         if (buf[0] == 0x01)  // Command is to control digital out pin
         {
@@ -111,19 +112,19 @@ void writtenHandle(const GattWriteCallbackParams *Handler)
             analogWrite(PWM_PIN, 0);
             digitalWrite(DIGITAL_OUT_PIN, LOW);
             old_state = LOW;
-        } 
-        
+        }
+
     }
 }
 
 void m_status_check_handle()
 {
     uint8_t buf[3];
-    
+
     if (analog_enabled)  // if analog reading enabled
     {
         // Read and send out
-        uint16_t value = analogRead(ANALOG_IN_PIN); 
+        uint16_t value = analogRead(ANALOG_IN_PIN);
         buf[0] = (0x0B);
         buf[1] = (value >> 8);
         buf[2] = (value);
@@ -137,7 +138,7 @@ void m_status_check_handle()
         {
             buf[0] = (0x0A);
             buf[1] = (0x01);
-            buf[2] = (0x00);    
+            buf[2] = (0x00);
             ble.updateCharacteristicValue(characteristic2.getValueAttribute().getHandle(), buf, 3);
         }
         else
@@ -147,28 +148,28 @@ void m_status_check_handle()
             buf[2] = (0x00);
             ble.updateCharacteristicValue(characteristic2.getValueAttribute().getHandle(), buf, 3);
         }
-    } 
+    }
 }
 
 void setup() {
     // put your setup code here, to run once
-    
-    Serial1.begin(9600);
+
+    Serial.begin(9600);
 
     ble.init();
     ble.onDisconnection(disconnectionCallBack);
     ble.onDataWritten(writtenHandle);
-      
+
     // setup adv_data and srp_data
     ble.accumulateAdvertisingPayload(GapAdvertisingData::BREDR_NOT_SUPPORTED);
     ble.accumulateAdvertisingPayload(GapAdvertisingData::SHORTENED_LOCAL_NAME,
                                      (const uint8_t *)"TXRX", sizeof("TXRX") - 1);
     ble.accumulateAdvertisingPayload(GapAdvertisingData::COMPLETE_LIST_128BIT_SERVICE_IDS,
                                      (const uint8_t *)uart_base_uuid_rev, sizeof(uart_base_uuid_rev));
-							  
+
     // set adv_type
-    ble.setAdvertisingType(GapAdvertisingParams::ADV_CONNECTABLE_UNDIRECTED);    
-	  // add service
+    ble.setAdvertisingType(GapAdvertisingParams::ADV_CONNECTABLE_UNDIRECTED);
+    // add service
     ble.addService(uartService);
     // set device name
     ble.setDeviceName((const uint8_t *)"Simple Controls");
@@ -187,13 +188,13 @@ void setup() {
 
     // Default to internally pull high, change it if you need
     digitalWrite(DIGITAL_IN_PIN, HIGH);
-    
+
     myservo.attach(SERVO_PIN);
-    myservo.write(0);   
+    myservo.write(0);
 
     ticker.attach_us(m_status_check_handle, 200000);
 
-    Serial1.println("Advertising Start!");
+    Serial.println("Advertising Start!");
 }
 
 void loop() {

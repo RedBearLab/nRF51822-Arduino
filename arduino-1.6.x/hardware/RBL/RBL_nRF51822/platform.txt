@@ -1,6 +1,6 @@
 
 # RBL_nRF51822 compile variables
-# ------------------------- 
+# -------------------------
 
 name=RedBearLab Boards
 
@@ -10,15 +10,15 @@ compiler.path={runtime.tools.arm-none-eabi-gcc-4.8.3-2014q1.path}/bin/
 
 # Compile s files options
 compiler.S.cmd=arm-none-eabi-as
-compiler.S.flags=-mcpu=cortex-m0 -mthumb 
+compiler.S.flags=-mcpu=cortex-m0 -mthumb
 
 # Compile c files options
 compiler.c.cmd=arm-none-eabi-gcc
-compiler.c.flags=-c -g -Os -w -std=gnu99 -fno-common -fmessage-length=0 -Wall -fno-exceptions -ffunction-sections -fdata-sections -fomit-frame-pointer -nostdlib --param max-inline-insns-single=500 -DBLE_STACK_SUPPORT_REQD -DDEBUG_NRF_USER -DNRF51 -DTARGET_NRF51822 -DTARGET_M0 -DTARGET_CORTEX_M -DTARGET_NORDIC -DTARGET_NRF51822_MKIT -DTARGET_MCU_NRF51822 -DTOOLCHAIN_GCC_ARM -DTOOLCHAIN_GCC -D__CORTEX_M0 -DARM_MATH_CM0 -DMBED_BUILD_TIMESTAMP=1435023129.97 -D__MBED__=1 
+compiler.c.flags=-c -g -Os -w -std=gnu99 -fno-common -fmessage-length=0 -Wall -fno-exceptions -ffunction-sections -fdata-sections -fomit-frame-pointer -nostdlib --param max-inline-insns-single=500 -DBLE_STACK_SUPPORT_REQD -DDEBUG_NRF_USER -DNRF51 -DNRF51_S130 -DTARGET_NRF51822 -DTARGET_M0 -DTARGET_CORTEX_M -DTARGET_NORDIC -DTARGET_NRF51822_MKIT -DTARGET_MCU_NRF51822 -DTOOLCHAIN_GCC_ARM -DTOOLCHAIN_GCC -D__CORTEX_M0 -DARM_MATH_CM0 -DMBED_BUILD_TIMESTAMP=1435023129.97 -D__MBED__=1
 
 # Compile cpp files options
 compiler.cpp.cmd=arm-none-eabi-g++
-compiler.cpp.flags=-c -g -Os -w -std=gnu++98 -fno-common -fmessage-length=0 -Wall -fno-exceptions -ffunction-sections -fdata-sections -fomit-frame-pointer -nostdlib --param max-inline-insns-single=500 -fno-rtti -DBLE_STACK_SUPPORT_REQD -DDEBUG_NRF_USER -DNRF51 -DTARGET_NRF51822 -DTARGET_M0 -DTARGET_CORTEX_M -DTARGET_NORDIC -DTARGET_NRF51822_MKIT -DTARGET_MCU_NRF51822 -DTOOLCHAIN_GCC_ARM -DTOOLCHAIN_GCC -D__CORTEX_M0 -DARM_MATH_CM0 -DMBED_BUILD_TIMESTAMP=1435023129.97 -D__MBED__=1 
+compiler.cpp.flags=-c -g -Os -w -std=gnu++98 -fno-common -fmessage-length=0 -Wall -fno-exceptions -ffunction-sections -fdata-sections -fomit-frame-pointer -nostdlib --param max-inline-insns-single=500 -fno-rtti -DBLE_STACK_SUPPORT_REQD -DDEBUG_NRF_USER -DNRF51 -DNRF51_S130 -DTARGET_NRF51822 -DTARGET_M0 -DTARGET_CORTEX_M -DTARGET_NORDIC -DTARGET_NRF51822_MKIT -DTARGET_MCU_NRF51822 -DTOOLCHAIN_GCC_ARM -DTOOLCHAIN_GCC -D__CORTEX_M0 -DARM_MATH_CM0 -DMBED_BUILD_TIMESTAMP=1435023129.97 -D__MBED__=1
 
 # Create archives options
 compiler.ar.cmd=arm-none-eabi-ar
@@ -26,8 +26,8 @@ compiler.ar.flags=rcs
 
 # Combine to create elf file options
 compiler.c.elf.cmd=arm-none-eabi-gcc
-compiler.c.elf.flags=-mcpu=cortex-m0 -mthumb 
-compiler.ldflags=--specs=nano.specs 
+compiler.c.elf.flags=-mcpu=cortex-m0 -mthumb
+compiler.ldflags=--specs=nano.specs
 
 # Create bin file options
 compiler.elf2bin.cmd=arm-none-eabi-objcopy
@@ -35,7 +35,11 @@ compiler.elf2bin.flags=-O binary
 
 # Create hex file options
 compiler.elf2hex.cmd=arm-none-eabi-objcopy
+<<<<<<< HEAD
 compiler.elf2hex.flags=-O ihex -I binary 
+=======
+compiler.elf2hex.flags=-O ihex  -I binary
+>>>>>>> 71ca0b8d9c96d47d0693403da3ab4a5f6eb61c7e
 compiler.elf2hex.flagx=-O ihex
 
 # Calculate hex size options
@@ -52,7 +56,7 @@ recipe.S.o.pattern="{compiler.path}{compiler.S.cmd}" {compiler.S.flags} "{source
 recipe.c.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.c.flags} -mcpu={build.mcu} -DF_CPU={build.f_cpu} -D{software}={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} {build.extra_flags} {build.mbed_api_include} {build.nRF51822_api_include} {build.ble_api_include} {includes} "{source_file}" -o "{object_file}"
 
 ## Compile c++ files
-recipe.cpp.o.pattern="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} -mcpu={build.mcu} -DF_CPU={build.f_cpu} -D{software}={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} {build.extra_flags} {build.mbed_api_include} {build.nRF51822_api_include} {build.ble_api_include} {includes} "{source_file}" -o "{object_file}" 
+recipe.cpp.o.pattern="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} -mcpu={build.mcu} -DF_CPU={build.f_cpu} -D{software}={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} {build.extra_flags} {build.mbed_api_include} {build.nRF51822_api_include} {build.ble_api_include} {includes} "{source_file}" -o "{object_file}"
 
 ## Create archives
 #recipe.ar.pattern="{compiler.path}{compiler.ar.cmd}" {compiler.ar.flags} "{archive_file_path}" "{object_file}"
@@ -65,8 +69,8 @@ recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" -mcpu={build.mcu}
 recipe.objcopy.eep.pattern="{compiler.path}{compiler.elf2bin.cmd}" {compiler.elf2bin.flags} "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}.bin"
 
 ## Create hex
-recipe.objcopy.hex1.pattern="{compiler.path}{compiler.elf2hex.cmd}" {compiler.elf2hex.flagx} "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}_OTA.hex" 
-recipe.objcopy.hex2.pattern="{compiler.path}{compiler.elf2hex.cmd}" {compiler.elf2hex.flags} "{build.path}/{build.project_name}.bin" "{build.path}/{build.project_name}.hex" 
+recipe.objcopy.hex1.pattern="{compiler.path}{compiler.elf2hex.cmd}" {compiler.elf2hex.flagx} "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}_OTA.hex"
+recipe.objcopy.hex2.pattern="{compiler.path}{compiler.elf2hex.cmd}" {compiler.elf2hex.flags} "{build.path}/{build.project_name}.bin" "{build.path}/{build.project_name}.hex"
 
 ## Save hex
 recipe.output.tmp_file={build.project_name}_OTA.hex

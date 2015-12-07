@@ -33,7 +33,7 @@ Flash chip: 45DB021D
 #include <SPI_Master.h>
 
 void Flash_Buff_WriteBytes(uint16_t addr, uint8_t *pbuf, uint16_t len)
-{    
+{
     uint16_t index;
 
     digitalWrite(10, LOW);
@@ -57,20 +57,20 @@ void Flash_Buff_ReadBytes(uint16_t addr, uint8_t *pbuf, uint16_t len)
     uint16_t index;
 
     digitalWrite(10, LOW);
-    delayMicroseconds(200); 
+    delayMicroseconds(200);
 
     SPI_Master.transfer(0xD1);
-    SPI_Master.transfer(0x00);  
+    SPI_Master.transfer(0x00);
     SPI_Master.transfer( (uint8_t)(addr>>8) );
-    SPI_Master.transfer( (uint8_t)addr );    
+    SPI_Master.transfer( (uint8_t)addr );
     for(index=0; index<len; index++)
     {
         *pbuf = SPI_Master.transfer(0x00);
         pbuf++;
-    }   
+    }
 
     delayMicroseconds(200);
-    digitalWrite(10, HIGH);   
+    digitalWrite(10, HIGH);
 }
 
 uint8_t i;
@@ -81,9 +81,9 @@ uint8_t rd_buf[7];
 void setup() {
 
     pinMode(D13, OUTPUT);
-    Serial1.begin(9600);  
-    Serial1.println("SPI Start ");
-    
+    Serial.begin(9600);
+    Serial.println("SPI Start ");
+
     pinMode(10, OUTPUT);
     digitalWrite(10, HIGH);
     //SPI_Master.begin();
@@ -104,7 +104,7 @@ void loop() {
     memset(rd_buf, 0x00, 7);
     Flash_Buff_ReadBytes(0, rd_buf, 7);
     for(i=0; i<7; i++)
-      Serial1.write(rd_buf[i]);
+      Serial.write(rd_buf[i]);
 }
 
 

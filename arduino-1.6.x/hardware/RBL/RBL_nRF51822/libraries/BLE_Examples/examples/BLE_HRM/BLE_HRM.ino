@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
+#include <BLE_API.h>
+
 #define DEVICE_NAME       "Nordic_HRM"
 
-BLE                       ble;             
+BLE                       ble;
 Ticker                    ticker_task1;
 
 static uint8_t hrmCounter     = 100;
 static uint8_t bpm[2]         = {0x00, hrmCounter};
-static const uint8_t location = 0x03;       
+static const uint8_t location = 0x03;
 static uint32_t cnt;
 
 static const uint16_t uuid16_list[] = {GattService::UUID_HEART_RATE_SERVICE};
@@ -37,46 +39,46 @@ GattService          hrmService(GattService::UUID_HEART_RATE_SERVICE, hrmChars, 
 
 void disconnectionCallBack(Gap::Handle_t handle, Gap::DisconnectionReason_t reason)
 {
-    Serial1.println("Disconnected!");
-    Serial1.println("Restarting the advertising process");
+    Serial.println("Disconnected!");
+    Serial.println("Restarting the advertising process");
     ble.startAdvertising();
 }
 
 void periodicCallback()
 {
-    if (ble.getGapState().connected) 
+    if (ble.getGapState().connected)
     {
         /* Update the HRM measurement */
         /* First byte = 8-bit values, no extra info, Second byte = uint8_t HRM value */
         /* See --> https://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.heart_rate_measurement.xml */
         hrmCounter++;
-        if (hrmCounter == 175) 
+        if (hrmCounter == 175)
             hrmCounter = 100;
-            
+
         bpm[1] = hrmCounter;
         ble.updateCharacteristicValue(hrmRate.getValueAttribute().getHandle(), bpm, sizeof(bpm));
     }
 }
 
 void setup() {
-  
+
     // put your setup code here, to run once
-    Serial1.begin(9600);
+    Serial.begin(9600);
 
     ticker_task1.attach(periodicCallback, 1);
 
     ble.init();
     ble.onDisconnection(disconnectionCallBack);
-      
+
     // setup adv_data and srp_data
     ble.accumulateAdvertisingPayload(GapAdvertisingData::BREDR_NOT_SUPPORTED | GapAdvertisingData::LE_GENERAL_DISCOVERABLE);
     ble.accumulateAdvertisingPayload(GapAdvertisingData::COMPLETE_LIST_16BIT_SERVICE_IDS, (uint8_t*)uuid16_list, sizeof(uuid16_list));
     ble.accumulateAdvertisingPayload(GapAdvertisingData::HEART_RATE_SENSOR_HEART_RATE_BELT);
     ble.accumulateAdvertisingPayload(GapAdvertisingData::COMPLETE_LOCAL_NAME, (uint8_t *)DEVICE_NAME, sizeof(DEVICE_NAME));
-							  
+
     // set adv_type
-    ble.setAdvertisingType(GapAdvertisingParams::ADV_CONNECTABLE_UNDIRECTED);    
-	  // add service
+    ble.setAdvertisingType(GapAdvertisingParams::ADV_CONNECTABLE_UNDIRECTED);
+      // add service
     ble.addService(hrmService);
     // set device name
     ble.setDeviceName((const uint8_t *)DEVICE_NAME);

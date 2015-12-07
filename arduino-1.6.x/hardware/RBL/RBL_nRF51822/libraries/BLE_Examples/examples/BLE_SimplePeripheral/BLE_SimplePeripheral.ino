@@ -1,4 +1,4 @@
-
+#include <BLE_API.h>
 
 #define TXRX_BUF_LEN                      20
 
@@ -31,8 +31,8 @@ GattService         uartService(service1_uuid, uartChars, sizeof(uartChars) / si
 
 void disconnectionCallBack(Gap::Handle_t handle, Gap::DisconnectionReason_t reason)
 {
-    Serial1.println("Disconnected ");
-    Serial1.println("Restart advertising ");
+    Serial.println("Disconnected ");
+    Serial.println("Restart advertising ");
     ble.startAdvertising();
 }
 
@@ -42,53 +42,53 @@ void writtenHandle(const GattWriteCallbackParams *Handler)
     uint8_t buf[TXRX_BUF_LEN];
     uint16_t bytesRead, index;
 
-    Serial1.println("Write Handle : ");
+    Serial.println("Write Handle : ");
     if (Handler->handle == characteristic1.getValueAttribute().getHandle())
     {
         ble.readCharacteristicValue(characteristic1.getValueAttribute().getHandle(), buf, &bytesRead);
         for(byte index=0; index<bytesRead; index++)
         {
-            Serial1.print(buf[index], HEX);
+            Serial.print(buf[index], HEX);
         }
-        Serial1.println(" ");
+        Serial.println(" ");
     }
 }
 
 // Task handle
 void m_1s_handle(void)
 {
-    Serial1.println("1s Loop ");
+    Serial.println("1s Loop ");
     value++;
     ble.updateCharacteristicValue(characteristic3.getValueAttribute().getHandle(), (uint8_t *)&value, 2);
 }
 
 void setup() {
-  
+
     ticker.attach(m_1s_handle, 1);
     // put your setup code here, to run once
-    Serial1.begin(9600);
+    Serial.begin(9600);
     pinMode(D13, OUTPUT);
-    
-    Serial1.println("Start ");
+
+    Serial.println("Start ");
     ble.init();
     ble.onDisconnection(disconnectionCallBack);
     ble.onDataWritten(writtenHandle);
-      
+
     // setup adv_data and srp_data
     ble.accumulateAdvertisingPayload(GapAdvertisingData::BREDR_NOT_SUPPORTED);
     ble.accumulateAdvertisingPayload(GapAdvertisingData::SHORTENED_LOCAL_NAME,
                                      (const uint8_t *)"TXRX", sizeof("TXRX") - 1);
     ble.accumulateAdvertisingPayload(GapAdvertisingData::COMPLETE_LIST_128BIT_SERVICE_IDS,
                                      (const uint8_t *)uart_base_uuid_rev, sizeof(uart_base_uuid_rev));
-                                     
-    ble.accumulateScanResponse(GapAdvertisingData::SHORTENED_LOCAL_NAME, 
-                              (const uint8_t *)"hello", sizeof("hello") - 1);                        
-    ble.accumulateScanResponse(GapAdvertisingData::COMPLETE_LIST_128BIT_SERVICE_IDS, 
-                              (const uint8_t *)uart_base_uuid_rev, sizeof(uart_base_uuid_rev));     
-							  
+
+    ble.accumulateScanResponse(GapAdvertisingData::SHORTENED_LOCAL_NAME,
+                              (const uint8_t *)"hello", sizeof("hello") - 1);
+    ble.accumulateScanResponse(GapAdvertisingData::COMPLETE_LIST_128BIT_SERVICE_IDS,
+                              (const uint8_t *)uart_base_uuid_rev, sizeof(uart_base_uuid_rev));
+
     // set adv_type
-    ble.setAdvertisingType(GapAdvertisingParams::ADV_CONNECTABLE_UNDIRECTED);    
-	// add service
+    ble.setAdvertisingType(GapAdvertisingParams::ADV_CONNECTABLE_UNDIRECTED);
+    // add service
     ble.addService(uartService);
     // set device name
     ble.setDeviceName((const uint8_t *)"Serial UART");
@@ -100,11 +100,11 @@ void setup() {
     // set adv_timeout, in seconds
     ble.setAdvertisingTimeout(0);
     // ger BLE stack version
-    Serial1.println( ble.getVersion() );
+    Serial.println( ble.getVersion() );
     // start advertising
     ble.startAdvertising();
 
-    Serial1.println("start advertising ");
+    Serial.println("start advertising ");
 }
 
 void loop() {

@@ -11,8 +11,6 @@
 #include <avr/pgmspace.h>
 
 #include "mbed.h"
-#include "BLE_API.h"
-#include "nRF51822_API.h"
 
 #include "wiring_constants.h"
 #include "wiring_digital.h"
@@ -34,7 +32,7 @@
 extern void setup( void ) ;
 extern void loop( void ) ;
 
-extern UARTClass Serial1;
+extern UARTClass Serial;
 
 #endif
 

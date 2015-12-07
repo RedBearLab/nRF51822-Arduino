@@ -40,23 +40,23 @@
 
 #include <Wire.h>
 
-void setup() 
+void setup()
 {
     // put your setup code here, to run once:
-    Serial1.begin(115200);
+    Serial.begin(115200);
     Wire.begin();
-    Serial1.println("master read...");
+    Serial.println("master read...");
 }
 
-void loop() 
+void loop()
 {
-    // put your main code here, to run repeatedly: 
+    // put your main code here, to run repeatedly:
     Wire.requestFrom(0x02,6);
-    
+
     while( Wire.available() > 0 )
     {
         uint8_t c = Wire.read();
-        Serial1.write(c);
+        Serial.write(c);
     }
     delay(1000);
 }

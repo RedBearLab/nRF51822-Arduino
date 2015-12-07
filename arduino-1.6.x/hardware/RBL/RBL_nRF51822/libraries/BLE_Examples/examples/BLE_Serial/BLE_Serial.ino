@@ -1,9 +1,9 @@
-
+#include <BLE_API.h>
 
 #define TXRX_BUF_LEN                      20
 
-BLE                                 	    ble;
-Timeout                                   timeout;                
+BLE                                       ble;
+Timeout                                   timeout;
 
 static uint8_t rx_buf[TXRX_BUF_LEN];
 static uint8_t rx_buf_num;
@@ -40,58 +40,58 @@ void writtenHandle(const GattWriteCallbackParams *Handler)
     if (Handler->handle == characteristic1.getValueAttribute().getHandle()) {
         ble.readCharacteristicValue(characteristic1.getValueAttribute().getHandle(), buf, &bytesRead);
         for(byte index=0; index<bytesRead; index++) {
-            Serial1.write(buf[index]);
+            Serial.write(buf[index]);
         }
     }
 }
 
 void m_uart_rx_handle()
 {   //update characteristic data
-    ble.updateCharacteristicValue(characteristic2.getValueAttribute().getHandle(), rx_buf, rx_buf_num);   
+    ble.updateCharacteristicValue(characteristic2.getValueAttribute().getHandle(), rx_buf, rx_buf_num);
     memset(rx_buf, 0x00,20);
     rx_state = 0;
 }
 
 void uart_handle(uint32_t id, SerialIrq event)
-{   /* Serial1 rx IRQ */
-    if(event == RxIrq) {   
-        if (rx_state == 0) {  
+{   /* Serial rx IRQ */
+    if(event == RxIrq) {
+        if (rx_state == 0) {
             rx_state = 1;
             timeout.attach_us(m_uart_rx_handle, 100000);
             rx_buf_num=0;
         }
-        while(Serial1.available()) {
+        while(Serial.available()) {
             if(rx_buf_num < 20) {
-                rx_buf[rx_buf_num] = Serial1.read();
+                rx_buf[rx_buf_num] = Serial.read();
                 rx_buf_num++;
             }
             else {
-                Serial1.read();
+                Serial.read();
             }
-        }   
+        }
     }
 }
 
 void setup() {
-  
+
     // put your setup code here, to run once
-    Serial1.begin(9600);
-    Serial1.attach(uart_handle);
+    Serial.begin(9600);
+    Serial.attach(uart_handle);
 
     ble.init();
     ble.onDisconnection(disconnectionCallBack);
     ble.onDataWritten(writtenHandle);
-      
+
     // setup adv_data and srp_data
     ble.accumulateAdvertisingPayload(GapAdvertisingData::BREDR_NOT_SUPPORTED);
     ble.accumulateAdvertisingPayload(GapAdvertisingData::SHORTENED_LOCAL_NAME,
                                      (const uint8_t *)"TXRX", sizeof("TXRX") - 1);
     ble.accumulateAdvertisingPayload(GapAdvertisingData::COMPLETE_LIST_128BIT_SERVICE_IDS,
                                      (const uint8_t *)uart_base_uuid_rev, sizeof(uart_base_uuid_rev));
-							  
+
     // set adv_type
-    ble.setAdvertisingType(GapAdvertisingParams::ADV_CONNECTABLE_UNDIRECTED);    
-	  // add service
+    ble.setAdvertisingType(GapAdvertisingParams::ADV_CONNECTABLE_UNDIRECTED);
+    // add service
     ble.addService(uartService);
     // set device name
     ble.setDeviceName((const uint8_t *)"BLE Serial");
