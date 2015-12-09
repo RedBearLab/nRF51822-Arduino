@@ -35,11 +35,8 @@ compiler.elf2bin.flags=-O binary
 
 # Create hex file options
 compiler.elf2hex.cmd=arm-none-eabi-objcopy
-<<<<<<< HEAD
 compiler.elf2hex.flags=-O ihex -I binary 
-=======
-compiler.elf2hex.flags=-O ihex  -I binary
->>>>>>> 71ca0b8d9c96d47d0693403da3ab4a5f6eb61c7e
+compiler.elf2hex.flags=-O ihex -I binary
 compiler.elf2hex.flagx=-O ihex
 
 # Calculate hex size options
@@ -79,6 +76,14 @@ recipe.output.save_file={build.project_name}_OTA.{build.variant}.hex
 ## Compute size
 recipe.size.pattern="{compiler.path}{compiler.size.cmd}" -A "{build.path}/{build.project_name}.elf"
 recipe.size.regex=\.text\s+([0-9]+).*
+
+## Preprocessor
+preproc.includes.flags=-w -x c++ -M -MG -MP
+recipe.preproc.includes="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {preproc.includes.flags} -mcpu={build.mcu} -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DARDUINO_{build.board} {build.extra_flags} {build.mbed_api_include} {build.nRF51822_api_include} {build.ble_api_include} {includes} "{source_file}"
+
+preproc.macros.flags=-w -x c++ -E -CC
+recipe.preproc.macros="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {preproc.macros.flags} -mcpu={build.mcu} -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DARDUINO_{build.board} {build.extra_flags} {build.mbed_api_include} {build.nRF51822_api_include} {build.ble_api_include} {includes} "{source_file}"
+
 
 # RBL_nRF51822 Uploader tools
 # ----------------------
