@@ -88,13 +88,13 @@ How to Play
 
   To test the board, we suggest you to load the Blink example to see if it works.
 
-    Menu > Examples > 01.Basics > Blink
+    Menu > File > Examples > 01.Basics > Blink
 
 3. BLE Examples
 
   There are some BLE examples you can try.
   
-    Menu > Examples > BLE_API
+    Menu > File > BLE_Examples
 
   #### BLE_HRM
    
