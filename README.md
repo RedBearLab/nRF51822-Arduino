@@ -4,29 +4,35 @@ nRF51822-Arduino
 
 This branch is to provide BLE concurrent Central and Peripheral using Nordic SoftDevice S130. This is a work in progress which adds support for Arduino IDE to allow compiling nRF51822 firmware for fast prototyping and learning how BLE works.
 
-This add-on also provides BLE API for the nRF51822 SoC to act as BLE Central/Peripheral role designed for SoftDevice S130.
+This board support package add-on also provides BLE API for the nRF51822 SoC to act as BLE Central/Peripheral role designed for SoftDevice S130.
 
+* Note: Unless you know how to do with this repository and want to contribute your code, otherwise, please use Arduino IDE's Boards Manager to install the board support package (e.g. for the RBL_nRF51822 and the BLE Nano boards).
 
 Requirement
 ===========
 
 1. nRF51822 deveopment board, here we will use RBL nRF51822 as an example.
-2. Arduino IDE version 1.6.5 (currently tested version).
-3. PC with one of the following OS:
-    - Mac OSX 10.9 (Mavericks) / 10.10.4 (Yosemite) (current tested version).
-    - Windows 7 and 8.x (current tested version).
+
+	* Note: if you are using the BLE Nano, you also need the MK20 USB dongle.
+
+2. PC with one of the following OS:
+    - Mac OSX 10.11.2 (current tested version), OSX 10.9.x, 10.10.x should also work.
+    - Windows 10 (current tested version), Windows 7 and 8.x should also work.
     - Linux (current tested on Ubuntu 14.04).
 
-Note:
-If you have changed the USB interface firmware (MK20 chip) for some reasons, follow the instructions inside the **MK20** folder to restore it in order to use this add-on for Arduino IDE.
+3. Arduino IDE version 1.6.6 (current tested version).
+
+4. Board support package add-on 1.0.3 (current test version).
+
+	* Note: If you have changed the USB interface firmware (MK20 chip) for some reasons, follow the instructions inside the **MK20** folder to restore it in order to use this add-on for Arduino IDE.
 
 
-Install nRF51822 Arduino Add-on
-===============================
+Install Board Support Package Add-on
+=====================================================
 
-1. Get Arduino IDE version 1.6.5 from Arduino website and install it to your PC
-
-    http://arduino.cc/en/Main/Software
+1. Get Arduino IDE version 1.6.6 from Arduino website and install it to your PC
+	
+	http://arduino.cc/en/Main/Software
 
 2. Start the IDE and from the Menu, click "Preference...", add the following line to "Additional Boards Manager URLs"
  
@@ -34,15 +40,17 @@ Install nRF51822 Arduino Add-on
   
 3. Install the "RedBearLab nRF51822 Boards" add-on via Boards Manager from the Menu: Tools -> Board -> Boards Manager ... 
 
+	* Note: current board support package version is 1.0.3.
 
-Install USB CDC Driver
-======================
 
-Get this driver and install it if you are using Windows, so that you can use the USB CDC (Virtual COM Port).
+Install USB CDC (Serial) Driver (for Windows only)
+==================================================
 
-https://mbed.org/media/downloads/drivers/mbedWinSerial_16466.exe
+Get this driver and install it if you are using an Windows PC, so that you can use the Serial port for uploading sketches in Arduino IDE.
 
-Note that you do not need any driver for OSX and Linux platforms.
+[USB CDC Driver](https://mbed.org/media/downloads/drivers/mbedWinSerial_16466.exe)
+
+* Note that you do not need any driver for OSX and Linux platforms.
 
 
 Flash with RBL Bootloader
@@ -80,13 +88,13 @@ How to Play
 
   To test the board, we suggest you to load the Blink example to see if it works.
 
-    Menu > Examples > 01.Basics > Blink
+    Menu > File > Examples > 01.Basics > Blink
 
 3. BLE Examples
 
   There are some BLE examples you can try.
   
-    Menu > Examples > BLE_API
+    Menu > File > BLE_Examples
 
   #### BLE_HRM
    

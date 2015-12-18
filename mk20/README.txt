@@ -17,7 +17,7 @@ In case you have changed the USB interface firmware inside the MK20 chip and wan
     Example:
 	dd if=BLENano_MK20.bin of=/Volumes/BOOTLOADER/BLENano_MK20.bin conv=notrunc
 
-4.3 For Mac OSX (10.10.x, Yosemite):
+4.3 For Mac OSX (10.10.x / 10.11.x):
 
     sudo mount -u -w -o sync /Volumes/BOOTLOADER; cp -X ~/Desktop/BLENano_MK20.bin /Volumes/BOOTLOADER/
 
