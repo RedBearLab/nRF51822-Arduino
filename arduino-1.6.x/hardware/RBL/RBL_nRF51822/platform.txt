@@ -56,11 +56,11 @@ recipe.c.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.c.flags} -mcpu={b
 recipe.cpp.o.pattern="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} -mcpu={build.mcu} -DF_CPU={build.f_cpu} -D{software}={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} {build.extra_flags} {build.mbed_api_include} {build.nRF51822_api_include} {build.ble_api_include} {includes} "{source_file}" -o "{object_file}"
 
 ## Create archives
-#recipe.ar.pattern="{compiler.path}{compiler.ar.cmd}" {compiler.ar.flags} "{archive_file_path}" "{object_file}"
-recipe.ar.pattern="{compiler.path}{compiler.ar.cmd}" {compiler.ar.flags} "{build.path}/{archive_file}" "{object_file}"
+recipe.ar.pattern="{compiler.path}{compiler.ar.cmd}" {compiler.ar.flags} "{archive_file_path}" "{object_file}"
+#recipe.ar.pattern="{compiler.path}{compiler.ar.cmd}" {compiler.ar.flags} "{build.path}/{archive_file}" "{object_file}"
 
 ## Combine gc-sections, archives, and objects
-recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" -mcpu={build.mcu} -mthumb -Wl,--gc-sections --specs=nano.specs -Wl,--wrap,main -Wl,-Map={build.path}/{build.project_name}.map,--cref "-T{build.variant.path}/{build.ldscript}" -o "{build.path}/{build.project_name}.elf" -Wl,--start-group {object_files} "{build.path}/{archive_file}" -Wl,--end-group -lstdc++ -lsupc++ -lm -lc -lgcc -lnosys
+recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" -mcpu={build.mcu} -mthumb -Wl,--gc-sections --specs=nano.specs -Wl,--wrap,main -Wl,-Map={build.path}/{build.project_name}.map,--cref "-T{build.variant.path}/{build.ldscript}" -o "{build.path}/{build.project_name}.elf" -Wl,--start-group {object_files} "{archive_file_path}" -Wl,--end-group -lstdc++ -lsupc++ -lm -lc -lgcc -lnosys
 
 ## Create bin
 recipe.objcopy.eep.pattern="{compiler.path}{compiler.elf2bin.cmd}" {compiler.elf2bin.flags} "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}.bin"
@@ -78,11 +78,11 @@ recipe.size.pattern="{compiler.path}{compiler.size.cmd}" -A "{build.path}/{build
 recipe.size.regex=\.text\s+([0-9]+).*
 
 ## Preprocessor
-preproc.includes.flags=-w -x c++ -M -MG -MP
-recipe.preproc.includes="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {preproc.includes.flags} -mcpu={build.mcu} -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DARDUINO_{build.board} {build.extra_flags} {build.mbed_api_include} {build.nRF51822_api_include} {build.ble_api_include} {includes} "{source_file}"
+#preproc.includes.flags=-w -x c++ -M -MG -MP
+#recipe.preproc.includes="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {preproc.includes.flags} -mcpu={build.mcu} -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DARDUINO_{build.board} {build.extra_flags} {build.mbed_api_include} {build.nRF51822_api_include} {build.ble_api_include} {includes} "{source_file}"
 
-preproc.macros.flags=-w -x c++ -E -CC
-recipe.preproc.macros="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {preproc.macros.flags} -mcpu={build.mcu} -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DARDUINO_{build.board} {build.extra_flags} {build.mbed_api_include} {build.nRF51822_api_include} {build.ble_api_include} {includes} "{source_file}"
+#preproc.macros.flags=-w -x c++ -E -CC
+#recipe.preproc.macros="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {preproc.macros.flags} -mcpu={build.mcu} -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DARDUINO_{build.board} {build.extra_flags} {build.mbed_api_include} {build.nRF51822_api_include} {build.ble_api_include} {includes} "{source_file}"
 
 
 # RBL_nRF51822 Uploader tools
