@@ -20,17 +20,18 @@ Requirement
     - Windows 10 (current tested version), Windows 7 and 8.x should also work.
     - Linux (current tested on Ubuntu 14.04).
 
-3. Arduino IDE version 1.6.6 (current tested version).
+3. Arduino IDE version 1.6.7 (current tested version).
 
-4. Board support package add-on 1.0.3 (current test version).
+4. Board support package add-on 1.0.4 (current test version).
 
-	* Note: If you have changed the USB interface firmware (MK20 chip) for some reasons, follow the instructions inside the **MK20** folder to restore it in order to use this add-on for Arduino IDE.
+	* Note 1: If you have changed the USB interface firmware (MK20 chip) for some reasons, follow the instructions inside the **MK20** folder to restore it in order to use this add-on for Arduino IDE.
 
+	* Note 2: If you still need to use Arduino IDE 1.6.6 then you need to use board support package 1.0.3
 
 Install Board Support Package Add-on
-=====================================================
+====================================
 
-1. Get Arduino IDE version 1.6.6 from Arduino website and install it to your PC
+1. Get Arduino IDE from Arduino website and install it to your PC
 	
 	http://arduino.cc/en/Main/Software
 
@@ -39,8 +40,6 @@ Install Board Support Package Add-on
 	https://redbearlab.github.io/arduino/package_redbearlab_index.json  
   
 3. Install the "RedBearLab nRF51822 Boards" add-on via Boards Manager from the Menu: Tools -> Board -> Boards Manager ... 
-
-	* Note: current board support package version is 1.0.3.
 
 
 Install USB CDC (Serial) Driver (for Windows only)
@@ -126,7 +125,7 @@ OTA
 
 The bootloader allows you to load firmware Over-the-air. Everytime, if you reset the board by hitting the button on the board, the bootloader will broacast the OTA service via BLE for 5 sec waiting for a connection to be made. Otherwise, it will start the pre-loaded firmware.
 
-You can use the "export" feature from Arduino IDE 1.6.5 to get the firmware for OTA.
+You can use the "export" feature from Arduino IDE to get the firmware for OTA.
 
 Menu -> Sketch -> Export Compiled Binary
 
@@ -157,4 +156,3 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
