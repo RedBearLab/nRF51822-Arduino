@@ -30,12 +30,21 @@
 
 #define TXRX_BUF_LEN                      20
 
+#ifdef RBL_NRF51822
 #define DIGITAL_OUT_PIN                   D2
 #define DIGITAL_IN_PIN                    A4
 #define PWM_PIN                           D3
 #define SERVO_PIN                         D5
 #define ANALOG_IN_PIN                     A5
+#endif
 
+#ifdef BLE_NANO
+#define DIGITAL_OUT_PIN                   D2
+#define DIGITAL_IN_PIN                    D3
+#define PWM_PIN                           D4
+#define SERVO_PIN                         D5
+#define ANALOG_IN_PIN                     A3
+#endif
 
 BLE                                       ble;
 Ticker                                    ticker;
@@ -45,10 +54,10 @@ static boolean analog_enabled = false;
 static byte old_state         = LOW;
 
 // The Nordic UART Service
-static const uint8_t service1_uuid[]                = {0x71, 0x3D, 0, 0, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
-static const uint8_t service1_tx_uuid[]             = {0x71, 0x3D, 0, 3, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
-static const uint8_t service1_rx_uuid[]             = {0x71, 0x3D, 0, 2, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
-static const uint8_t uart_base_uuid_rev[]           = {0x1E, 0x94, 0x8D, 0xF1, 0x48, 0x31, 0x94, 0xBA, 0x75, 0x4C, 0x3E, 0x50, 0, 0, 0x3D, 0x71};
+static const uint8_t service1_uuid[]        = {0x71, 0x3D, 0, 0, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
+static const uint8_t service1_tx_uuid[]     = {0x71, 0x3D, 0, 3, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
+static const uint8_t service1_rx_uuid[]     = {0x71, 0x3D, 0, 2, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
+static const uint8_t uart_base_uuid_rev[]   = {0x1E, 0x94, 0x8D, 0xF1, 0x48, 0x31, 0x94, 0xBA, 0x75, 0x4C, 0x3E, 0x50, 0, 0, 0x3D, 0x71};
 
 uint8_t tx_value[TXRX_BUF_LEN] = {0,};
 uint8_t rx_value[TXRX_BUF_LEN] = {0,};
@@ -79,7 +88,8 @@ void writtenHandle(const GattWriteCallbackParams *Handler)
         Serial.print("bytesRead: ");
         Serial.println(bytesRead, HEX);
         for(byte index=0; index<bytesRead; index++) {
-            Serial.write(buf[index]);
+            Serial.print(buf[index], HEX);
+            Serial.print(" ");
         }
         Serial.println("");
         //Process the data

@@ -13,14 +13,22 @@
 #define D5 5
 #define D6 6
 #define D7 7
+
 #define D13 13
 
-#define A0 14 
-#define A1 15 
-#define A2 16 
-#define A3 17 
-#define A4 18 
-#define A5 19 
+#define D8  8
+#define D9  9
+#define D10 10
+#define D11 11
+#define D12 12
+#define D14 14
+
+#define A0 D8 
+#define A1 D9 
+#define A2 D10 
+#define A3 D11 
+#define A4 D12 
+#define A5 D14 
 
 #define CS   D2
 #define SCK  D3
