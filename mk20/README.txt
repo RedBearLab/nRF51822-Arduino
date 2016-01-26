@@ -7,7 +7,7 @@ In case you have changed the USB interface firmware inside the MK20 chip and wan
 
 3. Release the button and the LED will keep flashing (slowly) 
 
-4.1 For Windows, just drag the firmware (.bin) to the MSD drive (e.g. E:)
+4.1 For Windows, just drag the firmware (.bin) to the MSD drive (e.g. E:), labelled 'BOOTLOADER'
 
 4.2 For Linux or Mac OSX (10.9.x), use the follow command from the Terminal:
 
@@ -27,4 +27,4 @@ Note: Use RBL_nRF51822_MK20.bin for the RBL nRF51822 board and use BLENano_MK20.
 
 6. Remove the board from the USB port 
 
-7. Reconnect it to the USB port
+7. Reconnect it to the USB port, your OS will show a drive labelled 'MBED'
