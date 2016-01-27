@@ -52,8 +52,8 @@ Get this driver and install it if you are using an Windows PC, so that you can u
 * Note that you do not need any driver for OSX and Linux platforms.
 
 
-Flash with RBL Bootloader (Optional)
-====================================
+Flash with RBL Bootloader
+=========================
 
 The nRF51822 boards are proloaded the bootloader already for using the Arduino IDE. Normally, you can skip this step. You can check with this:
 
@@ -62,6 +62,8 @@ The nRF51822 boards are proloaded the bootloader already for using the Arduino I
 In the "bootloader" folder, there is a firmware (bootloader.hex) for the RBL nRF51822 board, it allows you to load Arduino sketch using the Arduino IDE.
 
 To load the bootloader, connect the board to your PC using a micro USB cable, it will prompt a drive, drag the bootloader firmware to the drive.
+
+If you used mbed drag & drop method for firmware uploading before, you will need to reflash the bootloader back in order to use Arduino upload method (via Serial).
 
 Note that the bootloader has OTA feature and you can follow the OTA session for instructions.
 
