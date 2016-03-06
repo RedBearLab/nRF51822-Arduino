@@ -20,7 +20,7 @@
 
 #if DEVICE_SERIAL
 
-#include "Stream.h"
+#include "MStream.h"
 #include "FunctionPointer.h"
 #include "serial_api.h"
 
