@@ -10,6 +10,9 @@ nRF51822.upload.disable_flushing=true
 nRF51822.upload.use_1200bps_touch=true
 nRF51822.upload.wait_for_upload_port=false
 
+nRF51822.bootloader.tool=openocd
+nRF51822.bootloader.bootloader_file=bootloader.hex
+
 nRF51822.build.mcu=cortex-m0
 nRF51822.build.f_cpu=16000000
 nRF51822.build.usb_product="Arduino RBL"
@@ -34,6 +37,9 @@ nRF51822_NANO.upload.speed=115200
 nRF51822_NANO.upload.disable_flushing=true
 nRF51822_NANO.upload.use_1200bps_touch=true
 nRF51822_NANO.upload.wait_for_upload_port=false
+
+nRF51822_NANO.bootloader.tool=openocd
+nRF51822_NANO.bootloader.bootloader_file=bootloader.hex
 
 nRF51822_NANO.build.mcu=cortex-m0
 nRF51822_NANO.build.f_cpu=16000000
@@ -60,6 +66,9 @@ nRF51822_32KB.upload.disable_flushing=true
 nRF51822_32KB.upload.use_1200bps_touch=true
 nRF51822_32KB.upload.wait_for_upload_port=false
 
+nRF51822_32KB.bootloader.tool=openocd
+nRF51822_32KB.bootloader.bootloader_file=bootloader.hex
+
 nRF51822_32KB.build.mcu=cortex-m0
 nRF51822_32KB.build.f_cpu=16000000
 nRF51822_32KB.build.usb_product="Arduino RBL"
@@ -84,6 +93,9 @@ nRF51822_NANO_32KB.upload.speed=115200
 nRF51822_NANO_32KB.upload.disable_flushing=true
 nRF51822_NANO_32KB.upload.use_1200bps_touch=true
 nRF51822_NANO_32KB.upload.wait_for_upload_port=false
+
+nRF51822_NANO_32KB.bootloader.tool=openocd
+nRF51822_NANO_32KB.bootloader.bootloader_file=bootloader.hex
 
 nRF51822_NANO_32KB.build.mcu=cortex-m0
 nRF51822_NANO_32KB.build.f_cpu=16000000
