@@ -1,10 +1,13 @@
 
 nRF51822.name=RBL nRF51822(V1.0 16KB)
 
-nRF51822.upload.tool=avrdude
-nRF51822.upload.protocol=avr109
-nRF51822.upload.maximum_size=196608
-nRF51822.upload.maximum_data_size=2560
+#nRF51822.upload.tool=avrdude
+#nRF51822.upload.protocol=avr109
+
+nRF51822.upload.tool=openocd
+nRF51822.upload.protocol=
+nRF51822.upload.maximum_size=262144
+nRF51822.upload.maximum_data_size=16384
 nRF51822.upload.speed=115200
 nRF51822.upload.disable_flushing=true
 nRF51822.upload.use_1200bps_touch=true
@@ -29,10 +32,13 @@ nRF51822.build.mbed_api_include="-I{runtime.platform.path}/cores/RBL_nRF51822/mb
 
 nRF51822_NANO.name=BLE Nano(V1.0 16KB)
 
-nRF51822_NANO.upload.tool=avrdude
-nRF51822_NANO.upload.protocol=avr109
-nRF51822_NANO.upload.maximum_size=196608
-nRF51822_NANO.upload.maximum_data_size=2560
+#nRF51822_NANO.upload.tool=avrdude
+#nRF51822_NANO.upload.protocol=avr109
+
+nRF51822_NANO.upload.tool=openocd
+nRF51822_NANO.upload.protocol=
+nRF51822_NANO.upload.maximum_size=262144
+nRF51822_NANO.upload.maximum_data_size=16384
 nRF51822_NANO.upload.speed=115200
 nRF51822_NANO.upload.disable_flushing=true
 nRF51822_NANO.upload.use_1200bps_touch=true
@@ -57,10 +63,13 @@ nRF51822_NANO.build.mbed_api_include="-I{runtime.platform.path}/cores/RBL_nRF518
 
 nRF51822_32KB.name=RBL nRF51822(V1.5 32KB)
 
-nRF51822_32KB.upload.tool=avrdude
-nRF51822_32KB.upload.protocol=avr109
-nRF51822_32KB.upload.maximum_size=196608
-nRF51822_32KB.upload.maximum_data_size=2560
+#nRF51822_32KB.upload.tool=avrdude
+#nRF51822_32KB.upload.protocol=avr109
+
+nRF51822_32KB.upload.tool=openocd
+nRF51822_32KB.upload.protocol=
+nRF51822_32KB.upload.maximum_size=262144
+nRF51822_32KB.upload.maximum_data_size=32768
 nRF51822_32KB.upload.speed=115200
 nRF51822_32KB.upload.disable_flushing=true
 nRF51822_32KB.upload.use_1200bps_touch=true
@@ -85,10 +94,13 @@ nRF51822_32KB.build.mbed_api_include="-I{runtime.platform.path}/cores/RBL_nRF518
 
 nRF51822_NANO_32KB.name=BLE Nano(V1.5 32KB)
 
-nRF51822_NANO_32KB.upload.tool=avrdude
-nRF51822_NANO_32KB.upload.protocol=avr109
-nRF51822_NANO_32KB.upload.maximum_size=196608
-nRF51822_NANO_32KB.upload.maximum_data_size=2560
+#nRF51822_NANO_32KB.upload.tool=avrdude
+#nRF51822_NANO_32KB.upload.protocol=avr109
+
+nRF51822_NANO_32KB.upload.tool=openocd
+nRF51822_NANO_32KB.upload.protocol=
+nRF51822_NANO_32KB.upload.maximum_size=262144
+nRF51822_NANO_32KB.upload.maximum_data_size=32768
 nRF51822_NANO_32KB.upload.speed=115200
 nRF51822_NANO_32KB.upload.disable_flushing=true
 nRF51822_NANO_32KB.upload.use_1200bps_touch=true
