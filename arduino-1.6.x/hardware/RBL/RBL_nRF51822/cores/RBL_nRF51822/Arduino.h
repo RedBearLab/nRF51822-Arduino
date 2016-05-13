@@ -11,6 +11,7 @@
 #include <avr/pgmspace.h>
 
 #include "mbed.h"
+#include "binary.h"
 
 #include "wiring_constants.h"
 #include "wiring_digital.h"
