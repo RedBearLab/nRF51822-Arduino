@@ -107,7 +107,10 @@ uint32_t analogRead(uint32_t pin)
 	NRF_ADC->INTENCLR = 0xFFFFFFFF;
 	NRF_ADC->ENABLE = ADC_ENABLE_ENABLE_Enabled << ADC_ENABLE_ENABLE_Pos;
 	NRF_ADC->TASKS_START = 1;
-	
+    /* Must delay some time. If not, when not using uart, ADC would not work */
+    __NOP();
+    __NOP();
+    
 	while( (NRF_ADC->BUSY & ADC_BUSY_BUSY_Msk) == (ADC_BUSY_BUSY_Busy << ADC_BUSY_BUSY_Pos) );
 	
 	value = NRF_ADC->RESULT;
