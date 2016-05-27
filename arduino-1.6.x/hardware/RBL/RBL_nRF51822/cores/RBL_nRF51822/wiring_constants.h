@@ -29,13 +29,12 @@
 #define DEG_TO_RAD 		0.017453292519943295769236907684886
 #define RAD_TO_DEG 		57.295779513082320876798154814105
 
-
 #ifndef min
-#define min(a,b) ((a)<(b)?(a):(b))
+//#define min(a,b) ((a)<(b)?(a):(b))
 #endif // min
 
 #ifndef max
-#define max(a,b) ((a)>(b)?(a):(b))
+//#define max(a,b) ((a)>(b)?(a):(b))
 #endif // max
 
 #define abs(x) ((x)>0?(x):-(x))
