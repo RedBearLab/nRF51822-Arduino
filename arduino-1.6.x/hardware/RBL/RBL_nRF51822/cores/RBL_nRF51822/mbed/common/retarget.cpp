@@ -121,6 +121,8 @@ static inline int openmode_to_posix(int openmode) {
     if (openmode & _LLIO_CREAT ) posix |= O_CREAT;
     if (openmode & _LLIO_APPEND) posix |= O_APPEND;
     if (openmode & _LLIO_TRUNC ) posix |= O_TRUNC;
+#elif defined(TOOLCHAIN_GCC)
+    posix &= ~O_BINARY;
 #endif
     return posix;
 }
@@ -493,10 +495,7 @@ extern "C" caddr_t _sbrk(int incr) {
 #endif
 
 
-#ifdef TOOLCHAIN_GCC_CW
-// TODO: Ideally, we would like to define directly "_ExitProcess"
-extern "C" void mbed_exit(int return_code) {
-#elif defined TOOLCHAIN_GCC_ARM
+#if defined TOOLCHAIN_GCC_ARM
 extern "C" void _exit(int return_code) {
 #else
 namespace std {
@@ -520,7 +519,7 @@ extern "C" void exit(int return_code) {
     while (1);
 }
 
-#if !defined(TOOLCHAIN_GCC_ARM) && !defined(TOOLCHAIN_GCC_CW)
+#if !defined(TOOLCHAIN_GCC_ARM)
 } //namespace std
 #endif
 

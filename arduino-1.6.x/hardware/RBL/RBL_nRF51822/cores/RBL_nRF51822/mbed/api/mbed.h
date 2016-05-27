@@ -16,7 +16,7 @@
 #ifndef MBED_H
 #define MBED_H
 
-#define MBED_LIBRARY_VERSION 102
+#define MBED_LIBRARY_VERSION 120
 
 #include "platform.h"
 
@@ -41,7 +41,7 @@
 #include "AnalogIn.h"
 #include "AnalogOut.h"
 #include "PwmOut.h"
-// #include "Serial.h" // this conflicts with the Arduino Serial, leave it out
+//#include "Serial.h"
 #include "SPI.h"
 #include "SPISlave.h"
 #include "I2C.h"
