@@ -90,8 +90,8 @@ void connectionCallBack( const Gap::ConnectionCallbackParams_t *params ) {
   Serial.println(params->peerAddrType, HEX);
   Serial.print("  The peerAddr : ");
   for(index=0; index<6; index++) {
-      Serial.print(params->peerAddr[index], HEX);
-      Serial.print(" ");
+    Serial.print(params->peerAddr[index], HEX);
+    Serial.print(" ");
   }
   Serial.println(" ");
 
@@ -99,8 +99,8 @@ void connectionCallBack( const Gap::ConnectionCallbackParams_t *params ) {
   Serial.println(params->ownAddrType, HEX);
   Serial.print("  The ownAddr : ");
   for(index=0; index<6; index++) {
-      Serial.print(params->ownAddr[index], HEX);
-      Serial.print(" ");
+    Serial.print(params->ownAddr[index], HEX);
+    Serial.print(" ");
   }
   Serial.println(" ");
 
@@ -143,7 +143,7 @@ void gattServerWriteCallBack(const GattWriteCallbackParams *Handler) {
   Serial.print("Handler->len : ");
   Serial.println(Handler->len, HEX);
   for(index=0; index<Handler->len; index++) {
-      Serial.print(Handler->data[index], HEX);
+    Serial.print(Handler->data[index], HEX);
   }
   Serial.println(" ");
 

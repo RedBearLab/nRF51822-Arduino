@@ -13,42 +13,54 @@
  * IN THE SOFTWARE.
  */
 /**
- * @brief This example is used to demonstrate central functions.
- *        Device with this application will try to connect to example "BLE_HRM" or "BLE_simplePeripheral"
- *        If connecting to "BLE_HRM", will get heart rate
- *        If connecting to "BLE_simplePeripheral, will discovery all services and characteristics
+ * @brief This example run in multi role(cenral && peripheral).
+ *        As cenral, it scan device(running example "BLE_HRM"), connect, discovery characteristic(heart rate), open notify.
+ *        As peripheral, it will broadcast "simple chat", iPhone connect it and send 0xA0, will get the current heart rate value.
  */
 #include <BLE_API.h>
 
-BLE           ble;
+#define TXRX_BUF_LEN     20
 
-static uint8_t service1_uuid[]    = {0x71, 0x3D, 0, 0, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
-static uint8_t service1_chars1[]  = {0x71, 0x3D, 0, 2, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
-static uint8_t service1_chars2[]  = {0x71, 0x3D, 0, 3, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
-static uint8_t service1_chars3[]  = {0x71, 0x3D, 0, 4, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
+BLE                      ble;
 
+// The uuid of service and characteristics
+static const uint8_t service1_uuid[]       = {0x71, 0x3D, 0, 0, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
+static const uint8_t service1_tx_uuid[]    = {0x71, 0x3D, 0, 3, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
+static const uint8_t service1_rx_uuid[]    = {0x71, 0x3D, 0, 2, 0x50, 0x3E, 0x4C, 0x75, 0xBA, 0x94, 0x31, 0x48, 0xF1, 0x8D, 0x94, 0x1E};
+static const uint8_t uart_base_uuid_rev[]  = {0x1E, 0x94, 0x8D, 0xF1, 0x48, 0x31, 0x94, 0xBA, 0x75, 0x4C, 0x3E, 0x50, 0, 0, 0x3D, 0x71};
+// Heart rate uuid
 UUID service_uuid(0x180D);
-UUID chars_uuid1(0x2A37);
-UUID chars_uuid2(service1_chars2);
-UUID chars_uuid3(service1_chars3);
+UUID chars_uuid(0x2A37);
 
-static uint8_t device_is_hrm = 0;
-static uint8_t device_is_simple_peripheral = 0;
+uint8_t tx_value[TXRX_BUF_LEN] = {0};
+uint8_t rx_value[TXRX_BUF_LEN] = {0};
 
+// Create characteristic
+GattCharacteristic  characteristic1(service1_tx_uuid, tx_value, 1, TXRX_BUF_LEN, GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE_WITHOUT_RESPONSE );
+GattCharacteristic  characteristic2(service1_rx_uuid, rx_value, 1, TXRX_BUF_LEN, GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY);
+GattCharacteristic *uartChars[] = {&characteristic1, &characteristic2};
+GattService         uartService(service1_uuid, uartChars, sizeof(uartChars) / sizeof(GattCharacteristic *));
+
+// Connect handle
+static uint16_t peripheral_handle = BLE_CONN_HANDLE_INVALID;
+static uint16_t client_handle     = BLE_CONN_HANDLE_INVALID;
+
+// Store heart rate value
+static uint8_t  heart_rate[2] = {0x00, 0x00};
 // When found the match characteristic, set 1.
-static uint8_t characteristic_is_fond = 0;
+static uint8_t  characteristic_is_fond = 0;
 // When found the match descriptor, set 1.
-static uint8_t descriptor_is_found = 0;
+static uint8_t descriptor_is_found     = 0;
 // To save the hrm characteristic and descriptor
 static DiscoveredCharacteristic            chars_hrm;
 static DiscoveredCharacteristicDescriptor  desc_of_chars_hrm(NULL,GattAttribute::INVALID_HANDLE,GattAttribute::INVALID_HANDLE,UUID::ShortUUIDBytes_t(0));
 
-static void scanCallBack(const Gap::AdvertisementCallbackParams_t *params);
-static void discoveredServiceCallBack(const DiscoveredService *service);
-static void discoveredCharacteristicCallBack(const DiscoveredCharacteristic *chars);
-static void discoveryTerminationCallBack(Gap::Handle_t connectionHandle);
-static void discoveredCharsDescriptorCallBack(const CharacteristicDescriptorDiscovery::DiscoveryCallbackParams_t *params);
-static void discoveredDescTerminationCallBack(const CharacteristicDescriptorDiscovery::TerminationCallbackParams_t *params) ;
+// Functions declaration
+void discoveredServiceCallBack(const DiscoveredService *service);
+void discoveredCharacteristicCallBack(const DiscoveredCharacteristic *chars);
+void discoveryTerminationCallBack(Gap::Handle_t connectionHandle);
+void discoveredCharsDescriptorCallBack(const CharacteristicDescriptorDiscovery::DiscoveryCallbackParams_t *params);
+void discoveredDescTerminationCallBack(const CharacteristicDescriptorDiscovery::TerminationCallbackParams_t *params);
 
 /**
  * @brief  Function to decode advertisement or scan response data
@@ -78,40 +90,6 @@ uint32_t ble_advdata_parser(uint8_t type, uint8_t advdata_len, uint8_t *p_advdat
   return NRF_ERROR_NOT_FOUND;
 }
 
-void startDiscovery(uint16_t handle) {
-  /**
-   * Launch service discovery. Once launched, application callbacks will beinvoked for matching services or characteristics.
-   * isServiceDiscoveryActive() can be used to determine status, and a termination callback (if one was set up)will be invoked at the end.
-   * Service discovery can be terminated prematurely,if needed, using terminateServiceDiscovery().
-   *
-   * @param[in]  connectionHandle   Handle for the connection with the peer.
-   * @param[in]  sc  This is the application callback for a matching service. Taken as NULL by default.
-   *                 Note: service discovery may still be active when this callback is issued;
-   *                 calling asynchronous BLE-stack APIs from within this application callback might cause the stack to abort service discovery.
-   *                 If this becomes an issue, it may be better to make a local copy of the discoveredService and wait for service discovery to terminate before operating on the service.
-   * @param[in]  cc  This is the application callback for a matching characteristic.Taken as NULL by default.
-   *                 Note: service discovery may still be active when this callback is issued;
-   *                 calling asynchronous BLE-stack APIs from within this application callback might cause the stack to abort service discovery.
-   *                 If this becomes an issue, it may be better to make a local copy of the discoveredCharacteristic and wait for service discovery to terminate before operating on the characteristic.
-   * @param[in]  matchingServiceUUID  UUID-based filter for specifying a service in which the application is interested.
-   *                                  By default it is set as the wildcard UUID_UNKNOWN, in which case it matches all services.
-   * @param[in]  matchingCharacteristicUUIDIn  UUID-based filter for specifying characteristic in which the application is interested.
-   *                                           By default it is set as the wildcard UUID_UKNOWN to match against any characteristic.
-   *
-   * @note     Using wildcard values for both service-UUID and characteristic-UUID will result in complete service discovery:
-   *           callbacks being called for every service and characteristic.
-   *
-   * @note     Providing NULL for the characteristic callback will result in characteristic discovery being skipped for each matching service.
-   *           This allows for an inexpensive method to discover only services.
-   *
-   * @return   BLE_ERROR_NONE if service discovery is launched successfully; else an appropriate error.
-   */
-  if(device_is_hrm)
-    ble.gattClient().launchServiceDiscovery(handle, discoveredServiceCallBack, discoveredCharacteristicCallBack, service_uuid, chars_uuid1);
-  if(device_is_simple_peripheral)
-    ble.gattClient().launchServiceDiscovery(handle, discoveredServiceCallBack, discoveredCharacteristicCallBack);
-}
-
 /**
  * @brief  Callback handle for scanning device
  *
@@ -123,57 +101,37 @@ void startDiscovery(uint16_t handle) {
  *                       params->advertisingDataLen  Length of the advertisement data
  *                       params->advertisingData     Pointer to the advertisement packet's data
  */
-static void scanCallBack(const Gap::AdvertisementCallbackParams_t *params) {
-  uint8_t index;
-
+void scanCallBack(const Gap::AdvertisementCallbackParams_t *params) {
   Serial.println("Scan CallBack ");
   Serial.print("PerrAddress: ");
-  for(index=0; index<6; index++) {
+  for(uint8_t index=0; index<6; index++) {
     Serial.print(params->peerAddr[index], HEX);
     Serial.print(" ");
   }
   Serial.println(" ");
-
   Serial.print("The Rssi : ");
   Serial.println(params->rssi, DEC);
 
-  Serial.print("The adv_data : ");
-  Serial.println((const char*)params->advertisingData);
-
-  uint8_t len;
+  // Get local name in advertisement
+  uint8_t len=0;
   uint8_t adv_name[31];
-  if( NRF_SUCCESS == ble_advdata_parser(BLE_GAP_AD_TYPE_SHORT_LOCAL_NAME, params->advertisingDataLen, (uint8_t *)params->advertisingData, &len, adv_name) ) {
-    Serial.print("Short name len : ");
-    Serial.println(len, DEC);
-    Serial.print("Short name is : ");
-    Serial.println((const char*)adv_name);
-    if( memcmp("TXRX", adv_name, 4) == 0x00 ) {
-      Serial.println("Got device, stop scan ");
-      ble.stopScan();
-      /**
-      * @param[in]  peerAddrType    BLEProtocol::AddressType::PUBLIC
-      *                             BLEProtocol::AddressType::RANDOM_STATIC
-      *                             BLEProtocol::AddressType::RANDOM_PRIVATE_RESOLVABLE
-      *                             BLEProtocol::AddressType::RANDOM_PRIVATE_NON_RESOLVABLE
-      * @param[in]  *connectionParams
-      * @param[in]  *scanParams
-      *
-      * @return BLE_ERROR_NONE if connection establishment procedure is started successfully. The connectionCallChain (if set) will be invoked upon a connection event.
-      */
-      device_is_simple_peripheral = 1;
-      ble.connect(params->peerAddr, BLEProtocol::AddressType::RANDOM_STATIC, NULL, NULL);
-    }
-  }
-  else if( NRF_SUCCESS == ble_advdata_parser(BLE_GAP_AD_TYPE_COMPLETE_LOCAL_NAME, params->advertisingDataLen, (uint8_t *)params->advertisingData, &len, adv_name) ) {
+  if(NRF_SUCCESS == ble_advdata_parser(BLE_GAP_AD_TYPE_COMPLETE_LOCAL_NAME, params->advertisingDataLen, (uint8_t *)params->advertisingData, &len, adv_name)) {
     Serial.print("Complete name len : ");
     Serial.println(len, DEC);
-    Serial.print("Complete name is : ");
+    Serial.print("Complete name is  : ");
     Serial.println((const char*)adv_name);
 
-    if(memcmp("Nordic_HRM", adv_name, 10) == 0x00) {
-      Serial.println("Got device, stop scan ");
+    if((len >= 10) && (memcmp("Nordic_HRM", adv_name, 10) == 0x00)) {
+      Serial.println("Find device, stop scanning and start connecting");
       ble.stopScan();
-      device_is_hrm = 1;
+      /**
+       * @param[in]  peerAddrType    BLEProtocol::AddressType::PUBLIC
+       *                             BLEProtocol::AddressType::RANDOM_STATIC
+       *                             BLEProtocol::AddressType::RANDOM_PRIVATE_RESOLVABLE
+       *                             BLEProtocol::AddressType::RANDOM_PRIVATE_NON_RESOLVABLE
+       * @param[in]  *connectionParams
+       * @param[in]  *scanParams
+       */
       ble.connect(params->peerAddr, BLEProtocol::AddressType::RANDOM_STATIC, NULL, NULL);
     }
   }
@@ -195,19 +153,27 @@ static void scanCallBack(const Gap::AdvertisementCallbackParams_t *params) {
  *                       params->connectionParams->connectionSupervisionTimeout
  */
 void connectionCallBack( const Gap::ConnectionCallbackParams_t *params ) {
-  uint8_t index;
+  if(params->role == Gap::CENTRAL) {
+    Serial.println("Central, connected to remote device");
+    Serial.print("The conn handle : ");
+    Serial.println(params->handle, HEX);
 
-  Serial.print("The conn handle : ");
-  Serial.println(params->handle, HEX);
-
-  Serial.print("  The peerAddr : ");
-  for(index=0; index<6; index++) {
-    Serial.print(params->peerAddr[index], HEX);
-    Serial.print(" ");
+    Serial.print("  The peerAddr : ");
+    for(uint8_t index=0; index<6; index++) {
+      Serial.print(params->peerAddr[index], HEX);
+      Serial.print(" ");
+    }
+    Serial.println(" ");
+    client_handle = params->handle;
+    // Start to discovery
+    ble.gattClient().launchServiceDiscovery(params->handle, discoveredServiceCallBack, discoveredCharacteristicCallBack, service_uuid, chars_uuid);
   }
-  Serial.println(" ");
-  // start to discovery
-  startDiscovery(params->handle);
+  else {
+    Serial.println("peripheral, be connected by a central device");
+    peripheral_handle = params->handle;
+    Serial.print("The conn handle : ");
+    Serial.println(params->handle, HEX);
+  }
 }
 
 /** @brief  Disconnect callback handle
@@ -221,12 +187,20 @@ void connectionCallBack( const Gap::ConnectionCallbackParams_t *params ) {
  *                                        CONN_INTERVAL_UNACCEPTABLE                  = 0x3B,
  */
 void disconnectionCallBack(const Gap::DisconnectionCallbackParams_t *params) {
-  Serial.println("Disconnected, start to scanning");
-  device_is_simple_peripheral = 0;
-  device_is_hrm = 0;
-  characteristic_is_fond = 0;
-  descriptor_is_found = 0;
-  ble.startScan(scanCallBack);
+  Serial.print("Disconnected handler  ");
+  Serial.println(params->handle, HEX);
+  Serial.print("Disconnected reson ");
+  Serial.println(params->reason, HEX);
+  if(peripheral_handle == params->handle) {
+    peripheral_handle = BLE_CONN_HANDLE_INVALID;
+    Serial.println("Restart advertising ");
+    ble.startAdvertising();
+  }
+  else if(client_handle == params->handle) {
+    client_handle = BLE_CONN_HANDLE_INVALID;
+    Serial.println("Restart scanning ");
+    ble.startScan(scanCallBack);
+  }
 }
 
 /** @brief Discovered service callback handle
@@ -235,7 +209,7 @@ void disconnectionCallBack(const Gap::DisconnectionCallbackParams_t *params) {
  *                       service->getStartHandle()
  *                       service->getEndHandle()
  */
-static void discoveredServiceCallBack(const DiscoveredService *service) {
+void discoveredServiceCallBack(const DiscoveredService *service) {
   Serial.println("\r\n----Servuce Discovered");
 
   Serial.print("Service UUID type        : ");
@@ -273,7 +247,7 @@ static void discoveredServiceCallBack(const DiscoveredService *service) {
  *                     chars->getValueHandle() characteristic's value attribute handle
  *                     chars->getLastHandle()  characteristic's last attribute handle
  */
-static void discoveredCharacteristicCallBack(const DiscoveredCharacteristic *chars) {
+void discoveredCharacteristicCallBack(const DiscoveredCharacteristic *chars) {
   Serial.println("\r\n----Characteristic Discovered");
   Serial.print("Chars UUID type        : ");
   Serial.println(chars->getUUID().shortOrLong(), HEX);// 0 16bit_uuid, 1 128bit_uuid
@@ -311,16 +285,12 @@ static void discoveredCharacteristicCallBack(const DiscoveredCharacteristic *cha
   Serial.println(chars->getValueHandle(), HEX);
   Serial.print("lastHandle             : ");
   Serial.println(chars->getLastHandle(), HEX);
-
-  //uint16_t value = 0x0001;
-  //ble.gattClient().read(chars->getConnHandle(), chars->getValueHandle(), 0);
-  //ble.gattClient().write(GattClient::GATT_OP_WRITE_CMD,chars->getConnHandle(),chars->getValueHandle(),2,(uint8_t *)&value);
 }
 
 /**
  * @brief Discovered service and characteristics termination callback handle
  */
-static void discoveryTerminationCallBack(Gap::Handle_t connectionHandle) {
+void discoveryTerminationCallBack(Gap::Handle_t connectionHandle) {
   Serial.println("\r\n----discoveryTermination");
   Serial.print("connectionHandle       : ");
   Serial.println(connectionHandle, HEX);
@@ -329,6 +299,7 @@ static void discoveryTerminationCallBack(Gap::Handle_t connectionHandle) {
   }
 }
 
+
 /** @brief Discovered descriptor of characteristic callback handle
  *
  *  @param[in] *params  params->characteristic  DiscoveredCharacteristic
@@ -336,7 +307,7 @@ static void discoveryTerminationCallBack(Gap::Handle_t connectionHandle) {
  *                                          descriptor.getConnectionHandle()
  *                                          descriptor.getAttributeHandle() : Arrtibute handle
  */
-static void discoveredCharsDescriptorCallBack(const CharacteristicDescriptorDiscovery::DiscoveryCallbackParams_t *params) {
+void discoveredCharsDescriptorCallBack(const CharacteristicDescriptorDiscovery::DiscoveryCallbackParams_t *params) {
   Serial.println("\r\n----discovered descriptor");
   Serial.print("Desriptor UUID         : ");
   Serial.println(params->descriptor.getUUID().getShortUUID(), HEX);
@@ -356,7 +327,7 @@ static void discoveredCharsDescriptorCallBack(const CharacteristicDescriptorDisc
  *  @param[in] *params  params->characteristic  DiscoveredCharacteristic
  *                      params->status  Status of the discovery operation
  */
-static void discoveredDescTerminationCallBack(const CharacteristicDescriptorDiscovery::TerminationCallbackParams_t *params) {
+void discoveredDescTerminationCallBack(const CharacteristicDescriptorDiscovery::TerminationCallbackParams_t *params) {
   Serial.println("\r\n----discovery descriptor Termination");
   if(descriptor_is_found) {
     Serial.println("Open HRM notify");
@@ -380,8 +351,8 @@ static void discoveredDescTerminationCallBack(const CharacteristicDescriptorDisc
  *                       params->len : Length (in bytes) of the data to write
  *                       params->data : Pointer to the data to write
  */
-void onDataWriteCallBack(const GattWriteCallbackParams *params) {
-  Serial.println("GattClient write call back ");
+void gattClientWriteCallBack(const GattWriteCallbackParams *params) {
+  Serial.println("GattClient write callback ");
 }
 
 /** @brief  read callback handle
@@ -392,19 +363,19 @@ void onDataWriteCallBack(const GattWriteCallbackParams *params) {
  *                       params->len : Length (in bytes) of the data to write
  *                       params->data : Pointer to the data to write
  */
-void onDataReadCallBack(const GattReadCallbackParams *params) {
+void gattClientReadCallBack(const GattReadCallbackParams *params) {
   Serial.println("GattClient read call back ");
   Serial.print("The handle : ");
   Serial.println(params->handle, HEX);
   Serial.print("The offset : ");
   Serial.println(params->offset, DEC);
-  Serial.print("The len : ");
+  Serial.print("The len    : ");
   Serial.println(params->len, DEC);
-  Serial.print("The data : ");
-  for(uint8_t index=0; index<params->len; index++) {
+  Serial.print("The data   : ");
+  for(uint8_t index=0; index<params->len; index++)
     Serial.print( params->data[index], HEX);
-  }
-  Serial.println("");
+
+  Serial.println("\r\n");
 }
 
 /** @brief  hvx callback handle
@@ -416,38 +387,105 @@ void onDataReadCallBack(const GattReadCallbackParams *params) {
  *                       params->len : Length (in bytes) of the data to write
  *                       params->data : Pointer to the data to write
  */
-void hvxCallBack(const GattHVXCallbackParams *params) {
-  Serial.println("GattClient notify call back ");
-  Serial.print("The len : ");
+void gattClientHVXCallBack(const GattHVXCallbackParams *params) {
+  Serial.println("GattClient notify call back");
+  Serial.print("The len  : ");
   Serial.println(params->len, DEC);
+  Serial.print("The data : ");
   for(unsigned char index=0; index<params->len; index++) {
     Serial.print(params->data[index], HEX);
+    heart_rate[index] = params->data[index];
   }
-  Serial.println("");
+  Serial.println("\r\n");
 }
 
-void setup() {
-  // put your setup code here, to run once:
+/** @brief  write callback handle of Gatt server
+ *
+ *  @param[in] *Handler   Handler->connHandle : The handle of the connection that triggered the event
+ *                        Handler->handle : Attribute Handle to which the write operation applies
+ *                        Handler->writeOp : OP_INVALID               = 0x00,  // Invalid operation.
+ *                                           OP_WRITE_REQ             = 0x01,  // Write request.
+ *                                           OP_WRITE_CMD             = 0x02,  // Write command.
+ *                                           OP_SIGN_WRITE_CMD        = 0x03,  // Signed write command.
+ *                                           OP_PREP_WRITE_REQ        = 0x04,  // Prepare write request.
+ *                                           OP_EXEC_WRITE_REQ_CANCEL = 0x05,  // Execute write request: cancel all prepared writes.
+ *                                           OP_EXEC_WRITE_REQ_NOW    = 0x06,  // Execute write request: immediately execute all prepared writes.
+ *                        Handler->offset : Offset for the write operation
+ *                        Handler->len : Length (in bytes) of the data to write
+ *                        Handler->data : Pointer to the data to write
+ */
+void gattServerWriteCallBack(const GattWriteCallbackParams *Handler) {
+  uint8_t buf[TXRX_BUF_LEN];
+  uint16_t bytesRead, index;
+
+  Serial.println("onDataWritten : ");
+  if (Handler->handle == characteristic1.getValueAttribute().getHandle()) {
+    ble.readCharacteristicValue(characteristic1.getValueAttribute().getHandle(), buf, &bytesRead);
+    Serial.print("bytesRead: ");
+    Serial.println(bytesRead, HEX);
+    for(byte index=0; index<bytesRead; index++) {
+      Serial.print(buf[index], HEX);
+    }
+    Serial.println("");
+    if(buf[0] == 0xA0) {
+      Serial.print("Get heart rate : ");
+      ble.updateCharacteristicValue(peripheral_handle, characteristic2.getValueAttribute().getHandle(), heart_rate, sizeof(heart_rate));
+    }
+  }
+}
+
+void setup(void) {
+  // put your setup code here, to run once
   Serial.begin(9600);
-  Serial.println("BLE Central Demo ");
+  Serial.println("BLE multi role");
 
   ble.init();
+  // Gap
   ble.onConnection(connectionCallBack);
   ble.onDisconnection(disconnectionCallBack);
+  // Gatt Client
   ble.gattClient().onServiceDiscoveryTermination(discoveryTerminationCallBack);
-  ble.gattClient().onHVX(hvxCallBack);
-  ble.gattClient().onDataWrite(onDataWriteCallBack);
-  ble.gattClient().onDataRead(onDataReadCallBack);
+  ble.gattClient().onHVX(gattClientHVXCallBack);
+  ble.gattClient().onDataWrite(gattClientWriteCallBack);
+  ble.gattClient().onDataRead(gattClientReadCallBack);
+  // Gatt server
+  ble.onDataWritten(gattServerWriteCallBack);
+  // setup adv_data and srp_data
+  ble.accumulateAdvertisingPayload(GapAdvertisingData::BREDR_NOT_SUPPORTED);
+  ble.accumulateAdvertisingPayload(GapAdvertisingData::SHORTENED_LOCAL_NAME,
+                                   (const uint8_t *)"Biscut", sizeof("Biscut") - 1);
+  ble.accumulateAdvertisingPayload(GapAdvertisingData::COMPLETE_LIST_128BIT_SERVICE_IDS,
+                                   (const uint8_t *)uart_base_uuid_rev, sizeof(uart_base_uuid_rev));
+  // set adv_type
+  ble.setAdvertisingType(GapAdvertisingParams::ADV_CONNECTABLE_UNDIRECTED);
+  // add service
+  ble.addService(uartService);
+  // set device name
+  ble.setDeviceName((const uint8_t *)"Simple Chat");
+  // set tx power,valid values are -40, -20, -16, -12, -8, -4, 0, 4
+  ble.setTxPower(4);
+  // set adv_interval, 100ms in multiples of 0.625ms.
+  ble.setAdvertisingInterval(160);
+  // set adv_timeout, in seconds
+  ble.setAdvertisingTimeout(0);
+
+  // set scan params
+  // note : advertising and scanning can't work at the same,advertising can work at the window time
+  //        ie. in 1000ms, 200ms run scanning, 800 run advertising.
   // scan interval : in milliseconds, valid values lie between 2.5ms and 10.24s
   // scan window :in milliseconds, valid values lie between 2.5ms and 10.24s
   // timeout : in seconds, between 0x0001 and 0xFFFF, 0x0000 disables timeout
   // activeScanning : true or false
-  ble.setScanParams(1000, 200, 0, false);
+  ble.setScanParams(2000, 200, 0, false);
   // start scanning
   ble.startScan(scanCallBack);
+  Serial.println("Start scanning");
+  // start advertising
+  ble.startAdvertising();
+  Serial.println("Start advertising");
 }
 
-void loop() {
+void loop(){
   // put your main code here, to run repeatedly:
   ble.waitForEvent();
 }

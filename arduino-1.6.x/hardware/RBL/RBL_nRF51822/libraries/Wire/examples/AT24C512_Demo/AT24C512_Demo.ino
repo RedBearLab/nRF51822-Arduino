@@ -43,7 +43,7 @@ void AT24C512_ReadBytes(uint16_t addr, uint8_t *pbuf, uint16_t len) {
 void setup() {
   // put your setup code here, to run once:
   pinMode(D13, OUTPUT);
-  Serial.begin(115200);
+  Serial.begin(9600);
   Serial.println("Wire demo start ");
 
   Wire.begin();
