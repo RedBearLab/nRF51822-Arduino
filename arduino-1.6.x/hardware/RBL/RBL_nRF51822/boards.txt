@@ -9,8 +9,8 @@ nRF51822.upload.protocol=
 nRF51822.upload.maximum_size=262144
 nRF51822.upload.maximum_data_size=16384
 nRF51822.upload.speed=115200
-nRF51822.upload.disable_flushing=true
-nRF51822.upload.use_1200bps_touch=true
+nRF51822.upload.disable_flushing=false
+nRF51822.upload.use_1200bps_touch=false
 nRF51822.upload.wait_for_upload_port=false
 
 nRF51822.bootloader.tool=openocd
@@ -40,8 +40,8 @@ nRF51822_NANO.upload.protocol=
 nRF51822_NANO.upload.maximum_size=262144
 nRF51822_NANO.upload.maximum_data_size=16384
 nRF51822_NANO.upload.speed=115200
-nRF51822_NANO.upload.disable_flushing=true
-nRF51822_NANO.upload.use_1200bps_touch=true
+nRF51822_NANO.upload.disable_flushing=false
+nRF51822_NANO.upload.use_1200bps_touch=false
 nRF51822_NANO.upload.wait_for_upload_port=false
 
 nRF51822_NANO.bootloader.tool=openocd
@@ -71,8 +71,8 @@ nRF51822_32KB.upload.protocol=
 nRF51822_32KB.upload.maximum_size=262144
 nRF51822_32KB.upload.maximum_data_size=32768
 nRF51822_32KB.upload.speed=115200
-nRF51822_32KB.upload.disable_flushing=true
-nRF51822_32KB.upload.use_1200bps_touch=true
+nRF51822_32KB.upload.disable_flushing=false
+nRF51822_32KB.upload.use_1200bps_touch=false
 nRF51822_32KB.upload.wait_for_upload_port=false
 
 nRF51822_32KB.bootloader.tool=openocd
@@ -102,8 +102,8 @@ nRF51822_NANO_32KB.upload.protocol=
 nRF51822_NANO_32KB.upload.maximum_size=262144
 nRF51822_NANO_32KB.upload.maximum_data_size=32768
 nRF51822_NANO_32KB.upload.speed=115200
-nRF51822_NANO_32KB.upload.disable_flushing=true
-nRF51822_NANO_32KB.upload.use_1200bps_touch=true
+nRF51822_NANO_32KB.upload.disable_flushing=false
+nRF51822_NANO_32KB.upload.use_1200bps_touch=false
 nRF51822_NANO_32KB.upload.wait_for_upload_port=false
 
 nRF51822_NANO_32KB.bootloader.tool=openocd

@@ -1,7 +1,7 @@
 
 dap_link.name=DAPLink
-dap_link.communication=USB
+dap_link.name.communication=USB
 dap_link.name.protocol=
-dap_link.program.protocol=
-dap_link.tool=openocd
-dap_link.extra_params=
+dap_link.name.program.protocol=
+dap_link.program.tool=openocd
+dap_link.program.extra_params=

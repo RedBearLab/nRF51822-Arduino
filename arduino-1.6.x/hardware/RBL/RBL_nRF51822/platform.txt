@@ -35,7 +35,6 @@ compiler.elf2bin.flags=-O binary
 
 # Create hex file options
 compiler.elf2hex.cmd=arm-none-eabi-objcopy
-compiler.elf2hex.flags=-O ihex -I binary 
 compiler.elf2hex.flags=-O ihex -I binary
 compiler.elf2hex.flagx=-O ihex
 
@@ -106,7 +105,7 @@ tools.avrdude.upload.pattern="{cmd.path}" "-C{config.path}" {upload.verbose} -p{
 
 tools.openocd.path={runtime.tools.openocd.path}
 #tools.openocd.path={runtime.platform.path}/tools/OpenOCD-0.9.0-dev-arduino
-tools.openocd.cmd=bin/openocd
+tools.openocd.cmd=bin/openocd.bin
 tools.openocd.cmd.windows=bin/openocd.exe
 
 tools.openocd.upload.params.verbose=-d1
@@ -124,10 +123,3 @@ tools.openocd.erase.pattern=
 tools.openocd.bootloader.params.verbose=-d1
 tools.openocd.bootloader.params.quiet=-d0
 tools.openocd.bootloader.pattern="{path}/{cmd}" {bootloader.verbose} -s "{path}/share/openocd/scripts/" -f "{path}/share/openocd/scripts/interface/cmsis-dap.cfg" -f "{path}/share/openocd/scripts/target/nrf51.cfg" -c "init; reset halt; nrf51 mass_erase; program {{{runtime.platform.path}/bootloaders/{bootloader.bootloader_file}}} verify reset exit"
-
-
-
-
-
-
-
