@@ -35,9 +35,9 @@ uint32_t ble_advdata_decode(uint8_t type, uint8_t advdata_len, uint8_t *p_advdat
     field_length = p_advdata[index];
     field_type   = p_advdata[index+1];
     if(field_type == type) {
-        memcpy(p_field_data, &p_advdata[index+2], (field_length-1));
-        *len = field_length - 1;
-        return NRF_SUCCESS;
+      memcpy(p_field_data, &p_advdata[index+2], (field_length-1));
+      *len = field_length - 1;
+      return NRF_SUCCESS;
     }
     index += field_length + 1;
   }
@@ -91,7 +91,7 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
   Serial.println("Start...");
-  //Note : take care of scheduler, prevent ram leak.See projectconfig.h
+  // note : take care of scheduler, prevent ram leak.See projectconfig.h
   ble.init();
   // set scan params
   // note : advertising and scanning can't work at the same,advertising can work at the window time
@@ -99,8 +99,11 @@ void setup() {
   // scan interval : in milliseconds, valid values lie between 2.5ms and 10.24s
   // scan window :in milliseconds, valid values lie between 2.5ms and 10.24s
   // timeout : in seconds, between 0x0001 and 0xFFFF, 0x0000 disables timeout
-  // activeScanning : true or false
+  // activeScanning : true or false. This is used to fetch the scan response from a peer if possible
   ble.setScanParams(1000, 200, 0, false);
+  // Set to True if active-scanning is required
+  // This is used to fetch the scan response from a peer if possible
+  ble.setActiveScan(true);
   // start scanning
   ble.startScan(scanCallBack);
 }
