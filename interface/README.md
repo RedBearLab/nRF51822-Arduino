@@ -1,4 +1,19 @@
+# MK20 USB Interface
 
+
+## PCB Version
+
+### V1.0
+
+For V1.0 version of the MK20 USB dongle, you can update it to the latest interface firmware called DAPLink which is supported and developed by ARM mbed.
+
+### V1.5
+
+For V1.5, you can only use the CMSIS-DAP firmware.
+
+
+## Update Interface Firmware
+ 
 In case you have changed the USB interface firmware inside the MK20 chip and want to restore to default one or upgrade to lastest version, follow the steps below:
 
 1. Press and hold the reset button on your nRF51822 board 
@@ -28,3 +43,4 @@ Note: Use RBL_nRF51822_MK20.bin for the RBL nRF51822 board and use BLENano_MK20.
 6. Remove the board from the USB port 
 
 7. Reconnect it to the USB port, your OS will show a drive labelled 'MBED'
+

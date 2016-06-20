@@ -1,35 +1,46 @@
 
-nRF51822-Arduino
-================
+# nRF51822-Arduino
+===
 
-This branch is to provide BLE concurrent Central and Peripheral using Nordic SoftDevice S130. This is a work in progress which adds support for Arduino IDE to allow compiling nRF51822 firmware for fast prototyping and learning how BLE works.
+This branch is to provide BLE concurrent Central and Peripheral using Nordic SoftDevice S130 and also provides support for the Arduino IDE to compile nRF51822 firmware. This aims to provide fast prototyping and learning the IoT development using the Bluetooth Low Engergy (BLE) technology.
 
-This board support package add-on also provides BLE API for the nRF51822 SoC to act as BLE Central/Peripheral role designed for SoftDevice S130.
+This board package add-on also provides BLE API for the nRF51822 SoC to act as BLE Central/Peripheral role designed for SoftDevice S130.
 
 * Note: Unless you know how to do with this repository and want to contribute your code, otherwise, please use Arduino IDE's Boards Manager to install the board support package (e.g. for the RBL_nRF51822 and the BLE Nano boards).
 
-Requirement
-===========
 
-1. nRF51822 deveopment board, here we will use RBL nRF51822 as an example.
+# Features
+===
 
-	* Note: if you are using the BLE Nano, you also need the MK20 USB dongle.
+* Adds support for the Arduino IDE enables compiling firmwares for the RBL_nRF51822 and BLE Nano development boards.
+* Upload the OTA bootloader using OpenOCD tool via the CMSIS-DAP debug interface.
+* Upload sketches using OpenOCD.
+* Provides BLE API for SoftDevice S130 with concurrent BLE Central and Peripheral role support.
+
+
+# Requirements
+===
+
+1. nRF51822 deveopment board, here we will use the RBL nRF51822 as an example.
+
+	* Note: if you are using the BLE Nano, you also need the MK20 USB dongle, otherwise, you can only load sketches using the OTA method. 
 
 2. PC with one of the following OS:
-    - Mac OSX 10.11.2 (current tested version), OSX 10.9.x, 10.10.x should also work.
+    - Mac OSX 10.11.4 (current tested version), OSX 10.9.x, 10.10.x should also work.
     - Windows 10 (current tested version), Windows 7 and 8.x should also work.
     - Linux (current tested on Ubuntu 14.04).
 
-3. Arduino IDE version 1.6.7 (current tested version).
+3. Arduino IDE version 1.6.9 (current tested version).
 
-4. Board support package add-on 1.0.4 (current test version).
+4. Board support package add-on 1.0.6 (current tested version).
 
-	* Note 1: If you have changed the USB interface firmware (MK20 chip) for some reasons, follow the instructions inside the **MK20** folder to restore it in order to use this add-on for Arduino IDE.
+	* Note 1: If you have changed the USB interface firmware (MK20 chip) for some reasons, follow the instructions inside the **[interface/mk20](interface/mk20)** folder to restore it in order to use this add-on for Arduino IDE.
 
-	* Note 2: If you still need to use Arduino IDE 1.6.6 then you need to use board support package 1.0.3
 
-Install Board Support Package Add-on
-====================================
+# Getting Started
+===
+
+## Install Board Package Add-on
 
 1. Get Arduino IDE from Arduino website and install it to your PC
 	
@@ -42,8 +53,7 @@ Install Board Support Package Add-on
 3. Install the "RedBearLab nRF51822 Boards" add-on via Boards Manager from the Menu: Tools -> Board -> Boards Manager ... 
 
 
-Install USB CDC (Serial) Driver (for Windows only)
-==================================================
+## Install USB CDC (Serial) Driver (Windows only)
 
 Get this driver and install it if you are using an Windows PC, so that you can use the Serial port for uploading sketches in Arduino IDE.
 
@@ -52,10 +62,9 @@ Get this driver and install it if you are using an Windows PC, so that you can u
 * Note that you do not need any driver for OSX and Linux platforms.
 
 
-Flash with RBL Bootloader
-=========================
+## Burn Bootloader
 
-The nRF51822 boards are proloaded the bootloader already for using the Arduino IDE. Normally, you can skip this step. You can check with this:
+The nRF51822 boards are proloaded the bootloader already. Normally, you can skip this step. You can check with this:
 
 	After reset/power up the board, use the iOS App - LightBlue or the Android App - B-BLE to see if the bootloader works or not, since it will broadcast our OTA service.
 
@@ -68,26 +77,21 @@ If you used mbed drag & drop method for firmware uploading before, you will need
 Note that the bootloader has OTA feature and you can follow the OTA session for instructions.
 
 
-How It Works
-============
-
-The RBL nRF51822 board supports loading firmware using USB MSD (Mass Storage Device) method by default. However, to have better user experience as traditional coding, compiling and uploading firmware style using the Arduino IDE, we created a bootloader that makes use USB CDC method to upload firmware.
-
-The board is similar to Ardino Leonardo upload style, when you press "upload" in the Arduino, it will open the USB virtual serial port using 1200bps, the USB chip on the RBL nRF51822 board will reset the nRF51822 chip and it will enter the bootloader, the Arduino IDE will repoen the serial port at 115200bps and the bootloader will wait commands and data from your the Arduino IDE, and upgrade its application area in the flash.
-
-
-How to Play
-===========
+## How to Play
 
 1. Select board and serial port
 
-  Select the RBL nRF51822 board in the menu of Arduino IDE and serial port.
+  Select the RBL nRF51822 board from the menu of the Arduino IDE,
 
     Menu > Tools > Board > RBL nRF51822
     
-  If you are using our BLE Nano board,
+  If you are using the BLE Nano board,
 
     Menu > Tools > Board > BLE Nano
+  
+  Select the serial port for print out with the USB Interface Dongle,
+  
+    Menu > Tools > Port > [you board serial port name]
   
 2. Blink
 
@@ -95,6 +99,8 @@ How to Play
 
     Menu > File > Examples > 01.Basics > Blink
 
+  Use the upload icon to load the sketch to your board.
+  
 3. BLE Examples
 
   There are some BLE examples you can try.
@@ -103,7 +109,7 @@ How to Play
 
   #### BLE_HRM
    
-  This is an Heart Rate Monitor demo, it simulates Heart Rate detection. You can use Nordic nRFToolBox App to play. For BLEController, SimpleChat and SimpleControls, you can use RBL BLE Controller App to play.
+  This is an Heart Rate Monitor demo, it simulates Heart Rate detection. You can use Nordic nRFToolBox App to play.
 
   #### BLE_Beacon
     
@@ -111,25 +117,27 @@ How to Play
 
   #### SimpleControls
   
-  This sample shows how to define your own protocol and to control the I/O of the board from a Central (e.g. iPhone) using BLE Controller Apps.
+  This sample shows how to define your own protocol and to control the I/O of the board from a Central (e.g. iPhone) using the BLE Controller App.
   
   #### SimpleChat
   
-  This sample allows you to send text message from the board to your central device such as iPhone or Android using our BLE Controller Apps.
+  This sample allows you to send text message from the board to your central device such as iPhone or Android using the BLE Controller App.
   
   #### BLEController
 
-  This example allows you to use our BLE Controller Apps (available for iOS and Android) to control the pin state such as High, Low, PWM, Analog, etc.
+  This example allows you to use the BLE Controller App (available for iOS and Android) to control the pin state such as High, Low, PWM, Analog, etc.
   
   #### nRF51822_UART
   
   This example allows you to exchange data with your central device (e.g. iPhone 5) and the data will be redirected to the UART.
 
 
-OTA
+# OTA
 ===
 
-The bootloader allows you to load firmware Over-the-air. Everytime, if you reset the board by hitting the button on the board, the bootloader will broacast the OTA service via BLE for 5 sec waiting for a connection to be made. Otherwise, it will start the pre-loaded firmware.
+The bootloader allows you to load firmware Over-the-air, for example, if you do not have the MK20 USB interface dongle.
+
+Everytime, if you reset the board by hitting the button on the board, the bootloader will broacast the OTA service via BLE for 5 sec waiting for a connection to be made. Otherwise, it will start the pre-loaded firmware.
 
 You can use the "export" feature from Arduino IDE to get the firmware for OTA.
 
@@ -140,22 +148,22 @@ Try the blink example, the firmware is named "Blink.cpp_OTA.BLE_Nano.hex".
 You can send this firmware to your phone, e.g. iPhone, using Air-Drop and use Nordic "nRF Toolbox" App to open it, then select file type "application" and select a device (you should see DFU_S130_V1.0 in the device list). Select it and click upload, the App will transfer the firmware to the board via BLE.
 
 
-Limitations
-===========
+# Limitations
+===
 
 1. Serial Interface
 
-    As Arduino does not have flow control in serial port implementation, the Serial port (Pin 0 and 1) is limited to 9600bps since the BLE stack require flow control in order to support higher speed. If you are not going to use BLE, you can use higher speed. 
+    As Arduino does not have flow control in serial port implementation, the Serial port (Pin 0 and 1) is limited to 9600bps since the BLE stack requires flow control in order to support higher speed. If you are not going to use BLE, you can use higher speed. 
 
 2. Compatibility
 
     It is not easy for the nRF51822 chip (ARM 32-bit) to be 100% compatible (the SoC has to do BLE tasks and ensure low power) with the Atmel chips (AVR 8-bit), the underlying driver from Nordic for the peripherals may also have their limitations.
 
 
-License
-=======
+# License
+===
 
-Copyright (c) 2013-2015 RedBearLab
+Copyright (c) 2013-2016 RedBearLab
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
