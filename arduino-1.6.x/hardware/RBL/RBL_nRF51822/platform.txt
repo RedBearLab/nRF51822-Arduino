@@ -6,7 +6,7 @@ name=RedBearLab Boards
 
 # Compile tool path
 compiler.path={runtime.tools.arm-none-eabi-gcc-4.8.3-2014q1.path}/bin/
-#compiler.path={runtime.platform.path}/tools/gcc-arm-none-eabi/bin/
+#compiler.path={runtime.platform.path}/tools/gcc-arm-none-eabi-4.8.3-2014q1/bin/
 
 # Compile s files options
 compiler.S.cmd=arm-none-eabi-as
@@ -35,7 +35,6 @@ compiler.elf2bin.flags=-O binary
 
 # Create hex file options
 compiler.elf2hex.cmd=arm-none-eabi-objcopy
-compiler.elf2hex.flags=-O ihex -I binary 
 compiler.elf2hex.flags=-O ihex -I binary
 compiler.elf2hex.flagx=-O ihex
 
@@ -88,6 +87,8 @@ recipe.size.regex=\.text\s+([0-9]+).*
 # RBL_nRF51822 Uploader tools
 # ----------------------
 
+## avrdude tool
+
 tools.avrdude.path={runtime.tools.avrdude.path}
 
 tools.avrdude.cmd.path={runtime.tools.avrdude.path}/bin/avrdude
@@ -100,5 +101,26 @@ tools.avrdude.upload.params.quiet=-q -q
 tools.avrdude.upload.pattern="{cmd.path}" "-C{config.path}" {upload.verbose} -p{build.mcu} -c{upload.protocol} -P{serial.port} -b{upload.speed} -D "-Uflash:w:{build.path}/{build.project_name}.hex:i"
 
 
+## OpenOCD tool
 
+tools.openocd.path={runtime.tools.openocd.path}
+#tools.openocd.path={runtime.platform.path}/tools/OpenOCD-0.9.0-dev-arduino
+tools.openocd.cmd=bin/openocd.bin
+tools.openocd.cmd.linux=bin/openocd
+tools.openocd.cmd.windows=bin/openocd.exe
 
+tools.openocd.upload.params.verbose=-d1
+tools.openocd.upload.params.quiet=-d0
+tools.openocd.upload.pattern="{path}/{cmd}" {upload.params.verbose} -s "{path}/share/openocd/scripts/" -f "{path}/share/openocd/scripts/interface/cmsis-dap.cfg" -f "{path}/share/openocd/scripts/target/nrf51.cfg" -c "init;reset halt;flash erase_address 0x3FC00 0x400;flash fillw 0x3FC00 0x00000001 1;flash fillw 0x3FC04 0x000000FF 1;flash fillw 0x3FC08 0x00000000 1;program {{{build.path}/{build.project_name}.bin}} verify reset exit 0x1C000"
+
+tools.openocd.program.params.verbose=-d2
+tools.openocd.program.params.quiet=-d0
+tools.openocd.program.pattern=
+
+tools.openocd.erase.params.verbose=-d3
+tools.openocd.erase.params.quiet=-d0
+tools.openocd.erase.pattern=
+
+tools.openocd.bootloader.params.verbose=-d1
+tools.openocd.bootloader.params.quiet=-d0
+tools.openocd.bootloader.pattern="{path}/{cmd}" {bootloader.verbose} -s "{path}/share/openocd/scripts/" -f "{path}/share/openocd/scripts/interface/cmsis-dap.cfg" -f "{path}/share/openocd/scripts/target/nrf51.cfg" -c "init; reset halt; nrf51 mass_erase; program {{{runtime.platform.path}/bootloaders/{bootloader.bootloader_file}}} verify reset exit"

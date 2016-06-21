@@ -2,6 +2,8 @@
 #ifndef WIRING_CONSTANTS_H_
 #define WIRING_CONSTANTS_H_
 
+#include <algorithm>
+
 #define VARIANT_MCK         		 16000000UL	
 
 #define clockCyclesPerMicrosecond()  ( VARIANT_MCK / 1000000L )
@@ -29,14 +31,14 @@
 #define DEG_TO_RAD 		0.017453292519943295769236907684886
 #define RAD_TO_DEG 		57.295779513082320876798154814105
 
+//Use the C++ STL, no need to define min and max
+//#ifndef min
+//#define min(a,b) ((a)<(b)?(a):(b))
+//#endif // min
 
-#ifndef min
-#define min(a,b) ((a)<(b)?(a):(b))
-#endif // min
-
-#ifndef max
-#define max(a,b) ((a)>(b)?(a):(b))
-#endif // max
+//#ifndef max
+//#define max(a,b) ((a)>(b)?(a):(b))
+//#endif // max
 
 #define abs(x) ((x)>0?(x):-(x))
 #define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))

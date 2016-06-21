@@ -30,23 +30,26 @@ void store(uint8_t c);
 
 static uint32_t serial_irq_ids[UART_NUM] = {0};
 static uart_irq_handler irq_handler;
-static int acceptedSpeeds[17][2] = {{1200, UART_BAUDRATE_BAUDRATE_Baud1200},
-                                         {2400, UART_BAUDRATE_BAUDRATE_Baud2400},
-                                         {4800, UART_BAUDRATE_BAUDRATE_Baud4800},
-                                         {9600, UART_BAUDRATE_BAUDRATE_Baud9600},
-                                         {14400, UART_BAUDRATE_BAUDRATE_Baud14400},
-                                         {19200, UART_BAUDRATE_BAUDRATE_Baud19200},
-                                         {28800, UART_BAUDRATE_BAUDRATE_Baud28800},
-                                         {31250, (0x00800000UL) /* 31250 baud */},
-                                         {38400, UART_BAUDRATE_BAUDRATE_Baud38400},
-                                         {57600, UART_BAUDRATE_BAUDRATE_Baud57600},
-                                         {76800, UART_BAUDRATE_BAUDRATE_Baud76800},
-                                         {115200, UART_BAUDRATE_BAUDRATE_Baud115200},
-                                         {230400, UART_BAUDRATE_BAUDRATE_Baud230400},
-                                         {250000, UART_BAUDRATE_BAUDRATE_Baud250000},
-                                         {460800, UART_BAUDRATE_BAUDRATE_Baud460800},
-                                         {921600, UART_BAUDRATE_BAUDRATE_Baud921600},
-                                         {1000000, UART_BAUDRATE_BAUDRATE_Baud1M}};
+static const int acceptedSpeeds[18][2] = {
+    {1200, UART_BAUDRATE_BAUDRATE_Baud1200},
+    {2400, UART_BAUDRATE_BAUDRATE_Baud2400},
+    {4800, UART_BAUDRATE_BAUDRATE_Baud4800},
+    {9600, UART_BAUDRATE_BAUDRATE_Baud9600},
+    {14400, UART_BAUDRATE_BAUDRATE_Baud14400},
+    {19200, UART_BAUDRATE_BAUDRATE_Baud19200},
+    {28800, UART_BAUDRATE_BAUDRATE_Baud28800},
+    {31250, (0x00800000UL) /* 31250 baud */},
+    {38400, UART_BAUDRATE_BAUDRATE_Baud38400},
+    {56000, (0x00E51000UL) /* 56000 baud */},
+    {57600, UART_BAUDRATE_BAUDRATE_Baud57600},
+    {76800, UART_BAUDRATE_BAUDRATE_Baud76800},
+    {115200, UART_BAUDRATE_BAUDRATE_Baud115200},
+    {230400, UART_BAUDRATE_BAUDRATE_Baud230400},
+    {250000, UART_BAUDRATE_BAUDRATE_Baud250000},
+    {460800, UART_BAUDRATE_BAUDRATE_Baud460800},
+    {921600, UART_BAUDRATE_BAUDRATE_Baud921600},
+    {1000000, UART_BAUDRATE_BAUDRATE_Baud1M}
+};
 
 int stdio_uart_inited = 0;
 serial_t stdio_uart;
@@ -57,6 +60,8 @@ void serial_init(serial_t *obj, PinName tx, PinName rx) {
     obj->uart = (NRF_UART_Type *)uart;
 
     //pin configurations --
+    NRF_GPIO->OUT |= (1 << tx);
+    NRF_GPIO->OUT |= (1 << RTS_PIN_NUMBER);
     NRF_GPIO->DIR |= (1 << tx); //TX_PIN_NUMBER);
     NRF_GPIO->DIR |= (1 << RTS_PIN_NUMBER);
 
@@ -74,7 +79,10 @@ void serial_init(serial_t *obj, PinName tx, PinName rx) {
     obj->uart->EVENTS_RXDRDY = 0;
     // dummy write needed or TXDRDY trails write rather than leads write.
     //  pins are disconnected so nothing is physically transmitted on the wire
+    obj->uart->PSELTXD = 0xFFFFFFFF;
+    obj->uart->EVENTS_TXDRDY = 0;
     obj->uart->TXD = 0;
+    while (obj->uart->EVENTS_TXDRDY != 1);
 
     obj->index = 0;
     
@@ -169,7 +177,7 @@ void UART0_IRQHandler()
         irtype = 1;
     } else if((NRF_UART0->INTENSET & 0x04) && NRF_UART0->EVENTS_RXDRDY) {
         irtype = 2;
-		NRF_UART0->EVENTS_RXDRDY = 0;
+        NRF_UART0->EVENTS_RXDRDY = 0;
 		store((uint8_t)NRF_UART0->RXD);
     }
     uart_irq(irtype, 0);
