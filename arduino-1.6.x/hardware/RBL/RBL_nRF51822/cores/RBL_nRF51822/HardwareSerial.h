@@ -25,8 +25,8 @@
 
 class HardwareSerial : public WStream
 {
-  public:
-	void begin( const uint32_t dwBaudRate ) ;
+public:
+    void begin( const uint32_t dwBaudRate );
     void begin( const uint32_t dwBaudRate, PinName rx_pin, PinName tx_pin  );
     void end();
     virtual int available(void) = 0;
