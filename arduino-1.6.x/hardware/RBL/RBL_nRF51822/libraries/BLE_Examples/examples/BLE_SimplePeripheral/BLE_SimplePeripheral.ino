@@ -42,6 +42,10 @@ GattCharacteristic *uartChars[] = {&characteristic1, &characteristic2, &characte
 //Create service
 GattService         uartService(service1_uuid, uartChars, sizeof(uartChars) / sizeof(GattCharacteristic *));
 
+HeartRateService         *hrService;
+DeviceInformationService *deviceInfo;
+// Init HRM to 100bps
+static uint16_t hrmCounter = 100;
 /** @brief  Disconnect callback handle
  *
  *  @param[in] *params   params->handle : connect handle
@@ -173,6 +177,12 @@ void task_handle(void) {
   //ble.updateCharacteristicValue(characteristic3.getValueAttribute().getHandle(), (uint8_t *)&value, 2, true);
   // if false or ignore, notification or indication is generated if permit.
   ble.updateCharacteristicValue(characteristic3.getValueAttribute().getHandle(), (uint8_t *)&value, 2);
+  // update heart rate
+  hrmCounter++;
+  if (hrmCounter == 175) { //  100 <= HRM bps <=175
+      hrmCounter = 100;
+  }
+  hrService->updateHeartRate(hrmCounter);
 }
 
 /**
@@ -233,6 +243,8 @@ void setup() {
   //    ADV_NON_CONNECTABLE_UNDIRECTED
   ble.setAdvertisingType(GapAdvertisingParams::ADV_CONNECTABLE_UNDIRECTED);
   // add service
+  hrService  = new HeartRateService(ble, hrmCounter, HeartRateService::LOCATION_FINGER);
+  deviceInfo = new DeviceInformationService(ble, "ARM", "Model1", "SN1", "hw-rev1", "fw-rev1", "soft-rev1");
   ble.addService(uartService);
   // set device name
   ble.setDeviceName((const uint8_t *)DEVICE_NAME);

@@ -32,15 +32,19 @@
 
 #include "nRF51822_API.h"
 
-// #include "BatteryService.h"
-// #include "DeviceInformationService.h"
-// #include "DFUService.h"
-// #include "HealthThermometerService.h"
-// #include "HeartRateService.h"
-// #include "iBeaconService.h"
-// #include "LinkLossService.h"
-// #include "UARTService.h"
-// #include "URIBeaconConfigService.h"
+#include "BatteryService.h"
+#include "DeviceInformationService.h"
+#include "DFUService.h"
+#include "EddystoneConfigService.h"
+#include "EddystoneService.h"
+#include "HealthThermometerService.h"
+#include "EnvironmentalService.h"
+#include "HealthThermometerService.h"
+#include "HeartRateService.h"
+#include "iBeacon.h"
+#include "LinkLossService.h"
+#include "UARTService.h"
+#include "URIBeaconConfigService.h"
 
 #endif
 
