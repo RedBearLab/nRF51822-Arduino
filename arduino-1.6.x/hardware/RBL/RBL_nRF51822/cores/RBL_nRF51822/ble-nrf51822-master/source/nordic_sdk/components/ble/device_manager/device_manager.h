@@ -88,7 +88,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "sdk_common.h"
-#include "nrf_ble.h"
+#include "ble.h"
 #include "ble_gap.h"
 #include "device_manager_cnfg.h"
 

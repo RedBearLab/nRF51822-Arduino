@@ -42,7 +42,7 @@
 #define BLE_CONN_PARAMS_H__
 
 #include <stdint.h>
-#include "nrf_ble.h"
+#include "ble.h"
 #include "ble_srv_common.h"
 
 /**@brief Connection Parameters Module event type. */

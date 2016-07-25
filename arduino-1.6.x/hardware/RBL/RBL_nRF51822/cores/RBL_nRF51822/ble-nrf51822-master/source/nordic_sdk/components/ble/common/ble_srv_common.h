@@ -45,7 +45,7 @@
 #include <stdbool.h>
 #include "ble_types.h"
 #include "app_util.h"
-#include "nrf_ble.h"
+#include "ble.h"
 #include "ble_gap.h"
 #include "ble_gatt.h"
 

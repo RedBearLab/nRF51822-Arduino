@@ -46,7 +46,7 @@
 #ifdef BLE_STACK_SUPPORT_REQD
 
 #include <stdlib.h>
-#include "nrf_ble.h"
+#include "ble.h"
 #include "nrf_sdm.h"
 #include "app_error.h"
 #include "app_util.h"

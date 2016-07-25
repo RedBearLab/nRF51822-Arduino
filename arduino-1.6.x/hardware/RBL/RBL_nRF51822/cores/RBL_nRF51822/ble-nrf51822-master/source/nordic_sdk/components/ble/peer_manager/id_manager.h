@@ -35,7 +35,7 @@
 
 #include "stdint.h"
 #include "sdk_errors.h"
-#include "nrf_ble.h"
+#include "ble.h"
 #include "ble_gap.h"
 #include "peer_manager_types.h"
 

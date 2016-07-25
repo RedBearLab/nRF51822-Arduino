@@ -39,7 +39,7 @@
 #include <string.h>
 #include "nordic_common.h"
 #include "app_error.h"
-#include "nrf_ble.h"
+#include "ble.h"
 
 uint8_t ble_srv_report_ref_encode(uint8_t                    * p_encoded_buffer,
                                   const ble_srv_report_ref_t * p_report_ref)

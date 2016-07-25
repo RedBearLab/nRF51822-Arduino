@@ -111,7 +111,7 @@
 #include "softdevice_handler.h"
 #include "softdevice_handler_appsh.h"
 
-#include "nrf_ble.h"
+#include "ble.h"
 #include "ble_err.h"
 #include "ble_gap.h"
 #include "ble_gatt.h"

@@ -44,7 +44,7 @@
 #elif defined(ANT_STACK_SUPPORT_REQD) 
     #include "ant_interface.h"
 #elif defined(BLE_STACK_SUPPORT_REQD)
-    #include "nrf_ble.h"
+    #include "ble.h"
 #endif
 
 #ifdef NRF51

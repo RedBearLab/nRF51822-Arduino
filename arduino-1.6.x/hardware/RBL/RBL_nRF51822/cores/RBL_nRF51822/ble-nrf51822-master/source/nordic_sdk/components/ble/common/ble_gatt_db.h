@@ -35,7 +35,7 @@
 #define BLE_GATT_DB_H__
 
 #include "stdint.h"
-#include "nrf_ble.h"
+#include "ble.h"
 #include "ble_gattc.h"
 
 #define BLE_GATT_DB_MAX_CHARS                                 4          /**< The maximum number of characteristics present in a service record. */
