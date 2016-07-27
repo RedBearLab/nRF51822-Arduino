@@ -5,7 +5,7 @@ This is about the board support package version.
 
 #### Verison: 1.0.7
 
-* Use saddeepmstry's openocd to instead of arduino openocd
+* Use SandeepMistry's openocd to instead of arduino openocd
 * Fixed bug "Can't upload on macosx"
 * Change file "nrf_ble.h" to "ble.h"
 
