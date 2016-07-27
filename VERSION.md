@@ -7,7 +7,18 @@ This is about the board support package version.
 
 * Use saddeepmstry's openocd to instead of arduino openocd
 * Fixed bug "Can't upload on macosx"
+* Change file "nrf_ble.h" to "ble.h"
 
+##### kown issue
+
+* Upload problem on Linux 64bit, fix it as follow:
+```
+    sudo apt-get install lsb-core
+
+    sudo apt-get install libudev1:i386
+
+    sudo ln -sf /lib/x86_64-linux-gnu/libudev.so.1 /lib/x86_64-linux-gnu/libudev.so.0
+```  
 
 #### Version: 1.0.6
 
