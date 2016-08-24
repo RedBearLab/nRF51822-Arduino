@@ -16,7 +16,7 @@
 
 ####How to enter DFU mode:
 
-In DFU mode, LED should blink in 100ms.If no any operations, will exist after 30s.
+In DFU mode, LED should blink in 100ms.If no any operations, will exit after 30s.
 
 #####1. Booloader Button
 
