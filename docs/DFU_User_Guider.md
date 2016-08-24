@@ -41,13 +41,10 @@ nrfutil.exe dfu genpkg --application [app_file_name].hex --application-version [
 
  *eg:create a application zip
 ```
-nrfutil.exe dfu genpkg --application D:\Blink.hex --applicati
-on-version 0xFFFFFFFF --dev-type 0xFFFF --dev-revision 0xFFFF --sd-req 0xFFFE D:
-\Blink.zip
+nrfutil.exe dfu genpkg --application D:\Blink.hex --application-version 0xFFFFFFFF --dev-type 0xFFFF --dev-revision 0xFFFF --sd-req 0xFFFE D:\Blink.zip
 ```
 
  *eg:create softdevice+bootloader zip
 ```
-nrfutil.exe dfu genpkg --application-version 0xFFFFFFFF --softdevice D:\softdevice.hex --bootloader D:\bootloader.hex --dev-type 0xFFFF --dev-revision 0xFFFF --sd-req 0xFFFE D:
-\Softdevice_bootloader.zip
+nrfutil.exe dfu genpkg --application-version 0xFFFFFFFF --softdevice D:\softdevice.hex --bootloader D:\bootloader.hex --dev-type 0xFFFF --dev-revision 0xFFFF --sd-req 0xFFFE D:\Softdevice_bootloader.zip
 ```
