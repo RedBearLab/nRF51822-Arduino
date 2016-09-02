@@ -32,44 +32,41 @@
 
 #include "Arduino.h"
 
-#define SPI_125K 	125000
-#define SPI_250K 	250000
-#define SPI_500K 	500000
-#define SPI_1M 	 	1000000
-#define SPI_2M 	 	2000000
-#define SPI_4M   	4000000
-#define SPI_8M   	8000000
+#define SPI_125K    125000
+#define SPI_250K    250000
+#define SPI_500K    500000
+#define SPI_1M      1000000
+#define SPI_2M      2000000
+#define SPI_4M      4000000
+#define SPI_8M      8000000
 
-#define SPI_MODE0 	0
-#define SPI_MODE1 	1
-#define SPI_MODE2 	2
-#define SPI_MODE3 	3
+#define SPI_MODE0   0
+#define SPI_MODE1   1
+#define SPI_MODE2   2
+#define SPI_MODE3   3
 
 
 class SPIClass
 {
-	public:
-		SPIClass();
-	
-		void begin();
-		void begin(uint32_t scl, uint32_t mosi, uint32_t miso);
-		uint8_t transfer(uint8_t data);
-		void endTransfer(void);
-		
-		/*This also set bitOrder to MSBFIRST, so don't use setBitORDER befor this */
-		void setSPIMode(uint8_t mode);
-		void setFrequency(uint32_t speed );
-		/*Set bitOrder, this must be after setSPIMode */
-		void setBitORDER( BitOrder  bit);
-		
-	protected:
-		
-		spi_t	 spi;
+public:
+    SPIClass();
+
+    void begin();
+    void begin(uint32_t scl, uint32_t mosi, uint32_t miso);
+    uint8_t transfer(uint8_t data);
+    void endTransfer(void);
+
+    /*This also set bitOrder to MSBFIRST, so don't use setBitORDER befor this */
+    void setSPIMode(uint8_t mode);
+    void setFrequency(uint32_t speed );
+    /*Set bitOrder, this must be after setSPIMode */
+    void setBitORDER( BitOrder  bit);
+
+protected:
+
+    spi_t    spi;
 };
 
-extern SPIClass		SPI_Master;
+extern SPIClass     SPI_Master;
 
 #endif
-
-
-
