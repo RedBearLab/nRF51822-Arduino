@@ -61,6 +61,14 @@ Get this driver and install it if you are using an Windows PC, so that you can u
 
 * Note that you do not need any driver for OSX and Linux platforms.
 
+## Add udev rules (Linux only)
+
+Copy file "98-daplink.rules" to path "/etc/udev/rules.d/". Then restart or reloaded with 
+
+    $ sudo udevadm control --reload-rules
+
+We thank bapowell & kdsoo for solving this problem.
+[openocd error on Linux](https://github.com/RedBearLab/nRF51822-Arduino/issues/73)
 
 ## Burn Bootloader
 
