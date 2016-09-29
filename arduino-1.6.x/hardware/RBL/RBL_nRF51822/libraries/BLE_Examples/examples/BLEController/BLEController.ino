@@ -330,7 +330,7 @@ void writtenHandle(const GattWriteCallbackParams *Handler) {
       case 'A':// query all pin status
       {
         reback_pin = 2;
-        ticker2.attach_us(m_status_reback_handle, 30000);
+        ticker2.attach_us(m_status_reback_handle, 100000);
         break;
       }
       case 'P':// query pin capability
