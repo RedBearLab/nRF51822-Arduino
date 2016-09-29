@@ -34,9 +34,10 @@ void shiftOut(uint32_t DataPin, uint32_t ClockPin, BitOrder Order, uint8_t value
         else {
             digitalWrite(DataPin, !!(value&(1<<(7-index))));
         }
+        
+        digitalWrite(ClockPin, HIGH);
+        digitalWrite(ClockPin, LOW);
     }
-    digitalWrite(ClockPin, HIGH);
-    digitalWrite(ClockPin, LOW);
 }
 
 
