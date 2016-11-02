@@ -3,6 +3,11 @@
 
 This is about the board support package version.
 
+#### Current Version 
+
+* Fix bug of Example "BLEController" : "reporting pin's status too fast for andriod".
+* Fix function "shiftOut()" : "Not generate clock correctly".
+
 #### Verison: 1.0.7
 
 * Use SandeepMistry's openocd to instead of arduino openocd
