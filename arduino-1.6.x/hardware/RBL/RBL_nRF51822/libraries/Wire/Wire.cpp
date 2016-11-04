@@ -102,7 +102,7 @@ int8_t TwoWire::endTransmission( uint8_t stop)
 {
     int8_t result=0;
 
-    result = i2c_write(&i2c, Transfer_Addr, (const char *)TX_Buffer, TX_BufferHead, stop);
+    i2c_write(&i2c, Transfer_Addr, (const char *)TX_Buffer, TX_BufferHead, stop);
 
     TX_BufferHead = 0;
     twi_status = MASTER_IDLE;
