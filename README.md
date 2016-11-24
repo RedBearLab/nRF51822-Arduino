@@ -70,6 +70,14 @@ Copy file "98-daplink.rules" to path "/etc/udev/rules.d/". Then restart or reloa
 We thank bapowell & kdsoo for solving this problem.
 [openocd error on Linux](https://github.com/RedBearLab/nRF51822-Arduino/issues/73)
 
+## Fix the upload problem on Linux 64bit system
+
+    sudo apt-get install lsb-core
+
+    sudo apt-get install libudev1:i386
+
+    sudo ln -sf /lib/x86_64-linux-gnu/libudev.so.1 /lib/x86_64-linux-gnu/libudev.so.0
+
 ## Burn Bootloader
 
 The nRF51822 boards are proloaded the bootloader already. Normally, you can skip this step. You can check with this:
