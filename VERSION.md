@@ -23,7 +23,10 @@ This is about the board support package version.
     sudo apt-get install libudev1:i386
 
     sudo ln -sf /lib/x86_64-linux-gnu/libudev.so.1 /lib/x86_64-linux-gnu/libudev.so.0
-```  
+```
+* Can't use DFUService.
+* Function "shiftOut" : "Not generate clock correctly".
+* Example "BLEController" not compatible with andriod.
 
 #### Version: 1.0.6
 
