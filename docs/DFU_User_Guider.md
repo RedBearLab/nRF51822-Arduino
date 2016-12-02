@@ -1,9 +1,21 @@
 #DFU USER GUIDER
 ====
 
-##Bootloader version:
+##Bootloader version: bootloader.hex
 
-###SoftdeviceS130-1.0-Bootloader-Blinky-20160824.hex:
+  *This bootloader is made up of softdevice, DFU_bootloader.
+
+  *Softdevice version : S130_1.0.
+
+  *Memory range of bootloader : 0x0003B000~0x0003FC00.
+
+  *Only support to update application firmware(hex file).Don't support to update softdevice and bootloader.
+
+###How to enter DFU mode
+
+  *When power on or reset, the board will run 5s DFU.Then running application or reset(no application).
+
+##Bootloader version: SoftdeviceS130-1.0-Bootloader-Blinky-20160824.hex:
 
  *This bootloader is made up of softdevice, DFU-bootloader and application.Support all official functions(Wait for more tests).
 
@@ -12,6 +24,8 @@
  *DFU bootloader is based on DFU example in nordic SDK10.0.
 
  *Application is the example LED blinky(toggle every 1 second).
+
+ *Memory range of bootloader : 0x0003C000~0x0003FC00
 
 
 ####How to enter DFU mode:
@@ -26,13 +40,13 @@ In DFU mode, LED should blink in 100ms.If no any operations, will exit after 30s
 
  *Add dfu service to application(wait for testing).
 
-##How to create .zip 
+###How to create .zip 
 
-###Tools
+####Tools
 
  *nrfutil.exe, get this by installing the "Master Control Panel".
 
-###command
+####command
 
 ````
 nrfutil.exe dfu genpkg --application [app_file_name].hex --application-version [app_version] --softdevice [sd_file_name].hex --bootloader [bootloader_name].hex --dev-type [dev-type] --dev-revision [dev-revision] --sd-req [supported-softdevice-ids] [name of distribution packet].zip
