@@ -42,6 +42,7 @@ GattCharacteristic *uartChars[] = {&characteristic1, &characteristic2, &characte
 //Create service
 GattService         uartService(service1_uuid, uartChars, sizeof(uartChars) / sizeof(GattCharacteristic *));
 
+DFUService               *dfuService;
 HeartRateService         *hrService;
 DeviceInformationService *deviceInfo;
 // Init HRM to 100bps
@@ -243,6 +244,7 @@ void setup() {
   //    ADV_NON_CONNECTABLE_UNDIRECTED
   ble.setAdvertisingType(GapAdvertisingParams::ADV_CONNECTABLE_UNDIRECTED);
   // add service
+  dfuService = new DFUService(ble);
   hrService  = new HeartRateService(ble, hrmCounter, HeartRateService::LOCATION_FINGER);
   deviceInfo = new DeviceInformationService(ble, "ARM", "Model1", "SN1", "hw-rev1", "fw-rev1", "soft-rev1");
   ble.addService(uartService);
