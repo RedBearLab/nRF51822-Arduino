@@ -30,8 +30,6 @@
 #include "ble/ServiceDiscovery.h"
 #include "ble/UUID.h"
 
-#include "nRF51822_API.h"
-
 #include "BatteryService.h"
 #include "DeviceInformationService.h"
 #include "DFUService.h"
@@ -45,6 +43,8 @@
 #include "LinkLossService.h"
 #include "UARTService.h"
 #include "URIBeaconConfigService.h"
+
+#include "nRF51822_API.h"
 
 #endif
 
