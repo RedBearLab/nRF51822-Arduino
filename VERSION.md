@@ -7,6 +7,7 @@ This is about the board support package version.
 
 * Fix bug of Example "BLEController" : "reporting pin's status too fast for andriod".
 * Fix function "shiftOut()" : "Not generate clock correctly".
+* Fix the bug "Can't use DFUService".
 
 #### Verison: 1.0.7
 
