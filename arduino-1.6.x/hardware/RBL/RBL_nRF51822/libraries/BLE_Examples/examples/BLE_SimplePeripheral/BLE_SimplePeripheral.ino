@@ -167,6 +167,17 @@ void gattServerWriteCallBack(const GattWriteCallbackParams *Handler) {
   }
 }
 
+/** @brief  Helper function that notifies all registered handlers of an occurrence of a data sent event. 
+ *          This function is meant to be called from the BLE stack specific implementation when a data sent event occurs(event: BLE_EVT_TX_COMPLETE).
+ *
+ *  @param[in] count   Number of packets sent.
+ */
+void gattServerSentCallBack(unsigned int count)
+{
+  Serial.print("The count : ");
+  Serial.println(count, DEC);
+}
+
 /**
  * @brief  Timer task callback handle
  */
@@ -235,6 +246,7 @@ void setup() {
   ble.onConnection(connectionCallBack);
   ble.onDisconnection(disconnectionCallBack);
   ble.onDataWritten(gattServerWriteCallBack);
+  ble.onDataSent(gattServerSentCallBack);
   // set advertisement
   setAdvertisement();
   // set adv_type(enum from 0)
