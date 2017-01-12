@@ -20,7 +20,7 @@
 
 namespace mbed {
 
-Serial::Serial(PinName tx, PinName rx, const char *name) : SerialBase(tx, rx), Stream(name) {
+Serial::Serial(PinName tx, PinName rx, const char *name) : SerialBase(tx, rx), MStream(name) {
 }
 
 int Serial::_getc() {

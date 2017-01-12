@@ -30,7 +30,7 @@
 #ifndef _WIRE_H_
 #define _WIRE_H_
 
-#include "WStream.h"
+#include "Stream.h"
 #include "Arduino.h"
 
 
@@ -41,7 +41,7 @@
 #define TWI_FREQUENCY_400K  400000
 
 
-class TwoWire : public WStream
+class TwoWire : public Stream
 {
 public :
     enum TwoWireStatus {

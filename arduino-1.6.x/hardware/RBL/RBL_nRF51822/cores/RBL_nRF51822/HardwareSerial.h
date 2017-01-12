@@ -21,9 +21,9 @@
 
 #include <inttypes.h>
 
-#include "WStream.h"
+#include "Stream.h"
 
-class HardwareSerial : public WStream
+class HardwareSerial : public Stream
 {
 public:
     void begin( const uint32_t dwBaudRate );

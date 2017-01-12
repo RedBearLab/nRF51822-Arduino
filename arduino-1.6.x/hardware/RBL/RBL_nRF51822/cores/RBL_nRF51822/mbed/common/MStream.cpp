@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "Stream.h"
+#include "MStream.h"
 
 namespace mbed {
 
-Stream::Stream(const char *name) : FileLike(name), _file(NULL) {
+MStream::MStream(const char *name) : FileLike(name), _file(NULL) {
     /* open ourselves */
     char buf[12]; /* :0x12345678 + null byte */
     std::sprintf(buf, ":%p", this);
@@ -25,32 +25,32 @@ Stream::Stream(const char *name) : FileLike(name), _file(NULL) {
     mbed_set_unbuffered_stream(_file);
 }
 
-Stream::~Stream() {
+MStream::~MStream() {
     fclose(_file);
 }
 
-int Stream::putc(int c) {
+int MStream::putc(int c) {
     fflush(_file);
     return std::fputc(c, _file);
 }
-int Stream::puts(const char *s) {
+int MStream::puts(const char *s) {
     fflush(_file);
     return std::fputs(s, _file);
 }
-int Stream::getc() {
+int MStream::getc() {
     fflush(_file);
     return mbed_getc(_file);   
 }
-char* Stream::gets(char *s, int size) {
+char* MStream::gets(char *s, int size) {
     fflush(_file);
     return mbed_gets(s,size,_file);
 }
 
-int Stream::close() {
+int MStream::close() {
     return 0;
 }
 
-ssize_t Stream::write(const void* buffer, size_t length) {
+ssize_t MStream::write(const void* buffer, size_t length) {
     const char* ptr = (const char*)buffer;
     const char* end = ptr + length;
     while (ptr != end) {
@@ -61,7 +61,7 @@ ssize_t Stream::write(const void* buffer, size_t length) {
     return ptr - (const char*)buffer;
 }
 
-ssize_t Stream::read(void* buffer, size_t length) {
+ssize_t MStream::read(void* buffer, size_t length) {
     char* ptr = (char*)buffer;
     char* end = ptr + length;
     while (ptr != end) {
@@ -72,23 +72,23 @@ ssize_t Stream::read(void* buffer, size_t length) {
     return ptr - (const char*)buffer;
 }
 
-off_t Stream::lseek(off_t offset, int whence) {
+off_t MStream::lseek(off_t offset, int whence) {
     return 0;
 }
 
-int Stream::isatty() {
+int MStream::isatty() {
     return 0;
 }
 
-int Stream::fsync() {
+int MStream::fsync() {
     return 0;
 }
 
-off_t Stream::flen() {
+off_t MStream::flen() {
     return 0;
 }
 
-int Stream::printf(const char* format, ...) {
+int MStream::printf(const char* format, ...) {
     std::va_list arg;
     va_start(arg, format);
     fflush(_file);
@@ -97,7 +97,7 @@ int Stream::printf(const char* format, ...) {
     return r;
 }
 
-int Stream::scanf(const char* format, ...) {
+int MStream::scanf(const char* format, ...) {
     std::va_list arg;
     va_start(arg, format);
     fflush(_file);
@@ -106,13 +106,13 @@ int Stream::scanf(const char* format, ...) {
     return r;
 }
 
-int Stream::vprintf(const char* format, std::va_list args) {
+int MStream::vprintf(const char* format, std::va_list args) {
     fflush(_file);
     int r = vfprintf(_file, format, args);
     return r;
 }
 
-int Stream::vscanf(const char* format, std::va_list args) {
+int MStream::vscanf(const char* format, std::va_list args) {
     fflush(_file);
     int r = vfscanf(_file, format, args);
     return r;

@@ -20,7 +20,7 @@
 
 #if DEVICE_SERIAL
 
-#include "Stream.h"
+#include "MStream.h"
 #include "SerialBase.h"
 #include "serial_api.h"
 
@@ -44,7 +44,7 @@ namespace mbed {
  * }
  * @endcode
  */
-class Serial : public SerialBase, public Stream {
+class Serial : public SerialBase, public MStream {
 
 public:
 #if DEVICE_SERIAL_ASYNCH

@@ -20,8 +20,8 @@
   parsing functions based on TextFinder library by Michael Margolis
 */
 
-#ifndef WStream_h
-#define WStream_h
+#ifndef Stream_h
+#define Stream_h
 
 #include <inttypes.h>
 #include "Print.h"
@@ -36,7 +36,7 @@
 readBytesBetween( pre_string, terminator, buffer, length)
 */
 
-class WStream : public Print
+class Stream : public Print
 {
   private:
     unsigned long _timeout;      	// number of milliseconds to wait for the next char before aborting timed read
@@ -51,7 +51,7 @@ class WStream : public Print
     virtual int peek() = 0;
     virtual void flush() = 0;
 
-    WStream() {_timeout=1000;}
+    Stream() {_timeout=1000;}
 
 // parsing methods
 
