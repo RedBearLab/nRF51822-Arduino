@@ -45,6 +45,7 @@
 #define TWI_SCL SCL
 
 #define LED D13
+#define LED_BUILTIN D13
 
 #endif
 
