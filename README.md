@@ -2,7 +2,7 @@
 # nRF51822-Arduino
 ===
 
-This branch is to provide BLE concurrent Central and Peripheral using Nordic SoftDevice S130 and also provides support for the Arduino IDE to compile nRF51822 firmware. This aims to provide fast prototyping and learning the IoT development using the Bluetooth Low Engergy (BLE) technology.
+This branch is to provide BLE concurrent Central and Peripheral using Nordic SoftDevice S130 and also provides support for the Arduino IDE to compile nRF51822 firmware. This aims to provide fast prototyping and learning the IoT development using the Bluetooth Low Energy (BLE) technology.
 
 This board package add-on also provides BLE API for the nRF51822 SoC to act as BLE Central/Peripheral role designed for SoftDevice S130.
 
